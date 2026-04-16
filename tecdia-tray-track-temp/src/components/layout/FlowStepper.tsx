@@ -8,26 +8,33 @@ const STEPS_ORDER: FlowStep[] = ["IDLE", "SCANNING", "RESULTS", "PAYMENT"];
 
 interface FlowStepperProps {
   currentStep: FlowStep;
+  compact?: boolean;
+  embedded?: boolean;
 }
 
 /**
  * Horizontal step progress indicator using numbered circles.
  */
-export default function FlowStepper({ currentStep }: FlowStepperProps) {
+export default function FlowStepper({
+  currentStep,
+  compact = false,
+  embedded = false,
+}: FlowStepperProps) {
   const currentIdx = STEPS_ORDER.indexOf(currentStep);
   if (currentStep === "DONE") return null;
 
   return (
     <div
-      className="editorial-surface"
+      className={embedded ? undefined : "editorial-surface"}
       style={{
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         gap: "4px",
-        padding: "18px 24px",
-        margin: "0 auto 22px",
-        width: "min(100%, 840px)",
+        padding: compact ? "0" : "18px 24px",
+        margin: embedded ? "0" : "0 auto 22px",
+        width: embedded ? "100%" : "min(100%, 840px)",
+        minWidth: 0,
       }}
     >
       {STEPS_ORDER.map((step, idx) => {
@@ -40,13 +47,13 @@ export default function FlowStepper({ currentStep }: FlowStepperProps) {
             <div className="flex items-center gap-2">
               <div
                 style={{
-                  width: 34,
-                  height: 34,
+                  width: compact ? 28 : 34,
+                  height: compact ? 28 : 34,
                   borderRadius: "50%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: "14px",
+                  fontSize: compact ? "12px" : "14px",
                   fontWeight: 600,
                   transition: "all 0.3s ease",
                   background: isActive
@@ -65,7 +72,7 @@ export default function FlowStepper({ currentStep }: FlowStepperProps) {
               </div>
               <span
                 style={{
-                  fontSize: "12px",
+                  fontSize: compact ? "11px" : "12px",
                   fontWeight: isActive ? 600 : 400,
                   color: isActive
                     ? "var(--text-primary)"
@@ -73,6 +80,7 @@ export default function FlowStepper({ currentStep }: FlowStepperProps) {
                       ? "var(--success)"
                       : "var(--text-muted)",
                   transition: "all 0.3s ease",
+                  whiteSpace: "nowrap",
                 }}
               >
                 {info.label}
@@ -82,9 +90,9 @@ export default function FlowStepper({ currentStep }: FlowStepperProps) {
             {idx < STEPS_ORDER.length - 1 && (
               <div
                 style={{
-                  width: "32px",
+                  width: compact ? "24px" : "32px",
                   height: "2px",
-                  margin: "0 6px",
+                  margin: compact ? "0 4px" : "0 6px",
                   borderRadius: "1px",
                   background: isCompleted
                     ? "var(--success)"

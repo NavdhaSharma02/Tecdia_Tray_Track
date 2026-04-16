@@ -16,21 +16,21 @@ export default function AdminLayout({
   const router = useRouter();
   const pathname = usePathname();
   const isLoginRoute = pathname === "/admin/login";
-  const isAuthed =
-    typeof window !== "undefined" &&
-    sessionStorage.getItem("admin_auth") === "true";
 
   useEffect(() => {
-    if (!isLoginRoute && !isAuthed) {
+    if (isLoginRoute) {
+      return;
+    }
+
+    const isAuthed = sessionStorage.getItem("admin_auth") === "true";
+    if (!isAuthed) {
       router.replace("/admin/login");
     }
-  }, [isAuthed, isLoginRoute, router]);
+  }, [isLoginRoute, router]);
 
   if (isLoginRoute) {
     return <>{children}</>;
   }
-
-  if (!isAuthed) return null;
 
   return (
     <div

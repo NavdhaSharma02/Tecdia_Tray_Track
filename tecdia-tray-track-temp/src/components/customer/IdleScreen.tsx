@@ -283,15 +283,15 @@ export default function IdleScreen() {
                   border: `1px solid ${isScanning ? "rgba(145, 179, 89, 0.8)" : "rgba(255,255,255,0.18)"}`,
                 }}
               >
-                <p
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: 600,
-                    color: isScanning ? "#b8db7b" : "rgba(255,255,255,0.92)",
-                  }}
-                >
+                  <p
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: 600,
+                      color: isScanning ? "#b8db7b" : "rgba(255,255,255,0.92)",
+                    }}
+                  >
                   {isScanning ? "Reading ID card..." : "Position your ID card here"}
-                </p>
+                  </p>
               </div>
             </div>
           </>
@@ -319,7 +319,6 @@ export default function IdleScreen() {
         </div>
       )}
 
-      {/* Scan button */}
       <Button
         variant="primary"
         size="xl"

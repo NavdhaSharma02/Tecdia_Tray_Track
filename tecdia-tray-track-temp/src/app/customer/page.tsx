@@ -1,7 +1,6 @@
 "use client";
 
 import { useCustomerFlow } from "@/hooks/useCustomerFlow";
-import FlowStepper from "@/components/layout/FlowStepper";
 import IdleScreen from "@/components/customer/IdleScreen";
 
 import TrayScanView from "@/components/customer/TrayScanView";
@@ -18,9 +17,6 @@ export default function CustomerPage() {
 
   return (
     <div className="customer-page">
-      {/* Step indicator */}
-      <FlowStepper currentStep={step} />
-
       {/* Step content */}
       <div className="customer-page__content page-enter" key={step}>
         {step === "IDLE" && <IdleScreen />}

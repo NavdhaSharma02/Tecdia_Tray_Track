@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { APP_NAME } from "@/lib/constants";
 import TecdiaLogo from "@/components/layout/TecdiaLogo";
+import FlowStepper from "@/components/layout/FlowStepper";
+import { useCustomerFlow } from "@/hooks/useCustomerFlow";
 
 interface HeaderProps {
   showAdmin?: boolean;
@@ -19,6 +21,7 @@ export default function Header({
   showBack = false,
   onBack,
 }: HeaderProps) {
+  const { step } = useCustomerFlow();
   const [time, setTime] = useState("");
 
   useEffect(() => {
@@ -48,11 +51,12 @@ export default function Header({
         alignItems: "center",
         justifyContent: "space-between",
         padding: "14px 24px",
-        background: "rgba(255, 251, 245, 0.66)",
+        background: "rgba(255, 245, 240, 0.58)",
         backdropFilter: "blur(18px)",
         borderBottom: "1px solid var(--border)",
         borderRadius: "999px",
-        boxShadow: "0 16px 32px rgba(44, 35, 23, 0.08)",
+        boxShadow: "0 16px 32px rgba(86, 42, 34, 0.12)",
+        position: "fixed",
       }}
     >
       <div className="flex items-center gap-3">
@@ -89,13 +93,27 @@ export default function Header({
         </Link>
       </div>
 
+      <div
+        style={{
+          position: "absolute",
+          left: "50%",
+          transform: "translateX(-50%)",
+          width: "min(100%, 520px)",
+          pointerEvents: "none",
+        }}
+      >
+        <div style={{ pointerEvents: "auto" }}>
+          <FlowStepper currentStep={step} compact embedded />
+        </div>
+      </div>
+
       <div className="flex items-center gap-5">
         <span
           style={{
             fontFamily: "var(--font-mono)",
             fontSize: "14px",
             color: "var(--text-secondary)",
-            background: "rgba(255,255,255,0.58)",
+            background: "rgba(255, 248, 244, 0.68)",
             padding: "8px 14px",
             borderRadius: "999px",
           }}

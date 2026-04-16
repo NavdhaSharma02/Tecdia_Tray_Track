@@ -138,23 +138,59 @@ export default function FoodResults() {
               x
             </button>
 
-            {/* Category indicator */}
             <div
               style={{
-                display: "inline-block",
-                padding: "4px 10px",
-                borderRadius: "var(--radius-full)",
-                background: "var(--bg-elevated)",
-                border: "1px solid var(--border)",
-                fontSize: "11px",
-                fontWeight: 600,
-                color: "var(--text-secondary)",
-                textTransform: "uppercase",
-                letterSpacing: "0.04em",
-                marginBottom: "12px",
+                display: "flex",
+                alignItems: "flex-start",
+                justifyContent: "space-between",
+                gap: "14px",
+                marginBottom: "14px",
+                paddingRight: "36px",
               }}
             >
-              {item.category}
+              {/* Category indicator */}
+              <div
+                style={{
+                  display: "inline-block",
+                  padding: "4px 10px",
+                  borderRadius: "var(--radius-full)",
+                  background: "var(--bg-elevated)",
+                  border: "1px solid var(--border)",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  color: "var(--text-secondary)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.04em",
+                  flexShrink: 0,
+                }}
+              >
+                {item.category}
+              </div>
+
+              {/* Food image placeholder for future item photos */}
+              <div
+                aria-label={`${item.name} image placeholder`}
+                style={{
+                  width: 64,
+                  height: 64,
+                  borderRadius: "18px",
+                  border: "1px dashed rgba(94, 139, 58, 0.35)",
+                  background:
+                    "linear-gradient(135deg, rgba(255,255,255,0.92), rgba(94, 139, 58, 0.08))",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textAlign: "center",
+                  padding: "6px",
+                  color: "var(--text-muted)",
+                  fontSize: "10px",
+                  fontWeight: 600,
+                  lineHeight: 1.2,
+                  flexShrink: 0,
+                }}
+              >
+                Add photo
+              </div>
             </div>
 
             {/* Item details */}
