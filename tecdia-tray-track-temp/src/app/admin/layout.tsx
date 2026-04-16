@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import AdminSidebar from "@/components/layout/AdminSidebar";
 
@@ -15,28 +15,22 @@ export default function AdminLayout({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [authed, setAuthed] = useState(false);
+  const isLoginRoute = pathname === "/admin/login";
+  const isAuthed =
+    typeof window !== "undefined" &&
+    sessionStorage.getItem("admin_auth") === "true";
 
   useEffect(() => {
-    if (pathname === "/admin/login") {
-      setAuthed(true);
-      return;
-    }
-
-    const isAuth = sessionStorage.getItem("admin_auth");
-    if (!isAuth) {
+    if (!isLoginRoute && !isAuthed) {
       router.replace("/admin/login");
-    } else {
-      setAuthed(true);
-      sessionStorage.removeItem("admin_auth");
     }
-  }, [pathname, router]);
+  }, [isAuthed, isLoginRoute, router]);
 
-  if (pathname === "/admin/login") {
+  if (isLoginRoute) {
     return <>{children}</>;
   }
 
-  if (!authed) return null;
+  if (!isAuthed) return null;
 
   return (
     <div
