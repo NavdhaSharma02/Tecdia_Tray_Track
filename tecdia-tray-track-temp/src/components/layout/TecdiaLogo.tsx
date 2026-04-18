@@ -6,80 +6,44 @@ interface TecdiaLogoProps {
 
 const sizeMap = {
   sm: {
-    eyebrow: "12px",
-    wordmark: "22px",
-    subtext: "8px",
-    gap: "4px",
+    width: 72,
   },
   md: {
-    eyebrow: "13px",
-    wordmark: "34px",
-    subtext: "10px",
-    gap: "5px",
+    width: 128,
   },
   lg: {
-    eyebrow: "14px",
-    wordmark: "42px",
-    subtext: "12px",
-    gap: "6px",
+    width: 184,
   },
-};
+} as const;
+
+const LOGO_SRC = "/logo_tecdia.png?v=20260418-132407";
 
 export default function TecdiaLogo({
   size = "md",
   align = "center",
   showLines = true,
 }: TecdiaLogoProps) {
-  const styles = sizeMap[size];
+  void showLines;
+  const width = sizeMap[size].width;
 
   return (
     <div
       style={{
         display: "inline-flex",
-        flexDirection: "column",
-        alignItems: align === "center" ? "center" : "flex-start",
-        gap: showLines ? styles.gap : 0,
-        lineHeight: 1,
+        justifyContent: align === "center" ? "center" : "flex-start",
+        width,
+        lineHeight: 0,
       }}
     >
-      {showLines && (
-        <p
-          style={{
-            fontSize: styles.eyebrow,
-            color: "#1d9cc4",
-            fontWeight: 700,
-            margin: 0,
-          }}
-        >
-          Let&apos;s do this.
-        </p>
-      )}
-      <div
+      <img
+        src={LOGO_SRC}
+        alt="Tecdia Cebu Inc."
         style={{
-          fontSize: styles.wordmark,
-          lineHeight: 0.92,
-          fontWeight: 800,
-          letterSpacing: "0.08em",
-          color: "#1ea3cb",
-          margin: 0,
+          width: "100%",
+          height: "auto",
+          display: "block",
         }}
-      >
-        TEC
-        <div style={{ marginLeft: "0.16em" }}>DIA</div>
-      </div>
-      {showLines && (
-        <p
-          style={{
-            fontSize: styles.subtext,
-            color: "rgba(30, 163, 203, 0.78)",
-            letterSpacing: "0.08em",
-            fontWeight: 600,
-            margin: 0,
-          }}
-        >
-          TECDIA CEBU Inc.
-        </p>
-      )}
+      />
     </div>
   );
 }

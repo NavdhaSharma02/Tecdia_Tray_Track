@@ -54,7 +54,7 @@ export default function PaymentScreen() {
     >
       <h2
         style={{
-          fontFamily: "var(--font-script)",
+          fontFamily: "var(--font-display)",
           fontSize: "36px",
           fontWeight: 700,
           color: "var(--text-primary)",

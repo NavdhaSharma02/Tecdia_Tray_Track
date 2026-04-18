@@ -1,6 +1,7 @@
 "use client";
 
 import { CustomerFlowProvider } from "@/hooks/useCustomerFlow";
+import CustomerBackgroundSlideshow from "@/components/layout/CustomerBackgroundSlideshow";
 import Header from "@/components/layout/Header";
 
 export default function CustomerLayout({
@@ -12,6 +13,7 @@ export default function CustomerLayout({
     <CustomerFlowProvider>
       <Header showAdmin={true} />
       <main className="customer-stage">
+        <CustomerBackgroundSlideshow />
         <div className="customer-stage__glow customer-stage__glow--top" />
         <div className="customer-stage__glow customer-stage__glow--bottom" />
         <section className="customer-panel">{children}</section>

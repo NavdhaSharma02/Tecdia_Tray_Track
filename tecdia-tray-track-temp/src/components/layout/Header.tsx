@@ -43,22 +43,22 @@ export default function Header({
     <header
       style={{
         position: "fixed",
-        top: 14,
-        left: 18,
-        right: 18,
+        top: 10,
+        left: 14,
+        right: 14,
         zIndex: 50,
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        padding: "14px 24px",
+        padding: "10px 18px",
         background: "rgba(255, 245, 240, 0.58)",
-        backdropFilter: "blur(18px)",
+        backdropFilter: "blur(16px)",
         borderBottom: "1px solid var(--border)",
         borderRadius: "999px",
-        boxShadow: "0 16px 32px rgba(86, 42, 34, 0.12)",
+        boxShadow: "0 12px 24px rgba(86, 42, 34, 0.1)",
       }}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         {showBack && onBack && (
           <button
             onClick={onBack}
@@ -73,14 +73,14 @@ export default function Header({
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "12px",
+            gap: "10px",
             textDecoration: "none",
           }}
         >
           <TecdiaLogo size="sm" align="left" showLines={false} />
           <span
             style={{
-              fontSize: "19px",
+              fontSize: "17px",
               fontWeight: 700,
               color: "var(--text-primary)",
               letterSpacing: "-0.02em",
@@ -97,7 +97,7 @@ export default function Header({
           position: "absolute",
           left: "50%",
           transform: "translateX(-50%)",
-          width: "min(100%, 520px)",
+          width: "min(100%, 470px)",
           pointerEvents: "none",
         }}
       >
@@ -106,14 +106,14 @@ export default function Header({
         </div>
       </div>
 
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-3">
         <span
           style={{
             fontFamily: "var(--font-mono)",
-            fontSize: "14px",
+            fontSize: "12px",
             color: "var(--text-secondary)",
             background: "rgba(255, 248, 244, 0.68)",
-            padding: "8px 14px",
+            padding: "6px 11px",
             borderRadius: "999px",
           }}
         >
@@ -123,7 +123,7 @@ export default function Header({
           <Link
             href="/admin/login"
             className="btn btn-ghost btn-sm"
-            style={{ fontSize: "13px" }}
+            style={{ fontSize: "12px" }}
           >
             Admin
           </Link>
