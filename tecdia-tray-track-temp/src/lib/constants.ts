@@ -14,9 +14,10 @@ export const ADMIN_PIN = "1234";
 /** Flow step labels for the stepper UI — no PROFILE step */
 export const FLOW_STEP_LABELS: Record<string, { label: string; icon: string }> = {
   IDLE: { label: "Identify", icon: "1" },
-  SCANNING: { label: "Scan Tray", icon: "2" },
-  RESULTS: { label: "Bill", icon: "3" },
-  PAYMENT: { label: "Payment", icon: "4" },
+  EMAIL_AUTH: { label: "Login", icon: "2" },
+  SCANNING: { label: "Scan Tray", icon: "3" },
+  RESULTS: { label: "Bill", icon: "4" },
+  PAYMENT: { label: "Payment", icon: "5" },
   DONE: { label: "Done", icon: "✓" },
 };
 

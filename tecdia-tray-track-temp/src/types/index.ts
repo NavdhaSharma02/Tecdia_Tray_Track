@@ -3,7 +3,14 @@
 // ============================================
 
 /** Steps in the customer kiosk flow */
-export type FlowStep = 'IDLE' | 'PROFILE' | 'SCANNING' | 'RESULTS' | 'PAYMENT' | 'DONE';
+export type FlowStep =
+  | "IDLE"
+  | "EMAIL_AUTH"
+  | "PROFILE"
+  | "SCANNING"
+  | "RESULTS"
+  | "PAYMENT"
+  | "DONE";
 
 /** Payment method options */
 export type PaymentMethod = 'immediate' | 'account';
@@ -87,6 +94,13 @@ export interface ApiResponse<T> {
   error?: string;
 }
 
+export interface AuthCustomer {
+  id: string;
+  email: string;
+  fullName: string;
+  createdAt: string;
+}
+
 /** Customer flow state */
 export interface CustomerFlowState {
   step: FlowStep;
@@ -103,6 +117,7 @@ export interface CustomerFlowState {
 export type CustomerFlowAction =
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_EMPLOYEE'; payload: { employee: Employee; transactions: Transaction[] } }
+  | { type: "SET_STEP"; payload: FlowStep }
   | { type: 'START_SCAN' }
   | { type: 'SCAN_COMPLETE'; payload: ScannedItem[] }
   | { type: 'UPDATE_ITEMS'; payload: ScannedItem[] }

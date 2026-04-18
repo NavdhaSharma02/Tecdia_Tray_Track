@@ -5,9 +5,11 @@ import {
   useContext,
   useReducer,
   useCallback,
+  useEffect,
   type ReactNode,
 } from "react";
 import type {
+  AuthCustomer,
   FlowStep,
   CustomerFlowState,
   CustomerFlowAction,
@@ -50,6 +52,8 @@ function flowReducer(
         isLoading: false,
         error: null,
       };
+    case "SET_STEP":
+      return { ...state, step: action.payload };
     case "START_SCAN":
       return { ...state, step: "SCANNING", error: null };
     case "SCAN_COMPLETE":
@@ -86,6 +90,15 @@ function flowReducer(
 // ── Context ────────────────────────────────────
 
 interface CustomerFlowContextValue extends CustomerFlowState {
+  customerAuth: AuthCustomer | null;
+  openEmailAuth: () => void;
+  backToIdScan: () => void;
+  signUpWithEmail: (input: {
+    fullName: string;
+    email: string;
+    password: string;
+  }) => Promise<boolean>;
+  loginWithEmail: (input: { email: string; password: string }) => Promise<boolean>;
   identifyEmployee: (id: string) => Promise<void>;
   startScan: () => void;
   completeScan: (items: ScannedItem[]) => void;
@@ -104,6 +117,10 @@ const CustomerFlowContext = createContext<CustomerFlowContextValue | null>(null)
 
 export function CustomerFlowProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(flowReducer, initialState);
+  const [customerAuth, setCustomerAuth] = useReducer(
+    (_: AuthCustomer | null, next: AuthCustomer | null) => next,
+    null
+  );
 
   /**
    * Look up employee by ID, fetch their transactions, and move to PROFILE step.
@@ -137,6 +154,76 @@ export function CustomerFlowProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const openEmailAuth = useCallback(() => {
+    dispatch({ type: "SET_STEP", payload: "EMAIL_AUTH" });
+  }, []);
+
+  const backToIdScan = useCallback(() => {
+    dispatch({ type: "SET_STEP", payload: "IDLE" });
+  }, []);
+
+  const hydrateCustomer = useCallback(
+    async (customer: AuthCustomer): Promise<boolean> => {
+      const employee: Employee = {
+        id: customer.id,
+        name: customer.fullName,
+        email: customer.email,
+        department: "Customer",
+        avatar: null,
+        accountBalance: 0,
+        joinDate: customer.createdAt,
+      };
+      setCustomerAuth(customer);
+      dispatch({
+        type: "SET_EMPLOYEE",
+        payload: { employee, transactions: [] },
+      });
+      return true;
+    },
+    []
+  );
+
+  const signUpWithEmail = useCallback(
+    async (input: { fullName: string; email: string; password: string }) => {
+      dispatch({ type: "SET_LOADING", payload: true });
+      const result = await api.signUpCustomer(input);
+      if (!result.ok || !result.data?.customer) {
+        dispatch({ type: "SET_ERROR", payload: result.error || "Signup failed." });
+        return false;
+      }
+      return hydrateCustomer(result.data.customer);
+    },
+    [hydrateCustomer]
+  );
+
+  const loginWithEmail = useCallback(
+    async (input: { email: string; password: string }) => {
+      dispatch({ type: "SET_LOADING", payload: true });
+      const result = await api.loginCustomer(input);
+      if (!result.ok || !result.data?.customer) {
+        dispatch({ type: "SET_ERROR", payload: result.error || "Login failed." });
+        return false;
+      }
+      return hydrateCustomer(result.data.customer);
+    },
+    [hydrateCustomer]
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function hydrateFromSession() {
+      const result = await api.getCustomerSession();
+      if (cancelled || !result.ok || !result.data?.customer) return;
+      await hydrateCustomer(result.data.customer);
+    }
+
+    hydrateFromSession();
+    return () => {
+      cancelled = true;
+    };
+  }, [hydrateCustomer]);
+
   const startScan = useCallback(() => {
     dispatch({ type: "START_SCAN" });
   }, []);
@@ -151,14 +238,12 @@ export function CustomerFlowProvider({ children }: { children: ReactNode }) {
 
   const selectPayment = useCallback((method: PaymentMethod) => {
     dispatch({ type: "SELECT_PAYMENT", payload: method });
+    dispatch({ type: "SET_STEP", payload: "PAYMENT" });
   }, []);
 
   const goToPayment = useCallback(() => {
-    // Move from RESULTS → PAYMENT step explicitly
-    dispatch({ type: "SET_LOADING", payload: false });
-    // We use a small trick: just move the step forward
-    dispatch({ type: "SELECT_PAYMENT", payload: state.paymentMethod || "immediate" });
-  }, [state.paymentMethod]);
+    dispatch({ type: "SET_STEP", payload: "PAYMENT" });
+  }, []);
 
   /**
    * Process payment using the selected method.
@@ -205,6 +290,11 @@ export function CustomerFlowProvider({ children }: { children: ReactNode }) {
     <CustomerFlowContext.Provider
       value={{
         ...state,
+        customerAuth,
+        openEmailAuth,
+        backToIdScan,
+        signUpWithEmail,
+        loginWithEmail,
         identifyEmployee,
         startScan,
         completeScan,

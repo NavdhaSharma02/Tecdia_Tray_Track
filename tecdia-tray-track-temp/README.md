@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Tecdia Tray Track (Next.js)
 
-## Getting Started
+This application contains:
+- Customer-side tray flow (ID/email auth -> scan -> review -> payment)
+- Admin-side dashboard/menu/analytics/users/transactions views
+- API routes under `src/app/api`
 
-First, run the development server:
+## 1) Local PostgreSQL Setup (Windows)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Install PostgreSQL
+1. Download installer from [https://www.postgresql.org/download/windows/](https://www.postgresql.org/download/windows/).
+2. Install PostgreSQL 15+ with:
+   - `pgAdmin`
+   - Command-line tools (`psql`)
+3. During install, set and remember the `postgres` superuser password.
+
+### Create the database
+Open PowerShell and run:
+
+```powershell
+psql -U postgres -h localhost -p 5432
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then inside `psql`:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```sql
+CREATE DATABASE tecdia_tray_track;
+\c tecdia_tray_track
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Apply schema
+From project root (`tecdia-tray-track-temp`) run:
 
-## Learn More
+```powershell
+psql -U postgres -h localhost -d tecdia_tray_track -f db/schema.sql
+```
 
-To learn more about Next.js, take a look at the following resources:
+This creates core relational tables:
+- `customers` (email/password auth)
+- `admin_users` (PIN-based admin access, future)
+- `menu_items`
+- `service_days`
+- `service_day_menu_items` (many-to-many availability by day)
+- `tray_scans`
+- `tray_scan_items`
+- `transactions`
+- `transaction_items`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 2) Environment Variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Create `.env.local` in `tecdia-tray-track-temp`:
 
-## Deploy on Vercel
+```env
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DB=tecdia_tray_track
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=your_postgres_password
+AUTH_SESSION_SECRET=use_a_long_random_string_here
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+You can copy from `.env.example`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 3) Install and Run
+
+```powershell
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000/customer](http://localhost:3000/customer).
+
+## 4) Customer Auth Flow (What was added)
+
+- `Use Email` button appears next to `Scan ID Card` on the customer idle screen.
+- Email auth page supports:
+  - Login (existing customer)
+  - Sign up (new customer)
+- After successful auth, user is moved to tray scanning.
+- Tray scan still uses randomized items from available menu mocks (until ML pipeline is integrated).
+- Proceeding from results takes user to payment screen (basic structure retained).
+
+## 5) API Endpoints Added
+
+- `POST /api/auth/signup`
+- `POST /api/auth/login`
+- `GET /api/auth/me`
+- `POST /api/auth/logout`
+
+## 6) How To Test Auth End-to-End
+
+1. Start app: `npm run dev`
+2. Go to `/customer`
+3. Click `Use Email`
+4. Choose `Sign Up`
+5. Register with:
+   - Full name
+   - Email
+   - Password (8+ chars)
+6. Confirm you are routed to tray scanning screen.
+7. Refresh page and verify session still recognizes user.
+8. Go back to `/customer`, click `Use Email`, switch to `Login`, and login with same credentials.
+9. Verify scan -> results -> proceed to payment.
+
+Optional DB checks (in `psql`):
+
+```sql
+SELECT id, email, full_name, created_at
+FROM customers
+ORDER BY created_at DESC;
+```
+
+## 7) Notes
+
+- Passwords are stored as salted hashes (`scrypt`) in `customers.password_hash` and `customers.password_salt`.
+- Auth session is stored in an HTTP-only signed cookie.
+- This is an incremental backend foundation; transactions and daily menu admin writes can be wired next using the existing relational schema.

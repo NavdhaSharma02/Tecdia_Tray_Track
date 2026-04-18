@@ -8,6 +8,7 @@
  */
 
 import type {
+  AuthCustomer,
   Employee,
   MenuItem,
   Transaction,
@@ -31,6 +32,10 @@ import {
 
 import { API_BASE } from "@/lib/constants";
 
+interface AuthResponse {
+  customer: AuthCustomer;
+}
+
 // ──────────────────────────────────────────────
 // Employee
 // ──────────────────────────────────────────────
@@ -39,6 +44,59 @@ import { API_BASE } from "@/lib/constants";
 export async function getEmployee(id: string): Promise<ApiResponse<Employee>> {
   // TODO: Replace with real endpoint → GET ${API_BASE}/employees/${id}
   return fetchEmployeeById(id);
+}
+
+export async function signUpCustomer(input: {
+  email: string;
+  fullName: string;
+  password: string;
+}): Promise<ApiResponse<AuthResponse>> {
+  try {
+    const res = await fetch(`${API_BASE}/auth/signup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    });
+    const data = (await res.json()) as ApiResponse<AuthResponse>;
+    if (!res.ok) return { ok: false, error: data.error || "Signup failed" };
+    return data;
+  } catch {
+    return { ok: false, error: "Unable to reach signup service." };
+  }
+}
+
+export async function loginCustomer(input: {
+  email: string;
+  password: string;
+}): Promise<ApiResponse<AuthResponse>> {
+  try {
+    const res = await fetch(`${API_BASE}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    });
+    const data = (await res.json()) as ApiResponse<AuthResponse>;
+    if (!res.ok) return { ok: false, error: data.error || "Login failed" };
+    return data;
+  } catch {
+    return { ok: false, error: "Unable to reach login service." };
+  }
+}
+
+export async function getCustomerSession(): Promise<
+  ApiResponse<{ customer: AuthCustomer | null }>
+> {
+  try {
+    const res = await fetch(`${API_BASE}/auth/me`, {
+      method: "GET",
+      cache: "no-store",
+    });
+    const data = (await res.json()) as ApiResponse<{ customer: AuthCustomer | null }>;
+    if (!res.ok) return { ok: false, error: data.error || "Session lookup failed" };
+    return data;
+  } catch {
+    return { ok: false, error: "Unable to load customer session." };
+  }
 }
 
 /** Fetch transaction history for an employee */
