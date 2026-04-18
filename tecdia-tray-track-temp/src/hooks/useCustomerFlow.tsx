@@ -82,6 +82,8 @@ function flowReducer(
       return { ...state, error: null };
     case "RESET":
       return { ...initialState };
+    case "RESET_TO_EMAIL_AUTH":
+      return { ...initialState, step: "EMAIL_AUTH" };
     default:
       return state;
   }
@@ -91,8 +93,8 @@ function flowReducer(
 
 interface CustomerFlowContextValue extends CustomerFlowState {
   customerAuth: AuthCustomer | null;
-  openEmailAuth: () => void;
-  backToIdScan: () => void;
+  openEmailAuth: () => Promise<void>;
+  backToIdScan: () => Promise<void>;
   signUpWithEmail: (input: {
     fullName: string;
     email: string;
@@ -108,7 +110,7 @@ interface CustomerFlowContextValue extends CustomerFlowState {
   goToPayment: () => void;
   setError: (msg: string) => void;
   clearError: () => void;
-  reset: () => void;
+  reset: () => Promise<void>;
 }
 
 const CustomerFlowContext = createContext<CustomerFlowContextValue | null>(null);
@@ -154,12 +156,22 @@ export function CustomerFlowProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const openEmailAuth = useCallback(() => {
-    dispatch({ type: "SET_STEP", payload: "EMAIL_AUTH" });
+  const openEmailAuth = useCallback(async () => {
+    try {
+      await api.logoutCustomer();
+    } finally {
+      setCustomerAuth(null);
+      dispatch({ type: "RESET_TO_EMAIL_AUTH" });
+    }
   }, []);
 
-  const backToIdScan = useCallback(() => {
-    dispatch({ type: "SET_STEP", payload: "IDLE" });
+  const backToIdScan = useCallback(async () => {
+    try {
+      await api.logoutCustomer();
+    } finally {
+      setCustomerAuth(null);
+      dispatch({ type: "RESET" });
+    }
   }, []);
 
   const hydrateCustomer = useCallback(
@@ -209,21 +221,6 @@ export function CustomerFlowProvider({ children }: { children: ReactNode }) {
     [hydrateCustomer]
   );
 
-  useEffect(() => {
-    let cancelled = false;
-
-    async function hydrateFromSession() {
-      const result = await api.getCustomerSession();
-      if (cancelled || !result.ok || !result.data?.customer) return;
-      await hydrateCustomer(result.data.customer);
-    }
-
-    hydrateFromSession();
-    return () => {
-      cancelled = true;
-    };
-  }, [hydrateCustomer]);
-
   const startScan = useCallback(() => {
     dispatch({ type: "START_SCAN" });
   }, []);
@@ -266,6 +263,11 @@ export function CustomerFlowProvider({ children }: { children: ReactNode }) {
         return;
       }
       dispatch({ type: "PAYMENT_COMPLETE", payload: result.data });
+      try {
+        await api.logoutCustomer();
+      } finally {
+        setCustomerAuth(null);
+      }
     } catch {
       dispatch({
         type: "SET_ERROR",
@@ -282,8 +284,13 @@ export function CustomerFlowProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "CLEAR_ERROR" });
   }, []);
 
-  const reset = useCallback(() => {
-    dispatch({ type: "RESET" });
+  const reset = useCallback(async () => {
+    try {
+      await api.logoutCustomer();
+    } finally {
+      setCustomerAuth(null);
+      dispatch({ type: "RESET" });
+    }
   }, []);
 
   return (

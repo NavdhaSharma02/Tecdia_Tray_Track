@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS menu_items (
   name TEXT NOT NULL,
   category TEXT NOT NULL,
   base_price NUMERIC(10,2) NOT NULL CHECK (base_price >= 0),
-  calories INTEGER NOT NULL CHECK (calories >= 0),
+  calories INTEGER CHECK (calories IS NULL OR calories >= 0),
   image_url TEXT,
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

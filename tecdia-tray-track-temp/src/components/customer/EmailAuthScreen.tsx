@@ -158,7 +158,7 @@ export default function EmailAuthScreen() {
             {mode === "login" ? "Login and Continue" : "Create Account and Continue"}
           </Button>
 
-          <Button type="button" variant="ghost" size="md" onClick={backToIdScan}>
+          <Button type="button" variant="ghost" size="md" onClick={() => void backToIdScan()}>
             Back to ID Scan
           </Button>
         </form>

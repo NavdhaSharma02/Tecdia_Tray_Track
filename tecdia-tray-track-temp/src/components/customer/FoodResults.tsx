@@ -19,8 +19,16 @@ export default function FoodResults() {
     [items]
   );
 
-  const totalCalories = useMemo(
-    () => items.reduce((sum, item) => sum + item.calories * item.quantity, 0),
+  const totalCaloriesKnown = useMemo(
+    () =>
+      items.reduce((sum, item) => {
+        if (item.calories == null) return sum;
+        return sum + item.calories * item.quantity;
+      }, 0),
+    [items]
+  );
+  const anyUnknownCalories = useMemo(
+    () => items.some((item) => item.calories == null),
     [items]
   );
 
@@ -326,7 +334,9 @@ export default function FoodResults() {
         >
           <div>
             <p style={{ fontSize: "13px", color: "var(--text-muted)", marginBottom: "4px" }}>
-              Total ({items.length} items, {totalCalories} cal)
+              Total — {items.length} item{items.length === 1 ? "" : "s"}
+              {!anyUnknownCalories ? ` · ${totalCaloriesKnown} cal` : ""}
+              {anyUnknownCalories ? " · calorie total N/A" : ""}
             </p>
             <p
               style={{

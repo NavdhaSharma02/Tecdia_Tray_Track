@@ -337,7 +337,7 @@ export default function IdleScreen() {
         <Button
           variant="outline"
           size="lg"
-          onClick={openEmailAuth}
+          onClick={() => void openEmailAuth()}
           disabled={isScanning || isLoading}
           style={{ width: "100%" }}
         >

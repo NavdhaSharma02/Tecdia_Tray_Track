@@ -1,7 +1,8 @@
 import crypto from "crypto";
 
 export const CUSTOMER_SESSION_COOKIE = "tt_customer_session";
-const SESSION_MAX_AGE_SECONDS = 60 * 60 * 8;
+/** Short upper bound; cookie is cleared at logout / end of checkout. */
+const SESSION_TOKEN_TTL_MS = 60 * 60 * 1000;
 
 function getSessionSecret(): string {
   const secret = process.env.AUTH_SESSION_SECRET;
@@ -28,7 +29,7 @@ function fromBase64Url(value: string): Buffer {
 export function buildSessionToken(userId: string): string {
   const payload = JSON.stringify({
     uid: userId,
-    exp: Date.now() + SESSION_MAX_AGE_SECONDS * 1000,
+    exp: Date.now() + SESSION_TOKEN_TTL_MS,
   });
 
   const payloadEncoded = toBase64Url(payload);
@@ -77,6 +78,5 @@ export function getSessionCookieOptions() {
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax" as const,
     path: "/",
-    maxAge: SESSION_MAX_AGE_SECONDS,
   };
 }

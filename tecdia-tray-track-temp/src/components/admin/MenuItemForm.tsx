@@ -18,17 +18,35 @@ export default function MenuItemForm({ item, onSave, onCancel }: MenuItemFormPro
   const [name, setName] = useState(item?.name || "");
   const [category, setCategory] = useState(item?.category || "Main Course");
   const [price, setPrice] = useState(item?.price?.toString() || "");
-  const [calories, setCalories] = useState(item?.calories?.toString() || "");
+  const [calories, setCalories] = useState(
+    item?.calories == null ? "N/A" : String(item.calories)
+  );
   const [available, setAvailable] = useState(item?.available ?? true);
+  const [caloriesError, setCaloriesError] = useState<string | undefined>();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const trimmedCal = calories.trim();
+    let caloriesValue: number | null;
+    if (trimmedCal === "" || trimmedCal.toLowerCase() === "n/a") {
+      caloriesValue = null;
+      setCaloriesError(undefined);
+    } else {
+      const n = Number.parseInt(trimmedCal, 10);
+      if (Number.isNaN(n) || n < 0) {
+        setCaloriesError("Enter a whole number or N/A");
+        return;
+      }
+      caloriesValue = n;
+      setCaloriesError(undefined);
+    }
+
     const menuItem: MenuItem = {
-      id: item?.id || `ITEM-${Math.floor(Math.random() * 900) + 100}`,
+      id: item?.id || "",
       name,
       category,
       price: parseFloat(price) || 0,
-      calories: parseInt(calories) || 0,
+      calories: caloriesValue,
       image: null,
       available,
     };
@@ -89,13 +107,19 @@ export default function MenuItemForm({ item, onSave, onCancel }: MenuItemFormPro
             Calories
           </label>
           <input
-            type="number"
+            type="text"
             value={calories}
-            onChange={(e) => setCalories(e.target.value)}
-            placeholder="0"
+            onChange={(e) => {
+              setCalories(e.target.value);
+              if (caloriesError) setCaloriesError(undefined);
+            }}
+            placeholder="e.g. 350 or N/A"
             className="input"
-            min="0"
+            autoComplete="off"
           />
+          {caloriesError && (
+            <span style={{ fontSize: "12px", color: "var(--danger)" }}>{caloriesError}</span>
+          )}
         </div>
       </div>
 
