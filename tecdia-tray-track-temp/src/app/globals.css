@@ -44,6 +44,10 @@
 
   --background: #f8e9e2;
   --foreground: #45241d;
+  --header-top-offset: 10px;
+  --header-side-offset: 14px;
+  --header-gap: 20px;
+  --header-shell-height: 116px;
 }
 
 @theme inline {
@@ -583,7 +587,10 @@ select.input option {
 .customer-stage {
   position: relative;
   min-height: 100vh;
-  padding: 92px 22px 20px;
+  padding:
+    calc(var(--header-top-offset) + var(--header-shell-height) + var(--header-gap))
+    22px
+    20px;
   display: flex;
   justify-content: center;
   align-items: stretch;
@@ -651,10 +658,13 @@ select.input option {
 .customer-panel {
   position: relative;
   z-index: 2;
-  width: min(100%, 980px);
-  height: calc(100vh - 112px);
-  max-height: calc(100vh - 112px);
-  padding: 18px 20px 20px;
+  width: min(100%, 1120px);
+  min-height: 0;
+  height: auto;
+  max-height: calc(
+    100dvh - var(--header-top-offset) - var(--header-shell-height) - var(--header-gap) - 20px
+  );
+  padding: 20px 22px 22px;
   background:
     linear-gradient(rgba(255, 251, 248, 0.52), rgba(255, 247, 243, 0.4)),
     radial-gradient(circle at center, rgba(255, 249, 246, 0.2), rgba(255, 255, 255, 0.03));
@@ -697,18 +707,81 @@ select.input option {
   display: flex;
   align-items: stretch;
   justify-content: flex-start;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.app-header {
+  position: fixed;
+  top: var(--header-top-offset);
+  left: var(--header-side-offset);
+  right: var(--header-side-offset);
+  z-index: 50;
+}
+
+.app-header__inner {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  min-height: 78px;
+  padding: 12px 18px;
+  background: rgba(255, 245, 240, 0.58);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  border-radius: 40px;
+  box-shadow: 0 12px 24px rgba(86, 42, 34, 0.1);
+}
+
+.app-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.app-header__stepper {
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.app-header__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.app-header__time {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  background: rgba(255, 248, 244, 0.68);
+  padding: 6px 11px;
+  border-radius: 999px;
+  white-space: nowrap;
 }
 
 @media (max-width: 768px) {
+  :root {
+    --header-side-offset: 10px;
+    --header-gap: 14px;
+    --header-shell-height: 148px;
+  }
+
   .customer-stage {
-    padding: 82px 12px 12px;
+    padding:
+      calc(var(--header-top-offset) + var(--header-shell-height) + var(--header-gap))
+      12px
+      12px;
   }
 
   .customer-panel {
-    height: calc(100vh - 94px);
-    max-height: calc(100vh - 94px);
-    padding: 12px 12px 16px;
+    max-height: calc(
+      100dvh - var(--header-top-offset) - var(--header-shell-height) - var(--header-gap) - 12px
+    );
+    padding: 14px 14px 18px;
     border-radius: 32px;
   }
 
@@ -717,4 +790,69 @@ select.input option {
     border-radius: 22px;
   }
 
+  .app-header__inner {
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 28px;
+  }
+
+  .app-header__brand,
+  .app-header__actions {
+    justify-content: space-between;
+  }
+
+  .app-header__stepper {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+}
+
+@media (max-width: 1100px) {
+  :root {
+    --header-shell-height: 132px;
+  }
+
+  .app-header__inner {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .app-header__stepper {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+}
+
+@media (max-height: 860px) {
+  :root {
+    --header-gap: 16px;
+  }
+
+  .customer-panel {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+}
+
+@media (max-height: 760px) {
+  :root {
+    --header-shell-height: 104px;
+    --header-gap: 12px;
+  }
+}
+
+@media (max-height: 760px) and (max-width: 1100px) {
+  :root {
+    --header-shell-height: 124px;
+  }
+}
+
+@media (min-aspect-ratio: 16/9) {
+  .customer-panel {
+    width: min(100%, 1220px);
+  }
 }

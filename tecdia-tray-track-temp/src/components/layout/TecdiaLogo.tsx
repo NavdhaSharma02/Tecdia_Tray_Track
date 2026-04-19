@@ -16,7 +16,7 @@ const sizeMap = {
   },
 } as const;
 
-const LOGO_SRC = "/logo_tecdia.png?v=20260418-132407";
+const LOGO_SRC = "/logo_tecdia.png?v=20260419-120500";
 
 export default function TecdiaLogo({
   size = "md",

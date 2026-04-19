@@ -11,7 +11,7 @@ import type { ScannedItem } from "@/types";
  * Food Detection Results step — card-based layout, no emojis.
  */
 export default function FoodResults() {
-  const { scannedItems, updateItems, selectPayment } = useCustomerFlow();
+  const { scannedItems, updateItems, goToPayment } = useCustomerFlow();
   const [items, setItems] = useState<ScannedItem[]>(scannedItems);
 
   const total = useMemo(
@@ -50,7 +50,7 @@ export default function FoodResults() {
 
   const handleProceed = () => {
     updateItems(items);
-    selectPayment("immediate");
+    goToPayment();
   };
 
   const cardColors = [

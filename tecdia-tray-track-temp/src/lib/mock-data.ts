@@ -4,6 +4,7 @@
  */
 
 import type {
+  AdminUser,
   Employee,
   MenuItem,
   Transaction,
@@ -13,6 +14,42 @@ import type {
   PaymentMethod,
   Receipt,
 } from "@/types";
+
+export const MOCK_ADMIN_USERS: AdminUser[] = [
+  {
+    id: "USR-001",
+    name: "Maya Fernandez",
+    email: "maya.fernandez@tecdia.com",
+    role: "admin",
+    status: "active",
+    shift: "Morning",
+    lastActiveAt: "2026-04-19T10:48:00",
+    handledTransactions: 128,
+    scope: "Full admin access, analytics, menu, users, employees",
+  },
+  {
+    id: "USR-002",
+    name: "Noel Ramos",
+    email: "noel.ramos@tecdia.com",
+    role: "cashier",
+    status: "active",
+    shift: "Lunch",
+    lastActiveAt: "2026-04-19T11:22:00",
+    handledTransactions: 312,
+    scope: "Transaction handling, employee billing, receipt support",
+  },
+  {
+    id: "USR-003",
+    name: "Aileen Cruz",
+    email: "aileen.cruz@tecdia.com",
+    role: "cashier",
+    status: "invited",
+    shift: "Evening",
+    lastActiveAt: "2026-04-18T16:05:00",
+    handledTransactions: 48,
+    scope: "Cashier tools and account-assisted payments",
+  },
+];
 
 // ---- EMPLOYEES ----
 export const MOCK_EMPLOYEES: Employee[] = [
@@ -24,6 +61,12 @@ export const MOCK_EMPLOYEES: Employee[] = [
     avatar: null,
     accountBalance: 1250.0,
     joinDate: "2024-03-15",
+    status: "active",
+    totalTransactions: 3,
+    totalSpent: 590,
+    lastTransactionAt: "2026-04-15T12:30:00",
+    primaryPaymentMethod: "account",
+    assignedCashierId: "USR-002",
   },
   {
     id: "EMP-002",
@@ -33,6 +76,12 @@ export const MOCK_EMPLOYEES: Employee[] = [
     avatar: null,
     accountBalance: 680.5,
     joinDate: "2024-06-01",
+    status: "active",
+    totalTransactions: 1,
+    totalSpent: 200,
+    lastTransactionAt: "2026-04-15T12:15:00",
+    primaryPaymentMethod: "immediate",
+    assignedCashierId: "USR-002",
   },
   {
     id: "EMP-003",
@@ -42,6 +91,12 @@ export const MOCK_EMPLOYEES: Employee[] = [
     avatar: null,
     accountBalance: 0,
     joinDate: "2023-11-20",
+    status: "active",
+    totalTransactions: 1,
+    totalSpent: 250,
+    lastTransactionAt: "2026-04-15T12:50:00",
+    primaryPaymentMethod: "account",
+    assignedCashierId: "USR-001",
   },
   {
     id: "EMP-004",
@@ -51,6 +106,12 @@ export const MOCK_EMPLOYEES: Employee[] = [
     avatar: null,
     accountBalance: 320.0,
     joinDate: "2025-01-10",
+    status: "on_leave",
+    totalTransactions: 0,
+    totalSpent: 0,
+    lastTransactionAt: null,
+    primaryPaymentMethod: null,
+    assignedCashierId: "USR-003",
   },
   {
     id: "EMP-005",
@@ -60,6 +121,12 @@ export const MOCK_EMPLOYEES: Employee[] = [
     avatar: null,
     accountBalance: 1890.0,
     joinDate: "2023-08-05",
+    status: "inactive",
+    totalTransactions: 0,
+    totalSpent: 0,
+    lastTransactionAt: null,
+    primaryPaymentMethod: null,
+    assignedCashierId: "USR-001",
   },
 ];
 
@@ -80,11 +147,18 @@ export const MOCK_MENU_ITEMS: MenuItem[] = [
 ];
 
 // ---- MOCK TRANSACTION HISTORY ----
+function daysAgo(n: number): string {
+  const d = new Date();
+  d.setDate(d.getDate() - n);
+  d.setHours(12, 30, 0, 0);
+  return d.toISOString();
+}
+
 export const MOCK_TRANSACTIONS: Transaction[] = [
   {
     id: "TXN-0041",
     employeeId: "EMP-001",
-    date: "2026-04-15T12:30:00",
+    date: daysAgo(0), // today
     items: [
       { name: "Paneer Butter Masala", qty: 1, price: 120 },
       { name: "Jeera Rice", qty: 1, price: 60 },
@@ -97,7 +171,7 @@ export const MOCK_TRANSACTIONS: Transaction[] = [
   {
     id: "TXN-0040",
     employeeId: "EMP-001",
-    date: "2026-04-14T12:45:00",
+    date: daysAgo(1), // yesterday
     items: [
       { name: "Chicken Biryani", qty: 1, price: 180 },
       { name: "Raita", qty: 1, price: 30 },
@@ -109,7 +183,7 @@ export const MOCK_TRANSACTIONS: Transaction[] = [
   {
     id: "TXN-0039",
     employeeId: "EMP-001",
-    date: "2026-04-13T13:00:00",
+    date: daysAgo(2),
     items: [
       { name: "Dal Tadka", qty: 1, price: 80 },
       { name: "Butter Naan", qty: 2, price: 60 },
@@ -122,7 +196,7 @@ export const MOCK_TRANSACTIONS: Transaction[] = [
   {
     id: "TXN-0038",
     employeeId: "EMP-002",
-    date: "2026-04-15T12:15:00",
+    date: daysAgo(0), // today
     items: [
       { name: "Mixed Veg Curry", qty: 1, price: 100 },
       { name: "Jeera Rice", qty: 1, price: 60 },
@@ -135,7 +209,7 @@ export const MOCK_TRANSACTIONS: Transaction[] = [
   {
     id: "TXN-0037",
     employeeId: "EMP-003",
-    date: "2026-04-15T12:50:00",
+    date: daysAgo(0), // today
     items: [
       { name: "Chicken Biryani", qty: 1, price: 180 },
       { name: "Gulab Jamun (2 pcs)", qty: 1, price: 50 },

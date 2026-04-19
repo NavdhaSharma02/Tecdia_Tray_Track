@@ -8,6 +8,7 @@
  */
 
 import type {
+  AdminUser,
   AuthCustomer,
   Employee,
   MenuItem,
@@ -24,6 +25,7 @@ import {
   fetchEmployeeTransactions,
   submitPayment as mockSubmitPayment,
   MOCK_ADMIN_STATS,
+  MOCK_ADMIN_USERS,
   MOCK_EMPLOYEES,
   MOCK_TRANSACTIONS,
 } from "@/lib/mock-data";
@@ -235,6 +237,11 @@ export async function getAllEmployees(): Promise<ApiResponse<Employee[]>> {
   // TODO: Replace with real endpoint → GET ${API_BASE}/employees
   await new Promise((r) => setTimeout(r, 400));
   return { ok: true, data: MOCK_EMPLOYEES };
+}
+
+export async function getAdminUsers(): Promise<ApiResponse<AdminUser[]>> {
+  await new Promise((r) => setTimeout(r, 350));
+  return { ok: true, data: MOCK_ADMIN_USERS };
 }
 
 /** Fetch all transactions for admin panel */

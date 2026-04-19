@@ -1,6 +1,7 @@
 "use client";
 
 import UserTable from "@/components/admin/UserTable";
+import Card from "@/components/ui/Card";
 
 /**
  * Admin — User Management page.
@@ -16,12 +17,38 @@ export default function AdminUsersPage() {
             color: "var(--text-primary)",
           }}
         >
-          User Management
+          User Access
         </h1>
         <p style={{ fontSize: "14px", color: "var(--text-muted)", marginTop: "4px" }}>
-          View and manage employee accounts
+          Manage admins and cashiers with different access levels
         </p>
       </div>
+      <Card variant="glass" className="mb-6">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: "16px",
+          }}
+        >
+          <div>
+            <p style={{ fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--text-muted)", marginBottom: "6px" }}>
+              Admin Access
+            </p>
+            <p style={{ fontSize: "15px", color: "var(--text-primary)", fontWeight: 600 }}>
+              Full visibility into analytics, menu control, users, employees, and transactions.
+            </p>
+          </div>
+          <div>
+            <p style={{ fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--text-muted)", marginBottom: "6px" }}>
+              Cashier Access
+            </p>
+            <p style={{ fontSize: "15px", color: "var(--text-primary)", fontWeight: 600 }}>
+              Focused access for handling payments, account balances, receipts, and transaction support.
+            </p>
+          </div>
+        </div>
+      </Card>
       <UserTable />
     </div>
   );

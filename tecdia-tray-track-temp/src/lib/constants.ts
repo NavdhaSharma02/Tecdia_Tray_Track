@@ -15,7 +15,7 @@ export const FLOW_STEP_LABELS: Record<string, { label: string; icon: string }> =
   IDLE: { label: "Identify", icon: "1" },
   EMAIL_AUTH: { label: "Login", icon: "2" },
   SCANNING: { label: "Scan Tray", icon: "3" },
-  RESULTS: { label: "Bill", icon: "4" },
+  BILL: { label: "Bill", icon: "4" },
   PAYMENT: { label: "Payment", icon: "5" },
   DONE: { label: "Done", icon: "✓" },
 };

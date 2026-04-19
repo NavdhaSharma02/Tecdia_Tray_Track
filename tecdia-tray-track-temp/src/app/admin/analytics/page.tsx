@@ -13,6 +13,11 @@ interface RankedDish {
   revenue: number;
 }
 
+interface DailyRevenuePoint {
+  label: string;
+  revenue: number;
+}
+
 interface AnalyticsReportData {
   generatedAt: string;
   revenueToday: number;
@@ -43,6 +48,67 @@ function isSameMonth(date: Date, reference: Date): boolean {
     date.getFullYear() === reference.getFullYear() &&
     date.getMonth() === reference.getMonth()
   );
+}
+
+function buildDailyRevenueTrend(transactions: Transaction[]): DailyRevenuePoint[] {
+  const now = new Date();
+  const points: DailyRevenuePoint[] = [];
+
+  for (let offset = 6; offset >= 0; offset -= 1) {
+    const date = new Date(now);
+    date.setDate(now.getDate() - offset);
+
+    const revenue = transactions
+      .filter((txn) => txn.status === "completed" && isSameDay(new Date(txn.date), date))
+      .reduce((sum, txn) => sum + txn.total, 0);
+
+    points.push({
+      label: date.toLocaleDateString("en-IN", { weekday: "short" }),
+      revenue,
+    });
+  }
+
+  return points;
+}
+
+function buildMonthlyRevenueTrend(transactions: Transaction[]): DailyRevenuePoint[] {
+  const now = new Date();
+  const points: DailyRevenuePoint[] = [];
+
+  for (let offset = 11; offset >= 0; offset -= 1) {
+    const date = new Date(now.getFullYear(), now.getMonth() - offset, 1);
+    const revenue = transactions
+      .filter((txn) => txn.status === "completed" && isSameMonth(new Date(txn.date), date))
+      .reduce((sum, txn) => sum + txn.total, 0);
+
+    points.push({
+      label: date.toLocaleDateString("en-IN", { month: "short" }),
+      revenue,
+    });
+  }
+
+  return points;
+}
+
+function buildYearlyRevenueTrend(transactions: Transaction[]): DailyRevenuePoint[] {
+  const completed = transactions.filter((txn) => txn.status === "completed");
+  if (!completed.length) {
+    const y = new Date().getFullYear();
+    return [{ label: String(y), revenue: 0 }];
+  }
+
+  const minYear = Math.min(...completed.map((txn) => new Date(txn.date).getFullYear()));
+  const maxYear = new Date().getFullYear();
+  const points: DailyRevenuePoint[] = [];
+
+  for (let yr = minYear; yr <= maxYear; yr++) {
+    const revenue = completed
+      .filter((txn) => new Date(txn.date).getFullYear() === yr)
+      .reduce((sum, txn) => sum + txn.total, 0);
+    points.push({ label: String(yr), revenue });
+  }
+
+  return points;
 }
 
 function buildAnalyticsReport(
@@ -225,6 +291,8 @@ function buildReportCsv(report: AnalyticsReportData): string {
 
 export default function AdminAnalyticsPage() {
   const [stats, setStats] = useState<AdminStats | null>(null);
+  const [dishPieFilter, setDishPieFilter] = useState<"quantity" | "revenue">("revenue");
+  const [globalTimeFilter, setGlobalTimeFilter] = useState<"day" | "month" | "year">("month");
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
@@ -249,6 +317,134 @@ export default function AdminAnalyticsPage() {
   const reportCsv = useMemo(() => buildReportCsv(report), [report]);
   const topItems = report.topItems;
   const maxOrders = Math.max(...topItems.map((item) => item.orders), 1);
+  const revenueTrend = useMemo(() => {
+    if (globalTimeFilter === "month") return buildMonthlyRevenueTrend(transactions);
+    if (globalTimeFilter === "year") return buildYearlyRevenueTrend(transactions);
+    return buildDailyRevenueTrend(transactions);
+  }, [transactions, globalTimeFilter]);
+
+  // Dish bar chart data
+  const dishPieData = useMemo(() => {
+    const now = new Date();
+    const completed = transactions.filter((txn) => {
+      if (txn.status !== "completed") return false;
+      const d = new Date(txn.date);
+      if (globalTimeFilter === "day") return isSameDay(d, now);
+      if (globalTimeFilter === "year") return d.getFullYear() === now.getFullYear();
+      return isSameMonth(d, now);
+    });
+    const dishMap = new Map<string, { name: string; orders: number; revenue: number }>();
+    for (const txn of completed) {
+      for (const item of txn.items) {
+        const cur = dishMap.get(item.name) || { name: item.name, orders: 0, revenue: 0 };
+        cur.orders += item.qty;
+        cur.revenue += item.qty * item.price;
+        dishMap.set(item.name, cur);
+      }
+    }
+    const all = [...dishMap.values()];
+    const sorted = all
+      .sort((a, b) =>
+        dishPieFilter === "revenue" ? b.revenue - a.revenue : b.orders - a.orders
+      )
+      .slice(0, 8);
+    const total = sorted.reduce(
+      (sum, d) => sum + (dishPieFilter === "revenue" ? d.revenue : d.orders),
+      0
+    );
+    return { slices: sorted, total };
+  }, [transactions, dishPieFilter, globalTimeFilter]);
+
+  const PIE_COLORS = [
+    "#C66E5B", // accent
+    "#E7A964", // accent-light
+    "#5CA365", // success
+    "#6B8FD4", // blue
+    "#B87CC4", // purple
+    "#D4A84B", // gold
+    "#5BBDB5", // teal
+    "#D46B6B", // rose
+  ];
+
+  function buildPieGradient(): string {
+    if (!dishPieData.slices.length) return "#e5e5e5";
+    const total = dishPieData.total || 1;
+    let cumulative = 0;
+    const stops: string[] = [];
+    dishPieData.slices.forEach((slice, i) => {
+      const value = dishPieFilter === "revenue" ? slice.revenue : slice.orders;
+      const pct = (value / total) * 100;
+      const start = cumulative;
+      const end = cumulative + pct;
+      stops.push(`${PIE_COLORS[i % PIE_COLORS.length]} ${start.toFixed(1)}% ${end.toFixed(1)}%`);
+      cumulative = end;
+    });
+    return `conic-gradient(${stops.join(", ")})`;
+  }
+  const paymentMethodSplit = useMemo(() => {
+    const completed = transactions.filter((txn) => txn.status === "completed");
+    const immediate = completed.filter((txn) => txn.paymentMethod === "immediate").length;
+    const account = completed.filter((txn) => txn.paymentMethod === "account").length;
+    const total = Math.max(immediate + account, 1);
+
+    return {
+      immediate,
+      account,
+      immediatePct: (immediate / total) * 100,
+      accountPct: (account / total) * 100,
+    };
+  }, [transactions]);
+  const topEmployeeSpenders = useMemo(() => {
+    const now = new Date();
+    const spendByEmployee = new Map<string, number>();
+
+    for (const txn of transactions.filter((txn) => {
+      if (txn.status !== "completed") return false;
+      const d = new Date(txn.date);
+      if (globalTimeFilter === "day") return isSameDay(d, now);
+      if (globalTimeFilter === "year") return d.getFullYear() === now.getFullYear();
+      return isSameMonth(d, now);
+    })) {
+      spendByEmployee.set(txn.employeeId, (spendByEmployee.get(txn.employeeId) || 0) + txn.total);
+    }
+
+    return [...spendByEmployee.entries()]
+      .map(([employeeId, total]) => ({ employeeId, total }))
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 5);
+  }, [transactions, globalTimeFilter]);
+  const overviewStats = [
+    {
+      label: "Revenue Today",
+      value: formatCurrency(report.revenueToday),
+      note: `${report.completedTransactionsToday} completed transactions`,
+      accent: "var(--success)",
+      glow: "rgba(92, 163, 101, 0.18)",
+    },
+    {
+      label: "Revenue This Month",
+      value: formatCurrency(report.revenueMonth),
+      note: `${report.completedTransactionsMonth} completed transactions`,
+      accent: "var(--accent)",
+      glow: "rgba(198, 110, 91, 0.18)",
+    },
+    {
+      label: "Average Meal Cost",
+      value: formatCurrency(report.avgMealCost),
+      note: `${formatCurrency(report.averageOrderValueMonth)} average order value`,
+      accent: "var(--accent-light)",
+      glow: "rgba(231, 169, 100, 0.2)",
+    },
+    {
+      label: "Most In-Demand Dish",
+      value: report.mostDemandedDish?.name || "No demand data yet",
+      note: report.mostDemandedDish
+        ? `${report.mostDemandedDish.orders} orders this month`
+        : "Waiting for completed transactions",
+      accent: "var(--text-primary)",
+      glow: "rgba(255, 255, 255, 0.22)",
+    },
+  ];
 
   function handleDownloadReport() {
     const blob = new Blob([reportCsv], { type: "text/csv;charset=utf-8" });
@@ -265,71 +461,371 @@ export default function AdminAnalyticsPage() {
 
   return (
     <div className="animate-fade-in">
-      <div className="mb-8">
-        <h1
+      <div className="mb-8" style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
+        <div>
+          <h1
+            style={{
+              fontSize: "24px",
+              fontWeight: 700,
+              color: "var(--text-primary)",
+            }}
+          >
+            Analytics
+          </h1>
+          <p style={{ fontSize: "14px", color: "var(--text-muted)", marginTop: "4px" }}>
+            Cafeteria performance insights
+          </p>
+        </div>
+
+        {/* Global Time Filter */}
+        <div
           style={{
-            fontSize: "24px",
-            fontWeight: 700,
-            color: "var(--text-primary)",
+            display: "inline-flex",
+            borderRadius: "24px",
+            overflow: "hidden",
+            border: "1.5px solid var(--border)",
+            background: "rgba(255,255,255,0.6)",
+            boxShadow: "var(--shadow-sm)",
+            alignSelf: "center",
           }}
         >
-          Analytics
-        </h1>
-        <p style={{ fontSize: "14px", color: "var(--text-muted)", marginTop: "4px" }}>
-          Cafeteria performance insights
-        </p>
+          {(["day", "month", "year"] as const).map((opt) => (
+            <button
+              key={opt}
+              id={`global-time-filter-${opt}`}
+              onClick={() => setGlobalTimeFilter(opt)}
+              style={{
+                padding: "8px 20px",
+                fontSize: "13px",
+                fontWeight: 600,
+                border: "none",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                background: globalTimeFilter === opt
+                  ? "linear-gradient(135deg, var(--accent), var(--accent-light))"
+                  : "transparent",
+                color: globalTimeFilter === opt ? "#fff" : "var(--text-secondary)",
+              }}
+            >
+              {opt === "day" ? "Today" : opt === "month" ? "This Month" : "This Year"}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {stats && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <Card variant="glass">
-            <p style={{ fontSize: "13px", color: "var(--text-muted)", marginBottom: "8px" }}>
-              Average Meal Cost
-            </p>
-            <p
-              style={{
-                fontSize: "28px",
-                fontWeight: 800,
-                color: "var(--text-primary)",
-                fontFamily: "var(--font-mono)",
-              }}
-            >
-              {formatCurrency(stats.avgMealCost)}
-            </p>
-          </Card>
-          <Card variant="glass">
-            <p style={{ fontSize: "13px", color: "var(--text-muted)", marginBottom: "8px" }}>
-              Monthly Revenue
-            </p>
-            <p
-              style={{
-                fontSize: "28px",
-                fontWeight: 800,
-                color: "var(--success)",
-                fontFamily: "var(--font-mono)",
-              }}
-            >
-              {formatCurrency(stats.monthlyRevenue)}
-            </p>
-          </Card>
-          <Card variant="glass">
-            <p style={{ fontSize: "13px", color: "var(--text-muted)", marginBottom: "8px" }}>
-              Most Popular
-            </p>
-            <p
-              style={{
-                fontSize: "22px",
-                fontWeight: 700,
-                color: "var(--accent-light)",
-              }}
-            >
-              {stats.popularItem}
-            </p>
-          </Card>
-        </div>
-      )}
+      <div
+        className="mb-8"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+          gap: "16px",
+        }}
+      >
+        {overviewStats.map((item) => (
+          <div
+            key={item.label}
+            className="animate-scale-pop"
+            style={{
+              position: "relative",
+              overflow: "hidden",
+              borderRadius: "28px",
+              padding: "22px 22px 20px",
+              background:
+                "linear-gradient(180deg, rgba(255,255,255,0.8) 0%, rgba(255,248,241,0.72) 100%)",
+              border: "1px solid var(--border)",
+              boxShadow: "var(--shadow-md)",
+              minHeight: "148px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              backdropFilter: "blur(14px)",
+            }}
+          >
 
+            <div>
+              <p
+                style={{
+                  fontSize: "12px",
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  color: "var(--text-muted)",
+                  marginBottom: "12px",
+                  fontWeight: 700,
+                }}
+              >
+                {item.label}
+              </p>
+              <p
+                style={{
+                  fontSize: item.label === "Most In-Demand Dish" ? "24px" : "30px",
+                  lineHeight: 1.05,
+                  fontWeight: 800,
+                  color: item.accent,
+                  fontFamily:
+                    item.label === "Most In-Demand Dish" ? "var(--font-display)" : "var(--font-mono)",
+                  maxWidth: "14ch",
+                }}
+              >
+                {item.value}
+              </p>
+            </div>
+
+            <div
+              style={{
+                marginTop: "18px",
+                paddingTop: "12px",
+                borderTop: "1px solid rgba(154, 90, 78, 0.12)",
+              }}
+            >
+              <p style={{ fontSize: "13px", color: "var(--text-secondary)", fontWeight: 500 }}>
+                {item.note}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+
+      <div className="mb-8">
+        <Card variant="glass">
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: "12px",
+              flexWrap: "wrap",
+              marginBottom: "20px",
+            }}
+          >
+            <div>
+              <h3 style={{ fontSize: "18px", fontWeight: 700, color: "var(--text-primary)" }}>
+                Revenue Trend
+              </h3>
+              <p style={{ fontSize: "13px", color: "var(--text-muted)", marginTop: "4px" }}>
+                {globalTimeFilter === "day"
+                  ? "Completed transaction revenue over the last 7 days"
+                  : globalTimeFilter === "month"
+                    ? "Completed transaction revenue over the last 12 months"
+                    : "Completed transaction revenue by year"}
+              </p>
+            </div>
+
+            <p style={{ fontSize: "13px", color: "var(--text-secondary)", fontFamily: "var(--font-mono)" }}>
+              Peak: {formatCurrency(Math.max(...revenueTrend.map((point) => point.revenue), 0))}
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${revenueTrend.length}, minmax(0, 1fr))`,
+              alignItems: "end",
+              gap: "12px",
+              minHeight: "240px",
+            }}
+          >
+            {revenueTrend.map((point) => {
+              const maxRevenue = Math.max(...revenueTrend.map((entry) => entry.revenue), 1);
+              const height = Math.max((point.revenue / maxRevenue) * 180, point.revenue > 0 ? 18 : 8);
+
+              return (
+                <div
+                  key={point.label}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "flex-end",
+                    gap: "10px",
+                    minWidth: 0,
+                  }}
+                >
+                  <span style={{ fontSize: "11px", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
+                    {formatCurrency(point.revenue)}
+                  </span>
+                  <div
+                    style={{
+                      width: "100%",
+                      maxWidth: "56px",
+                      height: `${height}px`,
+                      borderRadius: "18px 18px 8px 8px",
+                      background: "linear-gradient(180deg, var(--accent-light), var(--accent))",
+                      boxShadow: "var(--shadow-sm)",
+                    }}
+                  />
+                  <span style={{ fontSize: "12px", color: "var(--text-secondary)", fontWeight: 600 }}>
+                    {point.label}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      </div>
+
+
+      {/* Revenue by Dish Pie Chart */}
       <Card variant="glass" className="mb-8">
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            gap: "12px",
+            marginBottom: "20px",
+          }}
+        >
+          <div>
+            <h3 style={{ fontSize: "18px", fontWeight: 700, color: "var(--text-primary)" }}>
+              Sales Breakdown by Dish
+            </h3>
+            <p style={{ fontSize: "13px", color: "var(--text-muted)", marginTop: "4px" }}>
+              Top dishes {globalTimeFilter === "day" ? "today" : globalTimeFilter === "month" ? "this month" : "this year"} — toggle to compare by quantity or revenue
+            </p>
+          </div>
+
+          {/* Revenue/Quantity Filter Toggle */}
+          <div
+            style={{
+              display: "inline-flex",
+              borderRadius: "24px",
+              overflow: "hidden",
+              border: "1.5px solid var(--border)",
+              background: "rgba(255,255,255,0.5)",
+            }}
+          >
+            {(["revenue", "quantity"] as const).map((opt) => (
+              <button
+                key={opt}
+                id={`dish-pie-filter-${opt}`}
+                onClick={() => setDishPieFilter(opt)}
+                style={{
+                  padding: "7px 18px",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  border: "none",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  background:
+                    dishPieFilter === opt
+                      ? "linear-gradient(135deg, var(--accent), var(--accent-light))"
+                      : "transparent",
+                  color: dishPieFilter === opt ? "#fff" : "var(--text-secondary)",
+                  letterSpacing: "0.04em",
+                }}
+              >
+                {opt === "revenue" ? "By Revenue" : "By Quantity"}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {dishPieData.slices.length === 0 ? (
+          <p style={{ fontSize: "14px", color: "var(--text-muted)", textAlign: "center", padding: "40px 0" }}>
+            No completed transaction data available yet.
+          </p>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {dishPieData.slices.map((slice) => {
+              const value = dishPieFilter === "revenue" ? slice.revenue : slice.orders;
+              const maxValue = Math.max(
+                ...dishPieData.slices.map((s) =>
+                  dishPieFilter === "revenue" ? s.revenue : s.orders
+                ),
+                1
+              );
+              return (
+                <div key={slice.name}>
+                  <div className="flex items-center justify-between mb-2">
+                    <span style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)" }}>
+                      {slice.name}
+                    </span>
+                    <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-secondary)", fontFamily: "var(--font-mono)" }}>
+                      {dishPieFilter === "revenue" ? formatCurrency(value) : `${value} qty`}
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "8px",
+                      background: "var(--bg-secondary)",
+                      borderRadius: "4px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${(value / maxValue) * 100}%`,
+                        height: "100%",
+                        background: "linear-gradient(90deg, var(--accent), var(--accent-light))",
+                        borderRadius: "4px",
+                        transition: "width 0.4s ease",
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </Card>
+
+      <Card variant="glass">
+        <h3
+          style={{
+            fontSize: "16px",
+            fontWeight: 600,
+            color: "var(--text-primary)",
+            marginBottom: "20px",
+          }}
+        >
+          Top Employee Spend
+        </h3>
+        <div className="flex flex-col gap-4">
+          {topEmployeeSpenders.map((employee) => {
+            const maxTotal = Math.max(...topEmployeeSpenders.map((entry) => entry.total), 1);
+            return (
+              <div key={employee.employeeId}>
+                <div className="flex items-center justify-between mb-2">
+                  <span style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)" }}>
+                    {employee.employeeId}
+                  </span>
+                  <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-secondary)", fontFamily: "var(--font-mono)" }}>
+                    {formatCurrency(employee.total)}
+                  </span>
+                </div>
+                <div
+                  style={{
+                    width: "100%",
+                    height: "8px",
+                    background: "var(--bg-secondary)",
+                    borderRadius: "4px",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: `${(employee.total / maxTotal) * 100}%`,
+                      height: "100%",
+                      background: "linear-gradient(90deg, var(--success), var(--accent-light))",
+                      borderRadius: "4px",
+                    }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+          {!topEmployeeSpenders.length && (
+            <p style={{ fontSize: "14px", color: "var(--text-muted)" }}>
+              No completed transaction data is available yet for employee spend charts.
+            </p>
+          )}
+        </div>
+      </Card>
+
+      <Card variant="glass" className="mt-8">
         <div
           style={{
             display: "flex",
@@ -415,70 +911,6 @@ export default function AdminAnalyticsPage() {
           }}
         >
           {reportText}
-        </div>
-      </Card>
-
-      <Card variant="default" className="mb-8">
-        <h3
-          style={{
-            fontSize: "16px",
-            fontWeight: 600,
-            color: "var(--text-primary)",
-            marginBottom: "20px",
-          }}
-        >
-          Top Items by Orders
-        </h3>
-        <div className="flex flex-col gap-4">
-          {topItems.map((item) => (
-            <div key={item.name}>
-              <div className="flex items-center justify-between mb-2">
-                <span
-                  style={{
-                    fontSize: "14px",
-                    fontWeight: 500,
-                    color: "var(--text-primary)",
-                  }}
-                >
-                  {item.name}
-                </span>
-                <span
-                  style={{
-                    fontSize: "13px",
-                    fontWeight: 600,
-                    color: "var(--text-secondary)",
-                    fontFamily: "var(--font-mono)",
-                  }}
-                >
-                  {item.orders} orders
-                </span>
-              </div>
-              <div
-                style={{
-                  width: "100%",
-                  height: "8px",
-                  background: "var(--bg-secondary)",
-                  borderRadius: "4px",
-                  overflow: "hidden",
-                }}
-              >
-                <div
-                  style={{
-                    width: `${(item.orders / maxOrders) * 100}%`,
-                    height: "100%",
-                    background: "linear-gradient(90deg, var(--accent), var(--accent-light))",
-                    borderRadius: "4px",
-                    transition: "width 0.5s ease",
-                  }}
-                />
-              </div>
-            </div>
-          ))}
-          {!topItems.length && (
-            <p style={{ fontSize: "14px", color: "var(--text-muted)" }}>
-              No completed transaction data is available yet for the item ranking.
-            </p>
-          )}
         </div>
       </Card>
     </div>

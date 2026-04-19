@@ -13,11 +13,16 @@ import { DONE_REDIRECT_MS } from "@/lib/constants";
 export default function DoneScreen() {
   const { receipt, reset } = useCustomerFlow();
   const [countdown, setCountdown] = useState(Math.ceil(DONE_REDIRECT_MS / 1000));
+  const [isPrinting, setIsPrinting] = useState(false);
 
   // Auto-redirect countdown
   useEffect(() => {
     const timer = setInterval(() => {
       setCountdown((prev) => {
+        if (isPrinting) {
+          return prev;
+        }
+
         if (prev <= 1) {
           clearInterval(timer);
           void reset();
@@ -28,7 +33,28 @@ export default function DoneScreen() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [reset]);
+  }, [isPrinting, reset]);
+
+  useEffect(() => {
+    const handleBeforePrint = () => setIsPrinting(true);
+    const handleAfterPrint = () => setIsPrinting(false);
+
+    window.addEventListener("beforeprint", handleBeforePrint);
+    window.addEventListener("afterprint", handleAfterPrint);
+
+    return () => {
+      window.removeEventListener("beforeprint", handleBeforePrint);
+      window.removeEventListener("afterprint", handleAfterPrint);
+    };
+  }, []);
+
+  const handlePrintBill = () => {
+    setIsPrinting(true);
+    window.print();
+    setTimeout(() => {
+      setIsPrinting(false);
+    }, 300);
+  };
 
   return (
     <div
@@ -196,15 +222,26 @@ export default function DoneScreen() {
           marginBottom: "16px",
         }}
       >
-        Returning to home in{" "}
-        <span style={{ color: "var(--accent-light)", fontWeight: 600 }}>
-          {countdown}s
-        </span>
+        {isPrinting ? (
+          "Print dialog open. Auto-return is paused."
+        ) : (
+          <>
+            Returning to home in{" "}
+            <span style={{ color: "var(--accent-light)", fontWeight: 600 }}>
+              {countdown}s
+            </span>
+          </>
+        )}
       </p>
 
-      <Button variant="outline" size="lg" onClick={() => void reset()}>
-        Done
-      </Button>
+      <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", justifyContent: "center" }}>
+        <Button variant="primary" size="lg" onClick={handlePrintBill}>
+          Print Bill
+        </Button>
+        <Button variant="outline" size="lg" onClick={() => void reset()}>
+          Done
+        </Button>
+      </div>
     </div>
   );
 }

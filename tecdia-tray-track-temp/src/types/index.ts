@@ -8,12 +8,14 @@ export type FlowStep =
   | "EMAIL_AUTH"
   | "PROFILE"
   | "SCANNING"
-  | "RESULTS"
+  | "BILL"
   | "PAYMENT"
   | "DONE";
 
 /** Payment method options */
 export type PaymentMethod = 'immediate' | 'account';
+
+export type AdminRole = "admin" | "cashier";
 
 /** Employee record */
 export interface Employee {
@@ -24,7 +26,25 @@ export interface Employee {
   avatar: string | null;
   accountBalance: number;
   joinDate: string;
+  status?: "active" | "on_leave" | "inactive";
+  totalTransactions?: number;
+  totalSpent?: number;
+  lastTransactionAt?: string | null;
+  primaryPaymentMethod?: PaymentMethod | null;
+  assignedCashierId?: string | null;
 }
+
+export interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  role: AdminRole;
+  status: "active" | "invited" | "suspended";
+  shift: string;
+  lastActiveAt: string;
+  handledTransactions: number;
+  scope: string;
+ }
 
 /** Menu item in the cafeteria */
 export interface MenuItem {

@@ -9,6 +9,7 @@ import TecdiaLogo from "@/components/layout/TecdiaLogo";
 const navItems = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/users", label: "Users" },
+  { href: "/admin/employees", label: "Employees" },
   { href: "/admin/menu", label: "Menu Items" },
   { href: "/admin/transactions", label: "Transactions" },
   { href: "/admin/analytics", label: "Analytics" },

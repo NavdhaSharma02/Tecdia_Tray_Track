@@ -59,7 +59,7 @@ function flowReducer(
     case "SCAN_COMPLETE":
       return {
         ...state,
-        step: "RESULTS",
+        step: "BILL",
         scannedItems: action.payload,
         isLoading: false,
         error: null,

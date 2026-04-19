@@ -1,78 +1,103 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Card from "@/components/ui/Card";
 import Badge from "@/components/ui/Badge";
-import { formatCurrency, getInitials } from "@/lib/utils";
+import { formatDateTime, getInitials } from "@/lib/utils";
 import * as api from "@/services/api";
-import type { Employee } from "@/types";
+import type { AdminUser } from "@/types";
 
 /**
- * Admin user management table.
+ * Admin access management table for system users like admins and cashiers.
  */
 export default function UserTable() {
-  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [users, setUsers] = useState<AdminUser[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<"all" | "admin" | "cashier">("all");
 
   useEffect(() => {
-    api.getAllEmployees().then((res) => {
-      if (res.ok && res.data) setEmployees(res.data);
+    api.getAdminUsers().then((res) => {
+      if (res.ok && res.data) setUsers(res.data);
       setLoading(false);
     });
   }, []);
 
-  const filtered = employees.filter(
-    (emp) =>
-      emp.name.toLowerCase().includes(search.toLowerCase()) ||
-      emp.id.toLowerCase().includes(search.toLowerCase()) ||
-      emp.department.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = users.filter((user) => {
+    const matchesRole = filter === "all" || user.role === filter;
+    const matchesSearch =
+      user.name.toLowerCase().includes(search.toLowerCase()) ||
+      user.id.toLowerCase().includes(search.toLowerCase()) ||
+      user.email.toLowerCase().includes(search.toLowerCase()) ||
+      user.shift.toLowerCase().includes(search.toLowerCase());
+
+    return matchesRole && matchesSearch;
+  });
 
   return (
     <div>
-      {/* Search */}
-      <div className="mb-4">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: "12px",
+          flexWrap: "wrap",
+          marginBottom: "16px",
+        }}
+      >
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by name, ID, or department..."
+          placeholder="Search by name, ID, email, or shift..."
           className="input"
           style={{ maxWidth: "400px" }}
         />
+        <div className="flex items-center gap-2">
+          {(["all", "admin", "cashier"] as const).map((role) => (
+            <button
+              key={role}
+              onClick={() => setFilter(role)}
+              className={`btn ${filter === role ? "btn-primary" : "btn-outline"} btn-sm`}
+            >
+              {role === "all" ? "All Access" : role === "admin" ? "Admins" : "Cashiers"}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Table */}
       <div className="table-container">
         <table>
           <thead>
             <tr>
-              <th>Employee</th>
+              <th>User</th>
               <th>ID</th>
-              <th>Department</th>
+              <th>Role</th>
               <th>Email</th>
-              <th>Balance</th>
+              <th>Shift</th>
+              <th>Handled Transactions</th>
+              <th>Last Active</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               Array.from({ length: 3 }).map((_, i) => (
                 <tr key={i}>
-                  <td colSpan={5}>
+                  <td colSpan={8}>
                     <div className="animate-shimmer" style={{ height: "20px", borderRadius: "4px" }} />
                   </td>
                 </tr>
               ))
             ) : filtered.length === 0 ? (
               <tr>
-                <td colSpan={5} style={{ textAlign: "center", color: "var(--text-muted)", padding: "32px" }}>
-                  No employees found
+                <td colSpan={8} style={{ textAlign: "center", color: "var(--text-muted)", padding: "32px" }}>
+                  No admin users found
                 </td>
               </tr>
             ) : (
-              filtered.map((emp) => (
-                <tr key={emp.id}>
+              filtered.map((user) => (
+                <tr key={user.id}>
                   <td>
                     <div className="flex items-center gap-3">
                       <div
@@ -90,30 +115,50 @@ export default function UserTable() {
                           flexShrink: 0,
                         }}
                       >
-                        {getInitials(emp.name)}
+                        {getInitials(user.name)}
                       </div>
-                      <span style={{ fontWeight: 500 }}>{emp.name}</span>
+                      <div>
+                        <div style={{ fontWeight: 600 }}>{user.name}</div>
+                        <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>{user.scope}</div>
+                      </div>
                     </div>
                   </td>
                   <td>
                     <span style={{ fontFamily: "var(--font-mono)", fontSize: "13px" }}>
-                      {emp.id}
+                      {user.id}
                     </span>
                   </td>
                   <td>
-                    <Badge variant="accent">{emp.department}</Badge>
+                    <Badge variant={user.role === "admin" ? "danger" : "warning"}>
+                      {user.role === "admin" ? "Admin Access" : "Cashier Access"}
+                    </Badge>
                   </td>
-                  <td style={{ color: "var(--text-secondary)" }}>{emp.email}</td>
+                  <td style={{ color: "var(--text-secondary)" }}>{user.email}</td>
+                  <td>{user.shift}</td>
                   <td>
                     <span
                       style={{
                         fontFamily: "var(--font-mono)",
                         fontWeight: 600,
-                        color: emp.accountBalance > 0 ? "var(--success)" : "var(--text-muted)",
+                        color: "var(--text-primary)",
                       }}
                     >
-                      {formatCurrency(emp.accountBalance)}
+                      {user.handledTransactions}
                     </span>
+                  </td>
+                  <td style={{ color: "var(--text-secondary)" }}>{formatDateTime(user.lastActiveAt)}</td>
+                  <td>
+                    <Badge
+                      variant={
+                        user.status === "active"
+                          ? "success"
+                          : user.status === "invited"
+                            ? "warning"
+                            : "danger"
+                      }
+                    >
+                      {user.status}
+                    </Badge>
                   </td>
                 </tr>
               ))

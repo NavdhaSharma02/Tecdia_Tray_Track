@@ -40,25 +40,9 @@ export default function Header({
   }, []);
 
   return (
-    <header
-      style={{
-        position: "fixed",
-        top: 10,
-        left: 14,
-        right: 14,
-        zIndex: 50,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        padding: "10px 18px",
-        background: "rgba(255, 245, 240, 0.58)",
-        backdropFilter: "blur(16px)",
-        borderBottom: "1px solid var(--border)",
-        borderRadius: "999px",
-        boxShadow: "0 12px 24px rgba(86, 42, 34, 0.1)",
-      }}
-    >
-      <div className="flex items-center gap-2">
+    <header className="app-header">
+      <div className="app-header__inner">
+        <div className="app-header__brand">
         {showBack && onBack && (
           <button
             onClick={onBack}
@@ -90,44 +74,24 @@ export default function Header({
             {APP_NAME}
           </span>
         </Link>
-      </div>
+        </div>
 
-      <div
-        style={{
-          position: "absolute",
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: "min(100%, 470px)",
-          pointerEvents: "none",
-        }}
-      >
-        <div style={{ pointerEvents: "auto" }}>
+        <div className="app-header__stepper">
           <FlowStepper currentStep={step} compact embedded />
         </div>
-      </div>
 
-      <div className="flex items-center gap-3">
-        <span
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: "12px",
-            color: "var(--text-secondary)",
-            background: "rgba(255, 248, 244, 0.68)",
-            padding: "6px 11px",
-            borderRadius: "999px",
-          }}
-        >
-          {time}
-        </span>
-        {showAdmin && (
-          <Link
-            href="/admin/login"
-            className="btn btn-ghost btn-sm"
-            style={{ fontSize: "12px" }}
-          >
-            Admin
-          </Link>
-        )}
+        <div className="app-header__actions">
+          <span className="app-header__time">{time}</span>
+          {showAdmin && (
+            <Link
+              href="/admin/login"
+              className="btn btn-ghost btn-sm"
+              style={{ fontSize: "12px" }}
+            >
+              Admin
+            </Link>
+          )}
+        </div>
       </div>
     </header>
   );

@@ -24,7 +24,7 @@ export default function CustomerPage() {
         {step === "EMAIL_AUTH" && <EmailAuthScreen />}
 
         {step === "SCANNING" && <TrayScanView />}
-        {step === "RESULTS" && <FoodResults />}
+        {step === "BILL" && <FoodResults />}
         {step === "PAYMENT" && <PaymentScreen />}
         {step === "DONE" && <DoneScreen />}
       </div>
