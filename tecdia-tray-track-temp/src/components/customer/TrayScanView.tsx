@@ -1,6 +1,7 @@
 "use client";
+import type React from "react";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useCustomerFlow } from "@/hooks/useCustomerFlow";
 import { useCamera } from "@/hooks/useCamera";
 import ScanOverlay from "@/components/camera/ScanOverlay";
@@ -11,24 +12,49 @@ import * as api from "@/services/api";
 import type { ScannedItem } from "@/types";
 
 /**
- * Tray Scanning step — live camera feed with scan overlay. No emojis.
+ * Tray Scanning step — auto-scans on mount, just like the ID scan step.
+ * No button press required. Falls back to mock data if camera/backend unavailable.
  */
 export default function TrayScanView() {
   const { completeScan, setError, reset } = useCustomerFlow();
   const { videoRef, isReady, error: camError, start, stop, captureFrame } = useCamera();
+
   const [isScanning, setIsScanning] = useState(false);
   const [progress, setProgress] = useState(0);
   const [detectedItems, setDetectedItems] = useState<ScannedItem[]>([]);
+
   const progressRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const secondaryVideoRef = useRef<HTMLVideoElement>(null);
+  const hasScanned = useRef(false);
 
   const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+  // Start camera on mount
   useEffect(() => {
     start();
     return () => stop();
   }, [start, stop]);
 
-  const handleScan = useCallback(async () => {
+  // Mirror camera stream into the scan-card video when scanning starts
+  useEffect(() => {
+    if (isScanning && secondaryVideoRef.current && videoRef.current?.srcObject) {
+      secondaryVideoRef.current.srcObject = videoRef.current.srcObject;
+      void secondaryVideoRef.current.play().catch(() => {});
+    }
+  }, [isScanning, videoRef]);
+
+  // Cleanup interval on unmount
+  useEffect(() => {
+    return () => {
+      if (progressRef.current) clearInterval(progressRef.current);
+    };
+  }, []);
+
+  // Core scan function — NOT wrapped in useCallback to avoid stale closure issues
+  async function runScan() {
+    if (hasScanned.current) return;
+    hasScanned.current = true;
+
     setIsScanning(true);
     setProgress(0);
     setDetectedItems([]);
@@ -45,7 +71,7 @@ export default function TrayScanView() {
       try {
         imageBlob = await captureFrame();
       } catch {
-        // Camera might not be ready
+        // Camera not ready — scan continues with mock data fallback
       }
 
       const result = await api.scanTray(imageBlob);
@@ -58,7 +84,6 @@ export default function TrayScanView() {
           setDetectedItems((prev) => [...prev, item]);
           await wait(350);
         }
-
         await wait(700);
         stop();
         completeScan(result.data);
@@ -67,6 +92,7 @@ export default function TrayScanView() {
         setIsScanning(false);
         setProgress(0);
         setDetectedItems([]);
+        hasScanned.current = false; // allow retry
       }
     } catch {
       if (progressRef.current) clearInterval(progressRef.current);
@@ -74,13 +100,18 @@ export default function TrayScanView() {
       setIsScanning(false);
       setProgress(0);
       setDetectedItems([]);
+      hasScanned.current = false; // allow retry
     }
-  }, [captureFrame, completeScan, setError, stop]);
+  }
 
+  // AUTO-TRIGGER on mount — same as ID scan (fires after 1.5s)
   useEffect(() => {
-    return () => {
-      if (progressRef.current) clearInterval(progressRef.current);
-    };
+    const timer = setTimeout(() => {
+      void runScan();
+    }, 1500);
+    return () => clearTimeout(timer);
+  // runScan is defined in render scope; intentional omission to avoid re-firing
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -111,18 +142,19 @@ export default function TrayScanView() {
         {isScanning ? "Scanning Your Tray..." : "Position Your Tray"}
       </h2>
 
-      {/* Camera container */}
+      {/* Camera container — hidden while scanning so stream stays alive for captureFrame */}
       <div
         style={{
           position: "relative",
           width: "100%",
           aspectRatio: "16/10",
-          borderRadius: "var(--radius-lg)",
+          borderRadius: "20px",
           overflow: "hidden",
           background: "var(--bg-elevated)",
           border: `2px solid ${isScanning ? "var(--success)" : "var(--border)"}`,
           transition: "border-color 0.3s ease",
           boxShadow: isScanning ? "var(--shadow-success-glow)" : "var(--shadow-md)",
+          display: isScanning ? "none" : "block",
         }}
       >
         {camError ? (
@@ -186,7 +218,7 @@ export default function TrayScanView() {
         )}
       </div>
 
-      {/* Progress bar */}
+      {/* Progress bar (shown below camera while scanning) */}
       {isScanning && (
         <div
           style={{
@@ -210,7 +242,7 @@ export default function TrayScanView() {
         </div>
       )}
 
-      {/* Scan button */}
+      {/* Manual scan button — shown only before auto-scan fires or as retry */}
       {!isScanning && (
         <div
           className="mt-6 flex flex-col items-center gap-3"
@@ -219,8 +251,7 @@ export default function TrayScanView() {
           <Button
             variant="primary"
             size="md"
-            onClick={handleScan}
-            disabled={!isReady}
+            onClick={() => void runScan()}
             style={{ width: "100%", fontSize: "14px" }}
           >
             Scan Tray
@@ -236,177 +267,192 @@ export default function TrayScanView() {
         </div>
       )}
 
+      {/* ── Scanning overlay: ONE unified card ── */}
       {isScanning && (
         <div
           style={{
             position: "fixed",
             inset: 0,
             zIndex: 120,
-            background:
-              "linear-gradient(180deg, rgba(24, 18, 16, 0.9), rgba(53, 37, 32, 0.9))",
-            backdropFilter: "blur(14px)",
+            background: "rgba(20, 14, 12, 0.55)",
+            backdropFilter: "blur(16px)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            padding: "24px",
+            padding: "20px",
           }}
         >
           <div
             className="animate-fade-in"
             style={{
-              width: "min(100%, 960px)",
-              minHeight: "min(82vh, 760px)",
-              borderRadius: "38px",
-              background:
-                "linear-gradient(180deg, rgba(255, 249, 245, 0.95), rgba(248, 239, 233, 0.92))",
-              border: "1px solid rgba(255,255,255,0.18)",
-              boxShadow: "0 30px 80px rgba(0,0,0,0.28)",
-              padding: "28px",
-              display: "grid",
-              gridTemplateColumns: "1.1fr 0.9fr",
-              gap: "22px",
+              width: "min(100%, 480px)",
+              maxHeight: "min(90vh, 680px)",
+              borderRadius: "28px",
+              background: "linear-gradient(160deg, #fffaf6 0%, #f8ede4 100%)",
+              border: "1.5px solid rgba(198, 110, 91, 0.18)",
+              boxShadow: "0 24px 64px rgba(0, 0, 0, 0.36)",
+              padding: "28px 24px 24px",
+              display: "flex",
+              flexDirection: "column",
+              gap: "18px",
+              overflow: "hidden",
             }}
           >
+            {/* ── Title row ── */}
+            <div>
+              <p
+                style={{
+                  fontSize: "10px",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: "var(--text-muted)",
+                  fontWeight: 700,
+                  marginBottom: "4px",
+                }}
+              >
+                Tray Scan
+              </p>
+              <h2
+                style={{
+                  fontSize: "22px",
+                  fontWeight: 800,
+                  color: "var(--text-primary)",
+                  lineHeight: 1.2,
+                }}
+              >
+                {detectedItems.length
+                  ? `${detectedItems.length} dish${detectedItems.length === 1 ? "" : "es"} detected`
+                  : "Scanning your tray…"}
+              </h2>
+              <p style={{ fontSize: "13px", color: "var(--text-secondary)", marginTop: "3px" }}>
+                {detectedItems.length
+                  ? "Items are listed as they are recognised."
+                  : "Hold still while the camera processes the tray."}
+              </p>
+            </div>
+
+            {/* ── Camera preview in the scan card ── */}
             <div
               style={{
-                borderRadius: "28px",
                 position: "relative",
-                minHeight: "320px",
-                background:
-                  "radial-gradient(circle at 30% 30%, rgba(190, 121, 101, 0.28), transparent 28%), linear-gradient(180deg, #181210, #2f201c)",
-                border: "1px solid rgba(255,255,255,0.08)",
+                width: "100%",
+                height: "180px",
+                borderRadius: "16px",
+                background: "linear-gradient(135deg, #fdf6ef 0%, #f5e8d8 100%)",
                 overflow: "hidden",
+                flexShrink: 0,
+                border: "1.5px solid rgba(198, 110, 91, 0.22)",
+                boxShadow: "0 4px 20px rgba(198,110,91,0.10)",
               }}
             >
+              {/* Live camera feed */}
+              <video
+                ref={secondaryVideoRef}
+                playsInline
+                muted
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  opacity: 0.82,
+                }}
+              />
+
+              {/* Warm overlay */}
               <div
                 style={{
                   position: "absolute",
                   inset: 0,
+                  background: "linear-gradient(180deg, rgba(253,246,239,0.08) 0%, rgba(245,232,216,0.18) 100%)",
+                  pointerEvents: "none",
+                }}
+              />
+
+              {/* Animated scan line */}
+              <div
+                style={{
+                  position: "absolute",
+                  left: "6%",
+                  right: "6%",
+                  height: "2px",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "linear-gradient(90deg, transparent, var(--accent) 50%, transparent)",
+                  boxShadow: "0 0 14px rgba(198,110,91,0.75)",
+                  animation: "scan-line 1.6s ease-in-out infinite",
+                  zIndex: 5,
+                }}
+              />
+
+              {/* Corner markers */}
+              {([
+                { top: "10px", left: "10px", borderTop: "2px solid var(--accent)", borderLeft: "2px solid var(--accent)", borderRadius: "5px 0 0 0" },
+                { top: "10px", right: "10px", borderTop: "2px solid var(--accent)", borderRight: "2px solid var(--accent)", borderRadius: "0 5px 0 0" },
+                { bottom: "10px", left: "10px", borderBottom: "2px solid var(--accent)", borderLeft: "2px solid var(--accent)", borderRadius: "0 0 0 5px" },
+                { bottom: "10px", right: "10px", borderBottom: "2px solid var(--accent)", borderRight: "2px solid var(--accent)", borderRadius: "0 0 5px 0" },
+              ] satisfies React.CSSProperties[]).map((s, i) => (
+                <div key={i} style={{ position: "absolute", width: "18px", height: "18px", zIndex: 6, ...s }} />
+              ))}
+
+              {/* Status label at bottom */}
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  padding: "28px",
+                  gap: "8px",
+                  padding: "8px 12px",
+                  background: "rgba(253,246,239,0.82)",
+                  backdropFilter: "blur(6px)",
+                  borderTop: "1px solid rgba(198,110,91,0.12)",
+                  zIndex: 7,
                 }}
               >
-                <div
-                  style={{
-                    position: "relative",
-                    width: "100%",
-                    maxWidth: "420px",
-                    aspectRatio: "1 / 1",
-                    borderRadius: "32px",
-                    border: "1px solid rgba(255,255,255,0.16)",
-                    background:
-                      "linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03))",
-                    boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.04)",
-                    overflow: "hidden",
-                  }}
-                >
-                  <div
-                    style={{
-                      position: "absolute",
-                      inset: "16px",
-                      borderRadius: "24px",
-                      border: "1.5px dashed rgba(255,255,255,0.18)",
-                    }}
-                  />
-                  <div
-                    style={{
-                      position: "absolute",
-                      inset: "26px",
-                      borderRadius: "18px",
-                      border: "2px solid rgba(255,255,255,0.12)",
-                    }}
-                  />
-                  <div
-                    style={{
-                      position: "absolute",
-                      left: "12%",
-                      right: "12%",
-                      height: "3px",
-                      top: detectedItems.length ? "72%" : "18%",
-                      background: "linear-gradient(90deg, transparent, #f8ba71, transparent)",
-                      boxShadow: "0 0 18px rgba(248, 186, 113, 0.8)",
-                      animation: "scan-line 1.5s ease-in-out infinite",
-                    }}
-                  />
-                  <div
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexDirection: "column",
-                      textAlign: "center",
-                      color: "rgba(255,255,255,0.9)",
-                      gap: "10px",
-                    }}
-                  >
-                    <Spinner size={34} />
-                    <p style={{ fontSize: "18px", fontWeight: 700 }}>
-                      {detectedItems.length ? "Dish recognition in progress" : "Capturing tray image"}
-                    </p>
-                    <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>
-                      Stay still while the tray contents are processed.
-                    </p>
-                  </div>
-                </div>
+                <Spinner size={14} />
+                <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-primary)" }}>
+                  {detectedItems.length ? "Recognising dishes…" : "Capturing tray image…"}
+                </span>
               </div>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                minWidth: 0,
-              }}
-            >
-              <p
+            {/* ── Progress bar ── */}
+            <div>
+              <div
                 style={{
-                  fontSize: "12px",
-                  letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  color: "var(--text-muted)",
-                  marginBottom: "10px",
-                  fontWeight: 700,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "6px",
                 }}
               >
-                Full Screen Scan
-              </p>
-              <h2
-                style={{
-                  fontSize: "32px",
-                  lineHeight: 1.1,
-                  fontWeight: 800,
-                  color: "var(--text-primary)",
-                  marginBottom: "10px",
-                }}
-              >
-                {detectedItems.length
-                  ? "Scanned dishes detected"
-                  : "Scanning your tray now"}
-              </h2>
-              <p
-                style={{
-                  fontSize: "15px",
-                  color: "var(--text-secondary)",
-                  marginBottom: "18px",
-                }}
-              >
-                {detectedItems.length
-                  ? "We are listing each dish as it is recognized from the tray."
-                  : "Please hold still for a moment while the camera captures the tray contents."}
-              </p>
-
+                <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-primary)" }}>
+                  {detectedItems.length
+                    ? `${detectedItems.length} dish${detectedItems.length === 1 ? "" : "es"} found`
+                    : "Detecting dishes…"}
+                </span>
+                <span
+                  style={{
+                    fontSize: "12px",
+                    color: "var(--text-muted)",
+                    fontFamily: "var(--font-mono)",
+                  }}
+                >
+                  {Math.round(progress)}%
+                </span>
+              </div>
               <div
                 style={{
                   width: "100%",
-                  height: "8px",
-                  background: "rgba(116, 76, 61, 0.12)",
+                  height: "6px",
+                  background: "rgba(116, 76, 61, 0.14)",
                   borderRadius: "999px",
                   overflow: "hidden",
-                  marginBottom: "18px",
                 }}
               >
                 <div
@@ -419,126 +465,86 @@ export default function TrayScanView() {
                   }}
                 />
               </div>
+            </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  marginBottom: "14px",
-                  gap: "12px",
-                }}
-              >
-                <p
+            {/* ── Live dish list ── */}
+            <div
+              style={{
+                flex: 1,
+                overflowY: "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+              }}
+            >
+              {detectedItems.length === 0 ? (
+                <div
                   style={{
-                    fontSize: "14px",
-                    fontWeight: 600,
-                    color: "var(--text-primary)",
+                    minHeight: "96px",
+                    borderRadius: "14px",
+                    border: "1px dashed rgba(116, 76, 61, 0.25)",
+                    background: "rgba(255,255,255,0.42)",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                    padding: "16px",
                   }}
                 >
-                  {detectedItems.length
-                    ? `${detectedItems.length} dish${detectedItems.length === 1 ? "" : "es"} found`
-                    : "Detecting dishes..."}
-                </p>
-                <p
-                  style={{
-                    fontSize: "13px",
-                    color: "var(--text-secondary)",
-                    fontFamily: "var(--font-mono)",
-                  }}
-                >
-                  {Math.round(progress)}%
-                </p>
-              </div>
-
-              <div
-                style={{
-                  flex: 1,
-                  overflowY: "auto",
-                  display: "grid",
-                  gap: "10px",
-                  paddingRight: "4px",
-                }}
-              >
-                {detectedItems.length ? (
-                  detectedItems.map((item, index) => (
-                    <div
-                      key={`${item.id}-${index}`}
-                      className="animate-slide-up"
-                      style={{
-                        padding: "14px 16px",
-                        borderRadius: "20px",
-                        background: "rgba(255,255,255,0.62)",
-                        border: "1px solid var(--border)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        gap: "14px",
-                      }}
-                    >
-                      <div style={{ minWidth: 0 }}>
-                        <p
-                          style={{
-                            fontSize: "16px",
-                            fontWeight: 700,
-                            color: "var(--text-primary)",
-                            marginBottom: "2px",
-                          }}
-                        >
-                          {item.name}
-                        </p>
-                        <p
-                          style={{
-                            fontSize: "12px",
-                            color: "var(--text-muted)",
-                          }}
-                        >
-                          {item.category} · {Math.round(item.confidence * 100)}% confidence
-                        </p>
-                      </div>
-                      <p
-                        style={{
-                          fontSize: "15px",
-                          fontWeight: 800,
-                          color: "var(--accent)",
-                          fontFamily: "var(--font-mono)",
-                          flexShrink: 0,
-                        }}
-                      >
-                        {formatCurrency(item.price)}
-                      </p>
-                    </div>
-                  ))
-                ) : (
+                  <Spinner size={22} />
+                  <p style={{ fontSize: "12px", color: "var(--text-muted)" }}>
+                    Waiting for dishes to appear…
+                  </p>
+                </div>
+              ) : (
+                detectedItems.map((item, index) => (
                   <div
+                    key={`${item.id}-${index}`}
+                    className="animate-slide-up"
                     style={{
-                      flex: 1,
-                      minHeight: "180px",
-                      borderRadius: "24px",
-                      border: "1px dashed rgba(116, 76, 61, 0.28)",
-                      background: "rgba(255,255,255,0.42)",
+                      padding: "12px 14px",
+                      borderRadius: "14px",
+                      background: "rgba(255,255,255,0.7)",
+                      border: "1px solid rgba(198, 110, 91, 0.15)",
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "center",
-                      textAlign: "center",
-                      padding: "20px",
+                      justifyContent: "space-between",
+                      gap: "12px",
                     }}
                   >
-                    <div>
-                      <Spinner size={28} />
+                    <div style={{ minWidth: 0 }}>
                       <p
                         style={{
-                          marginTop: "12px",
                           fontSize: "14px",
-                          color: "var(--text-secondary)",
+                          fontWeight: 700,
+                          color: "var(--text-primary)",
+                          marginBottom: "2px",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
                         }}
                       >
-                        Detecting food items from the tray feed...
+                        {item.name}
+                      </p>
+                      <p style={{ fontSize: "11px", color: "var(--text-muted)" }}>
+                        {item.category} · {Math.round(item.confidence * 100)}% confidence
                       </p>
                     </div>
+                    <p
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: 800,
+                        color: "var(--accent)",
+                        fontFamily: "var(--font-mono)",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {formatCurrency(item.price)}
+                    </p>
                   </div>
-                )}
-              </div>
+                ))
+              )}
             </div>
           </div>
         </div>

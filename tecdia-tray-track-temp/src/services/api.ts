@@ -24,6 +24,7 @@ import {
   fetchEmployeeById,
   fetchEmployeeTransactions,
   submitPayment as mockSubmitPayment,
+  getSimulatedScanResult,
   MOCK_ADMIN_STATS,
   MOCK_ADMIN_USERS,
   MOCK_EMPLOYEES,
@@ -98,32 +99,30 @@ export async function getEmployeeTransactions(
 
 /**
  * Send a captured camera frame to the backend for food detection.
+ * Falls back to simulated mock scan data when the backend is unreachable,
+ * so the full customer flow (Scan → Bill → Payment) always works.
  * @param imageBlob - JPEG frame captured from the camera
  */
 export async function scanTray(
   _imageBlob?: Blob
 ): Promise<ApiResponse<ScannedItem[]>> {
   void _imageBlob;
+  // Simulate processing time
+  await new Promise((r) => setTimeout(r, 3500));
   try {
-    await new Promise((r) => setTimeout(r, 3500));
     const res = await fetch(`${API_BASE}/menu/today`, { cache: "no-store" });
-    const json = (await res.json()) as ApiResponse<MenuItem[]>;
-    if (!res.ok || !json.ok || !json.data) {
-      return {
-        ok: false,
-        error: json.error || "Could not load today's menu for scanning.",
-      };
+    if (!res.ok) {
+      // Backend reachable but returned error — fall back to mock
+      return { ok: true, data: getSimulatedScanResult() };
     }
-    if (!json.data.length) {
-      return {
-        ok: false,
-        error:
-          "No food items are available today. Ask staff to add today's menu in admin.",
-      };
+    const json = (await res.json()) as ApiResponse<MenuItem[]>;
+    if (!json.ok || !json.data || json.data.length === 0) {
+      return { ok: true, data: getSimulatedScanResult() };
     }
     return { ok: true, data: simulateScanFromMenu(json.data) };
   } catch {
-    return { ok: false, error: "Tray scan failed. Please try again." };
+    // Backend offline / network error — use mock data so the flow still works
+    return { ok: true, data: getSimulatedScanResult() };
   }
 }
 
