@@ -12,7 +12,7 @@ import * as api from "@/services/api";
  * Tray Scanning step — live camera feed with scan overlay. No emojis.
  */
 export default function TrayScanView() {
-  const { completeScan, setError } = useCustomerFlow();
+  const { completeScan, setError, reset } = useCustomerFlow();
   const { videoRef, isReady, error: camError, start, stop, captureFrame } = useCamera();
   const [isScanning, setIsScanning] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -200,16 +200,28 @@ export default function TrayScanView() {
 
       {/* Scan button */}
       {!isScanning && (
-        <Button
-          variant="success"
-          size="xl"
-          onClick={handleScan}
-          disabled={!isReady}
-          className="mt-6"
-          style={{ width: "100%", maxWidth: "400px", fontSize: "20px" }}
+        <div
+          className="mt-6 flex flex-col items-center gap-3"
+          style={{ width: "100%", maxWidth: "400px" }}
         >
-          Scan Tray
-        </Button>
+          <Button
+            variant="success"
+            size="xl"
+            onClick={handleScan}
+            disabled={!isReady}
+            style={{ width: "100%", fontSize: "20px" }}
+          >
+            Scan Tray
+          </Button>
+          <Button
+            variant="outline"
+            size="md"
+            onClick={() => void reset()}
+            style={{ width: "100%" }}
+          >
+            Cancel and log out
+          </Button>
+        </div>
       )}
 
       {isScanning && (

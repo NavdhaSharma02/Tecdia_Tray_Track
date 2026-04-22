@@ -56,7 +56,6 @@ export default function Header({
         borderBottom: "1px solid var(--border)",
         borderRadius: "999px",
         boxShadow: "0 16px 32px rgba(86, 42, 34, 0.12)",
-        position: "fixed",
       }}
     >
       <div className="flex items-center gap-3">

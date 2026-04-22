@@ -3,33 +3,52 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
-import { ADMIN_PIN } from "@/lib/constants";
 import TecdiaLogo from "@/components/layout/TecdiaLogo";
+import { API_BASE } from "@/lib/constants";
 
 /**
- * Admin login page — PIN-based authentication for demo.
+ * Admin login page — 6-digit PIN validated on the server.
  */
 export default function AdminLoginPage() {
   const router = useRouter();
   const [pin, setPin] = useState("");
   const [error, setError] = useState("");
   const [shake, setShake] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (pin === ADMIN_PIN) {
-      sessionStorage.setItem("admin_auth", "true");
-      router.push("/admin");
-    } else {
-      setError("Incorrect PIN");
+    if (pin.length !== 6) return;
+    setSubmitting(true);
+    setError("");
+    try {
+      const res = await fetch(`${API_BASE}/admin/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin }),
+      });
+      const data = (await res.json()) as { ok?: boolean; error?: string };
+      if (res.ok && data.ok) {
+        sessionStorage.setItem("admin_auth", "true");
+        router.push("/admin");
+      } else {
+        setError(data.error || "Incorrect PIN");
+        setShake(true);
+        setTimeout(() => setShake(false), 500);
+        setPin("");
+      }
+    } catch {
+      setError("Could not reach server");
       setShake(true);
       setTimeout(() => setShake(false), 500);
       setPin("");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const handlePadPress = (digit: string) => {
-    if (pin.length < 4) {
+    if (pin.length < 6) {
       setPin((prev) => prev + digit);
       setError("");
     }
@@ -69,26 +88,26 @@ export default function AdminLoginPage() {
           Admin Access
         </h1>
         <p style={{ fontSize: "14px", color: "var(--text-muted)", marginBottom: "32px" }}>
-          Enter your 4-digit PIN
+          Enter your 6-digit PIN
         </p>
 
         <form onSubmit={handleSubmit}>
-          {/* PIN dots */}
           <div
             className={shake ? "animate-shake" : ""}
             style={{
               display: "flex",
               justifyContent: "center",
-              gap: "16px",
+              gap: "10px",
               marginBottom: "24px",
+              flexWrap: "wrap",
             }}
           >
-            {Array.from({ length: 4 }).map((_, i) => (
+            {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
                 style={{
-                  width: 20,
-                  height: 20,
+                  width: 18,
+                  height: 18,
                   borderRadius: "50%",
                   background: i < pin.length ? "var(--accent)" : "var(--bg-elevated)",
                   border: `2px solid ${i < pin.length ? "var(--accent)" : "var(--border)"}`,
@@ -108,7 +127,6 @@ export default function AdminLoginPage() {
             </p>
           )}
 
-          {/* Number pad */}
           <div
             style={{
               display: "grid",
@@ -117,29 +135,26 @@ export default function AdminLoginPage() {
               marginBottom: "20px",
             }}
           >
-            {["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "←"].map(
-              (key) =>
-                key === "" ? (
-                  <div key="empty" />
-                ) : (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() =>
-                      key === "←" ? handleBackspace() : handlePadPress(key)
-                    }
-                    className="btn btn-ghost"
-                    style={{
-                      height: "56px",
-                      fontSize: "22px",
-                      fontWeight: 600,
-                      borderRadius: "var(--radius-md)",
-                      border: "1px solid var(--border)",
-                    }}
-                  >
-                    {key}
-                  </button>
-                )
+            {["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "←"].map((key) =>
+              key === "" ? (
+                <div key="empty" />
+              ) : (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => (key === "←" ? handleBackspace() : handlePadPress(key))}
+                  className="btn btn-ghost"
+                  style={{
+                    height: "56px",
+                    fontSize: "22px",
+                    fontWeight: 600,
+                    borderRadius: "var(--radius-md)",
+                    border: "1px solid var(--border)",
+                  }}
+                >
+                  {key}
+                </button>
+              )
             )}
           </div>
 
@@ -148,15 +163,12 @@ export default function AdminLoginPage() {
             variant="primary"
             size="lg"
             className="w-full"
-            disabled={pin.length < 4}
+            disabled={pin.length < 6}
+            isLoading={submitting}
           >
             Unlock
           </Button>
         </form>
-
-        <p style={{ marginTop: "20px", fontSize: "12px", color: "var(--text-muted)" }}>
-          Demo PIN: 1234
-        </p>
       </div>
     </div>
   );

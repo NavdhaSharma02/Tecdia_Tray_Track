@@ -2,6 +2,7 @@
 
 import { useCustomerFlow } from "@/hooks/useCustomerFlow";
 import IdleScreen from "@/components/customer/IdleScreen";
+import EmailAuthScreen from "@/components/customer/EmailAuthScreen";
 
 import TrayScanView from "@/components/customer/TrayScanView";
 import FoodResults from "@/components/customer/FoodResults";
@@ -20,6 +21,7 @@ export default function CustomerPage() {
       {/* Step content */}
       <div className="customer-page__content page-enter" key={step}>
         {step === "IDLE" && <IdleScreen />}
+        {step === "EMAIL_AUTH" && <EmailAuthScreen />}
 
         {step === "SCANNING" && <TrayScanView />}
         {step === "RESULTS" && <FoodResults />}

@@ -3,7 +3,14 @@
 // ============================================
 
 /** Steps in the customer kiosk flow */
-export type FlowStep = 'IDLE' | 'PROFILE' | 'SCANNING' | 'RESULTS' | 'PAYMENT' | 'DONE';
+export type FlowStep =
+  | "IDLE"
+  | "EMAIL_AUTH"
+  | "PROFILE"
+  | "SCANNING"
+  | "RESULTS"
+  | "PAYMENT"
+  | "DONE";
 
 /** Payment method options */
 export type PaymentMethod = 'immediate' | 'account';
@@ -27,7 +34,8 @@ export interface MenuItem {
   price: number;
   image: string | null;
   available: boolean;
-  calories: number;
+  /** Numeric kcal, or null when unknown / “N/A”. */
+  calories: number | null;
 }
 
 /** Item detected during tray scan */
@@ -38,7 +46,7 @@ export interface ScannedItem {
   price: number;
   quantity: number;
   confidence: number;
-  calories: number;
+  calories: number | null;
 }
 
 /** Single item in a transaction */
@@ -87,6 +95,13 @@ export interface ApiResponse<T> {
   error?: string;
 }
 
+export interface AuthCustomer {
+  id: string;
+  email: string;
+  fullName: string;
+  createdAt: string;
+}
+
 /** Customer flow state */
 export interface CustomerFlowState {
   step: FlowStep;
@@ -103,6 +118,8 @@ export interface CustomerFlowState {
 export type CustomerFlowAction =
   | { type: 'SET_LOADING'; payload: boolean }
   | { type: 'SET_EMPLOYEE'; payload: { employee: Employee; transactions: Transaction[] } }
+  | { type: "SET_STEP"; payload: FlowStep }
+  | { type: "RESET_TO_EMAIL_AUTH" }
   | { type: 'START_SCAN' }
   | { type: 'SCAN_COMPLETE'; payload: ScannedItem[] }
   | { type: 'UPDATE_ITEMS'; payload: ScannedItem[] }

@@ -20,7 +20,7 @@ export default function DoneScreen() {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          reset();
+          void reset();
           return 0;
         }
         return prev - 1;
@@ -202,7 +202,7 @@ export default function DoneScreen() {
         </span>
       </p>
 
-      <Button variant="outline" size="lg" onClick={reset}>
+      <Button variant="outline" size="lg" onClick={() => void reset()}>
         Done
       </Button>
     </div>

@@ -15,7 +15,7 @@ const DEMO_EMPLOYEE_IDS = ["EMP-001", "EMP-002", "EMP-003", "EMP-004", "EMP-005"
  * Camera-based employee ID scanning screen.
  */
 export default function IdleScreen() {
-  const { identifyEmployee, isLoading, error, clearError } = useCustomerFlow();
+  const { identifyEmployee, openEmailAuth, isLoading, error, clearError } = useCustomerFlow();
   const { videoRef, isReady, error: camError, start, stop, captureFrame } = useCamera();
   const [isScanning, setIsScanning] = useState(false);
   useEffect(() => {
@@ -319,21 +319,31 @@ export default function IdleScreen() {
         </div>
       )}
 
-      <Button
-        variant="primary"
-        size="xl"
-        onClick={handleScan}
-        isLoading={isScanning || isLoading}
-        disabled={!isReady || isScanning}
-        style={{
-          fontSize: "17px",
-          width: "100%",
-          maxWidth: "440px",
-          borderRadius: "var(--radius-lg)",
-        }}
-      >
-        {isScanning ? "Scanning..." : "Scan ID Card"}
-      </Button>
+      <div style={{ width: "100%", maxWidth: "440px", display: "grid", gap: "10px" }}>
+        <Button
+          variant="primary"
+          size="xl"
+          onClick={handleScan}
+          isLoading={isScanning || isLoading}
+          disabled={!isReady || isScanning}
+          style={{
+            fontSize: "17px",
+            width: "100%",
+            borderRadius: "var(--radius-lg)",
+          }}
+        >
+          {isScanning ? "Scanning..." : "Scan ID Card"}
+        </Button>
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={() => void openEmailAuth()}
+          disabled={isScanning || isLoading}
+          style={{ width: "100%" }}
+        >
+          Use Email
+        </Button>
+      </div>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { FLOW_STEP_LABELS } from "@/lib/constants";
 import type { FlowStep } from "@/types";
 
 /** Steps in display order — PROFILE removed */
-const STEPS_ORDER: FlowStep[] = ["IDLE", "SCANNING", "RESULTS", "PAYMENT"];
+const STEPS_ORDER: FlowStep[] = ["IDLE", "EMAIL_AUTH", "SCANNING", "RESULTS", "PAYMENT"];
 
 interface FlowStepperProps {
   currentStep: FlowStep;
