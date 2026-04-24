@@ -322,12 +322,12 @@ export default function IdleScreen() {
       <div style={{ width: "100%", maxWidth: "440px", display: "grid", gap: "10px" }}>
         <Button
           variant="primary"
-          size="xl"
+          size="md"
           onClick={handleScan}
           isLoading={isScanning || isLoading}
           disabled={!isReady || isScanning}
           style={{
-            fontSize: "17px",
+            fontSize: "14px",
             width: "100%",
             borderRadius: "var(--radius-lg)",
           }}
@@ -336,7 +336,7 @@ export default function IdleScreen() {
         </Button>
         <Button
           variant="outline"
-          size="lg"
+          size="sm"
           onClick={() => void openEmailAuth()}
           disabled={isScanning || isLoading}
           style={{ width: "100%" }}

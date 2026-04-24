@@ -217,6 +217,15 @@ body:has(.customer-stage) {
   100% { width: 100%; }
 }
 
+@keyframes customer-bg-zoom {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.08);
+  }
+}
+
 /* --- Animation Utilities --- */
 .animate-slide-up {
   animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -573,16 +582,45 @@ select.input option {
 
 .customer-stage {
   position: relative;
-  height: 100vh;
-  padding: 96px 22px 22px;
+  min-height: 100vh;
+  padding: 92px 22px 20px;
   display: flex;
   justify-content: center;
   align-items: stretch;
-  background-image: url("/bg2.jpg?v=3");
-  background-size: 100% 100%;
+  box-sizing: border-box;
+  background: linear-gradient(180deg, #ecd8cf 0%, #f6eae4 100%);
+  overflow: hidden;
+}
+
+.customer-stage__slideshow {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.customer-stage__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  overflow: hidden;
+  transform: scale(1.02);
+  transition: opacity 1.2s ease;
+  animation: customer-bg-zoom 10s ease-in-out infinite alternate;
+}
+
+.customer-stage__slide.is-active {
+  opacity: 1;
+}
+
+.customer-stage__overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 248, 242, 0.34), rgba(248, 236, 228, 0.48)),
+    radial-gradient(circle at 18% 20%, rgba(255, 237, 190, 0.24), transparent 24%),
+    radial-gradient(circle at 85% 72%, rgba(193, 116, 103, 0.18), transparent 20%);
 }
 
 .customer-stage__glow {
@@ -591,6 +629,7 @@ select.input option {
   filter: blur(10px);
   pointer-events: none;
   opacity: 0.55;
+  z-index: 1;
 }
 
 .customer-stage__glow--top {
@@ -611,9 +650,10 @@ select.input option {
 
 .customer-panel {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   width: min(100%, 980px);
-  height: 100%;
+  height: calc(100vh - 112px);
+  max-height: calc(100vh - 112px);
   padding: 18px 20px 20px;
   background:
     linear-gradient(rgba(255, 251, 248, 0.52), rgba(255, 247, 243, 0.4)),
@@ -662,10 +702,12 @@ select.input option {
 
 @media (max-width: 768px) {
   .customer-stage {
-    padding: 84px 12px 12px;
+    padding: 82px 12px 12px;
   }
 
   .customer-panel {
+    height: calc(100vh - 94px);
+    max-height: calc(100vh - 94px);
     padding: 12px 12px 16px;
     border-radius: 32px;
   }

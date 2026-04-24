@@ -14,16 +14,20 @@ yarn-error.log*
 # Environment files
 .env
 .env.*
+.env.local
+.env*.local
 !.env.example
 
 # Node / Next build output
 node_modules/
 .next/
+.turbo/
 out/
 build/
 dist/
 coverage/
 *.tsbuildinfo
+.eslintcache
 
 # Python / notebooks
 __pycache__/
