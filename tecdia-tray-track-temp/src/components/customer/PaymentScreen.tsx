@@ -46,36 +46,41 @@ export default function PaymentScreen() {
         alignItems: "center",
         justifyContent: "center",
         minHeight: "100%",
-        padding: "12px 24px 18px",
-        maxWidth: "600px",
+        padding: "16px 28px 22px",
+        maxWidth: "680px",
         margin: "0 auto",
         width: "100%",
       }}
     >
+      <span className="app-shell-eyebrow" style={{ marginBottom: "16px" }}>
+        Final step
+      </span>
       <h2
         style={{
-          fontFamily: "var(--font-display)",
-          fontSize: "36px",
+          fontSize: "clamp(2.35rem, 4.4vw, 3.2rem)",
           fontWeight: 700,
-          color: "var(--text-primary)",
+          color: "#ffffff",
           marginBottom: "8px",
+          textShadow: "0 10px 26px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.28)",
         }}
       >
         Payment
       </h2>
       <p
         style={{
-          fontSize: "16px",
-          color: "var(--text-secondary)",
+          fontSize: "17px",
+          color: "#ffffff",
           marginBottom: "22px",
+          fontWeight: 700,
+          textShadow: "0 10px 26px rgba(0,0,0,0.36), 0 2px 8px rgba(0,0,0,0.22)",
         }}
       >
         Total:{" "}
         <strong
           style={{
-            color: "var(--accent)",
+            color: "#ffffff",
             fontFamily: "var(--font-mono)",
-            fontSize: "20px",
+            fontSize: "22px",
           }}
         >
           {formatCurrency(total)}
@@ -91,37 +96,39 @@ export default function PaymentScreen() {
               key={opt.method}
               onClick={() => selectPayment(opt.method)}
               style={{
-                flex: "1 1 200px",
-                padding: "28px 24px",
-                borderRadius: "var(--radius-xl)",
-                background: isSelected ? "rgba(94, 139, 58, 0.08)" : "var(--bg-elevated)",
+                flex: "1 1 220px",
+                padding: "32px 28px",
+                borderRadius: "28px",
+                background: isSelected
+                  ? "linear-gradient(180deg, rgba(95, 126, 84, 0.1), rgba(255, 251, 247, 0.92))"
+                  : "linear-gradient(180deg, rgba(255, 251, 247, 0.92), rgba(248, 238, 231, 0.84))",
                 border: `2px solid ${isSelected ? "var(--accent)" : "var(--border)"}`,
                 cursor: "pointer",
                 transition: "all 0.25s ease",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                gap: "12px",
+                gap: "14px",
                 textAlign: "center",
-                boxShadow: isSelected ? "var(--shadow-glow)" : "var(--shadow-sm)",
+                boxShadow: isSelected ? "var(--shadow-glow)" : "var(--shadow-md)",
                 transform: isSelected ? "scale(1.02)" : "scale(1)",
                 outline: "none",
               }}
             >
               <div
                 style={{
-                  width: 48,
-                  height: 48,
+                  width: 54,
+                  height: 54,
                   borderRadius: "50%",
                   background: isSelected
-                    ? "var(--accent)"
-                    : "rgba(94, 139, 58, 0.06)",
+                    ? "linear-gradient(180deg, #1b1512 0%, #332721 100%)"
+                    : "rgba(43, 29, 24, 0.08)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: "14px",
+                  fontSize: "16px",
                   fontWeight: 700,
-                  color: isSelected ? "white" : "var(--accent)",
+                  color: isSelected ? "white" : "var(--accent-deep)",
                   transition: "all 0.25s ease",
                 }}
               >
@@ -130,17 +137,18 @@ export default function PaymentScreen() {
               <div>
                 <p
                   style={{
-                    fontSize: "18px",
+                    fontSize: "20px",
                     fontWeight: 700,
                     color: isSelected ? "var(--accent)" : "var(--text-primary)",
                     transition: "color 0.25s ease",
+                    fontFamily: "var(--font-display)",
                   }}
                 >
                   {opt.title}
                 </p>
                 <p
                   style={{
-                    fontSize: "13px",
+                    fontSize: "14px",
                     color: "var(--text-muted)",
                     marginTop: "4px",
                   }}
@@ -152,15 +160,15 @@ export default function PaymentScreen() {
                 <div
                   className="animate-scale-pop"
                   style={{
-                    width: 24,
-                    height: 24,
+                    width: 28,
+                    height: 28,
                     borderRadius: "50%",
-                    background: "var(--accent)",
+                    background: "linear-gradient(180deg, #1b1512 0%, #332721 100%)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     color: "white",
-                    fontSize: "14px",
+                    fontSize: "16px",
                     fontWeight: 700,
                   }}
                 >
@@ -178,20 +186,21 @@ export default function PaymentScreen() {
           className="animate-fade-in"
           style={{
             width: "100%",
-            background: "rgba(94, 139, 58, 0.06)",
-            borderRadius: "var(--radius-xl)",
-            padding: "20px 24px",
-            border: "1px solid rgba(94, 139, 58, 0.15)",
+            background: "linear-gradient(180deg, rgba(255, 251, 247, 0.92), rgba(242, 247, 238, 0.9))",
+            borderRadius: "28px",
+            padding: "24px 28px",
+            border: "1px solid rgba(95, 126, 84, 0.15)",
             marginBottom: "24px",
+            boxShadow: "var(--shadow-sm)",
           }}
         >
           <div className="flex items-center justify-between">
-            <p style={{ fontSize: "14px", color: "var(--text-secondary)" }}>
+              <p style={{ fontSize: "15px", color: "var(--text-secondary)" }}>
               Current account balance
             </p>
             <p
               style={{
-                fontSize: "20px",
+                fontSize: "22px",
                 fontWeight: 700,
                 color: "var(--accent)",
                 fontFamily: "var(--font-mono)",
@@ -202,7 +211,7 @@ export default function PaymentScreen() {
           </div>
           <p
             style={{
-              fontSize: "13px",
+              fontSize: "14px",
               color: "var(--text-muted)",
               marginTop: "8px",
             }}
@@ -214,13 +223,13 @@ export default function PaymentScreen() {
 
       {/* Confirm Button */}
       <Button
-        variant="success"
+        variant="outline"
         size="xl"
         onClick={confirmPayment}
         isLoading={isLoading}
         disabled={!paymentMethod}
-        className="w-full"
-        style={{ fontSize: "18px", maxWidth: "400px" }}
+        className="w-full btn-scan-action"
+        style={{ fontSize: "19px", maxWidth: "440px" }}
       >
         Confirm Payment
       </Button>

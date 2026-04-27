@@ -38,7 +38,7 @@ export default function AdminLayout({
         display: "flex",
         minHeight: "100vh",
         background:
-          "radial-gradient(circle at top right, rgba(171, 205, 120, 0.18), transparent 18%), radial-gradient(circle at bottom left, rgba(238, 190, 116, 0.18), transparent 18%), linear-gradient(180deg, #f7f3ea 0%, #edf1e6 100%)",
+          "radial-gradient(circle at top right, rgba(187, 129, 105, 0.12), transparent 20%), radial-gradient(circle at bottom left, rgba(95, 126, 84, 0.1), transparent 18%), linear-gradient(180deg, #f5ede6 0%, #efe1d5 100%)",
       }}
     >
       <AdminSidebar />
@@ -50,6 +50,7 @@ export default function AdminLayout({
           margin: "18px 18px 18px 22px",
           overflow: "auto",
           borderRadius: "38px",
+          boxShadow: "var(--shadow-lg)",
         }}
       >
         {children}

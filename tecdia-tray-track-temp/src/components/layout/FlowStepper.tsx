@@ -30,8 +30,8 @@ export default function FlowStepper({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        gap: "4px",
-        padding: compact ? "0" : "18px 24px",
+        gap: "6px",
+        padding: compact ? "0" : "20px 26px",
         margin: embedded ? "0" : "0 auto 22px",
         width: embedded ? "100%" : "min(100%, 840px)",
         minWidth: 0,
@@ -47,40 +47,59 @@ export default function FlowStepper({
             <div className="flex items-center gap-2">
               <div
                 style={{
-                  width: compact ? 28 : 34,
-                  height: compact ? 28 : 34,
+                  width: compact ? 32 : 38,
+                  height: compact ? 32 : 38,
                   borderRadius: "50%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: compact ? "12px" : "14px",
+                  fontSize: compact ? "13px" : "15px",
                   fontWeight: 600,
                   transition: "all 0.3s ease",
                   background: isActive
-                    ? "linear-gradient(180deg, #171513 0%, #33302b 100%)"
+                    ? "linear-gradient(180deg, #1b1512 0%, #332721 100%)"
                     : isCompleted
                       ? "var(--success)"
-                      : "rgba(255,255,255,0.76)",
+                      : embedded
+                        ? "rgba(255, 255, 255, 0.72)"
+                        : "rgba(255,251,248,0.82)",
                   color:
-                    isActive || isCompleted ? "white" : "var(--text-muted)",
+                    isActive || isCompleted
+                      ? "white"
+                      : embedded
+                        ? "rgba(31, 21, 17, 0.9)"
+                        : "var(--text-muted)",
                   boxShadow: isActive
-                    ? "0 14px 24px rgba(23, 21, 19, 0.14)"
+                    ? "0 14px 24px rgba(24, 17, 14, 0.16)"
                     : "none",
+                  border:
+                    embedded && !isActive && !isCompleted
+                      ? "1px solid rgba(109, 76, 64, 0.14)"
+                      : "none",
                 }}
               >
                 {isCompleted ? "✓" : info.icon}
               </div>
               <span
                 style={{
-                  fontSize: compact ? "11px" : "12px",
-                  fontWeight: isActive ? 600 : 400,
+                  fontSize: compact ? "12px" : "13px",
+                  fontWeight: isActive ? 700 : 600,
+                  lineHeight: 1,
                   color: isActive
-                    ? "var(--text-primary)"
+                    ? embedded
+                      ? "#1f1511"
+                      : "var(--text-primary)"
                     : isCompleted
                       ? "var(--success)"
-                      : "var(--text-muted)",
+                    : embedded
+                        ? "rgba(31, 21, 17, 0.78)"
+                        : "var(--text-muted)",
                   transition: "all 0.3s ease",
                   whiteSpace: "nowrap",
+                  letterSpacing: "0.03em",
+                  textTransform: "uppercase",
+                  transform: compact ? "scale(1.06)" : "none",
+                  transformOrigin: "left center",
                 }}
               >
                 {info.label}
@@ -90,13 +109,15 @@ export default function FlowStepper({
             {idx < STEPS_ORDER.length - 1 && (
               <div
                 style={{
-                  width: compact ? "24px" : "32px",
+                  width: compact ? "28px" : "36px",
                   height: "2px",
-                  margin: compact ? "0 4px" : "0 6px",
+                  margin: compact ? "0 4px" : "0 8px",
                   borderRadius: "1px",
                   background: isCompleted
                     ? "var(--success)"
-                    : "rgba(167, 156, 140, 0.22)",
+                    : embedded
+                      ? "rgba(109, 76, 64, 0.18)"
+                      : "rgba(167, 156, 140, 0.22)",
                   transition: "background 0.3s ease",
                 }}
               />

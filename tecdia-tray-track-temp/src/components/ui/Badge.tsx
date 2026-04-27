@@ -1,9 +1,8 @@
 import { cn } from "@/lib/utils";
 
-interface BadgeProps {
+interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   children: React.ReactNode;
   variant?: "accent" | "success" | "warning" | "danger";
-  className?: string;
 }
 
 const variantMap: Record<string, string> = {
@@ -20,9 +19,10 @@ export default function Badge({
   children,
   variant = "accent",
   className,
+  ...props
 }: BadgeProps) {
   return (
-    <span className={cn("badge", variantMap[variant], className)}>
+    <span className={cn("badge", variantMap[variant], className)} {...props}>
       {children}
     </span>
   );

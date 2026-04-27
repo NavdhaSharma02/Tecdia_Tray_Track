@@ -17,7 +17,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            style={{ fontSize: "13px", fontWeight: 500, color: "var(--text-secondary)" }}
+            style={{
+              fontSize: "11px",
+              fontWeight: 700,
+              color: "var(--text-secondary)",
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+            }}
           >
             {label}
           </label>

@@ -23,7 +23,7 @@ export default function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="sidebar" style={{ display: "flex", flexDirection: "column", margin: "18px 0 18px 18px", borderRadius: "34px", boxShadow: "var(--shadow-md)", overflow: "hidden" }}>
+    <aside className="sidebar" style={{ display: "flex", flexDirection: "column", margin: "18px 0 18px 18px", borderRadius: "34px", boxShadow: "var(--shadow-lg)", overflow: "hidden" }}>
       {/* Logo */}
       <div
         style={{
@@ -44,11 +44,12 @@ export default function AdminSidebar() {
                 fontWeight: 700,
                 color: "var(--text-primary)",
                 fontFamily: "var(--font-display)",
+                letterSpacing: "-0.03em",
               }}
             >
               {APP_NAME}
             </p>
-            <p style={{ fontSize: "11px", color: "var(--text-muted)" }}>
+            <p style={{ fontSize: "11px", color: "var(--text-muted)", letterSpacing: "0.12em", textTransform: "uppercase", fontWeight: 700 }}>
               Admin Panel
             </p>
           </div>

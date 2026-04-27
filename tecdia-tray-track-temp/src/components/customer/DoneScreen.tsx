@@ -64,18 +64,18 @@ export default function DoneScreen() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: "12px 24px 18px",
+        padding: "16px 28px 22px",
         minHeight: "100%",
       }}
     >
       {/* Success animation */}
-      <div className="animate-scale-pop" style={{ marginBottom: "24px" }}>
+      <div className="animate-scale-pop" style={{ marginBottom: "28px" }}>
         <div
           style={{
-            width: 100,
-            height: 100,
+            width: 116,
+            height: 116,
             borderRadius: "50%",
-            background: "var(--success)",
+            background: "linear-gradient(180deg, #556f4b 0%, #6f8d62 100%)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -106,11 +106,10 @@ export default function DoneScreen() {
 
       <h2
         style={{
-          fontFamily: "var(--font-display)",
-          fontSize: "36px",
+          fontSize: "40px",
           fontWeight: 700,
           color: "var(--text-primary)",
-          marginBottom: "8px",
+          marginBottom: "10px",
         }}
       >
         Payment Successful!
@@ -118,9 +117,9 @@ export default function DoneScreen() {
 
       <p
         style={{
-          fontSize: "16px",
+          fontSize: "17px",
           color: "var(--text-secondary)",
-          marginBottom: "32px",
+          marginBottom: "36px",
         }}
       >
         Thank you for your meal. Enjoy!
@@ -128,21 +127,21 @@ export default function DoneScreen() {
 
       {/* Receipt Card */}
       {receipt && (
-        <Card variant="glass" className="w-full max-w-[450px] mb-8 border-glow animate-slide-up">
+        <Card variant="glass" className="w-full max-w-[520px] mb-8 border-glow animate-slide-up">
           <div
             style={{
               borderBottom: "1px solid var(--border)",
-              paddingBottom: "16px",
-              marginBottom: "16px",
+              paddingBottom: "18px",
+              marginBottom: "18px",
             }}
           >
             <div className="flex items-center justify-between">
-              <p style={{ fontSize: "13px", color: "var(--text-muted)" }}>Transaction ID</p>
+              <p style={{ fontSize: "14px", color: "var(--text-muted)" }}>Transaction ID</p>
               <p
                 style={{
-                  fontSize: "14px",
+                  fontSize: "15px",
                   fontWeight: 600,
-                  color: "var(--accent-light)",
+                  color: "var(--accent)",
                   fontFamily: "var(--font-mono)",
                 }}
               >
@@ -150,14 +149,14 @@ export default function DoneScreen() {
               </p>
             </div>
             <div className="flex items-center justify-between mt-2">
-              <p style={{ fontSize: "13px", color: "var(--text-muted)" }}>Date</p>
-              <p style={{ fontSize: "14px", color: "var(--text-primary)" }}>
+              <p style={{ fontSize: "14px", color: "var(--text-muted)" }}>Date</p>
+              <p style={{ fontSize: "15px", color: "var(--text-primary)" }}>
                 {formatDateTime(receipt.date)}
               </p>
             </div>
             <div className="flex items-center justify-between mt-2">
-              <p style={{ fontSize: "13px", color: "var(--text-muted)" }}>Payment Method</p>
-              <p style={{ fontSize: "14px", color: "var(--text-primary)", textTransform: "capitalize" }}>
+              <p style={{ fontSize: "14px", color: "var(--text-muted)" }}>Payment Method</p>
+              <p style={{ fontSize: "15px", color: "var(--text-primary)", textTransform: "capitalize" }}>
                 {receipt.paymentMethod === "account" ? "Monthly Account" : "Paid Now"}
               </p>
             </div>
@@ -171,12 +170,12 @@ export default function DoneScreen() {
                 className="flex items-center justify-between"
                 style={{ padding: "6px 0" }}
               >
-                <span style={{ fontSize: "14px", color: "var(--text-secondary)" }}>
+                <span style={{ fontSize: "15px", color: "var(--text-secondary)" }}>
                   {item.name} × {item.quantity}
                 </span>
                 <span
                   style={{
-                    fontSize: "14px",
+                    fontSize: "15px",
                     fontWeight: 600,
                     color: "var(--text-primary)",
                     fontFamily: "var(--font-mono)",
@@ -196,12 +195,12 @@ export default function DoneScreen() {
             }}
           >
             <div className="flex items-center justify-between">
-              <p style={{ fontSize: "18px", fontWeight: 700, color: "var(--text-primary)" }}>
+              <p style={{ fontSize: "20px", fontWeight: 700, color: "var(--text-primary)" }}>
                 Total
               </p>
               <p
                 style={{
-                  fontSize: "24px",
+                  fontSize: "28px",
                   fontWeight: 800,
                   color: "var(--success)",
                   fontFamily: "var(--font-mono)",
@@ -217,7 +216,7 @@ export default function DoneScreen() {
       {/* Auto-redirect */}
       <p
         style={{
-          fontSize: "14px",
+          fontSize: "15px",
           color: "var(--text-muted)",
           marginBottom: "16px",
         }}

@@ -69,30 +69,33 @@ export default function EmailAuthScreen() {
       className="animate-fade-in"
       style={{
         width: "100%",
-        maxWidth: "520px",
+        maxWidth: "600px",
         margin: "0 auto",
-        padding: "20px",
+        padding: "24px",
       }}
     >
-      <div
-        style={{
-          border: "1px solid var(--border)",
-          borderRadius: "24px",
-          background: "rgba(255,255,255,0.86)",
-          boxShadow: "var(--shadow-md)",
-          padding: "24px",
-        }}
-      >
-        <h2 style={{ fontSize: "28px", fontWeight: 700, marginBottom: "6px" }}>
+      <div className="app-panel" style={{ padding: "28px" }}>
+        <span className="app-shell-eyebrow" style={{ marginBottom: "14px" }}>
+          Customer access
+        </span>
+        <h2
+          style={{
+            fontSize: "38px",
+            fontWeight: 700,
+            marginBottom: "8px",
+            color: "var(--text-primary)",
+            lineHeight: 1,
+          }}
+        >
           {mode === "login" ? "Login with Email" : "Create Account"}
         </h2>
-        <p style={{ color: "var(--text-secondary)", fontSize: "14px", marginBottom: "16px" }}>
+        <p style={{ color: "var(--text-secondary)", fontSize: "15px", marginBottom: "18px", lineHeight: 1.7 }}>
           {mode === "login"
             ? "Sign in to continue to tray scanning."
             : "Create your customer account for tray scanning."}
         </p>
 
-        <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+        <div style={{ display: "flex", gap: "10px", marginBottom: "18px" }}>
           <Button
             variant={mode === "login" ? "primary" : "outline"}
             size="md"
@@ -151,7 +154,7 @@ export default function EmailAuthScreen() {
           )}
 
           {(localError || error) && (
-            <p style={{ color: "var(--danger)", fontSize: "13px" }}>{localError || error}</p>
+            <p style={{ color: "var(--danger)", fontSize: "13px", fontWeight: 700 }}>{localError || error}</p>
           )}
 
           <Button type="submit" variant="success" size="lg" isLoading={isLoading}>

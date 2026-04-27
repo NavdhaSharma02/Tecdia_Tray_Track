@@ -68,7 +68,8 @@ export default function AdminLoginPage() {
         justifyContent: "center",
         minHeight: "100vh",
         padding: "24px",
-        background: "var(--bg-primary)",
+        background:
+          "radial-gradient(circle at top right, rgba(187, 129, 105, 0.12), transparent 22%), radial-gradient(circle at bottom left, rgba(95, 126, 84, 0.1), transparent 18%), linear-gradient(180deg, #f5ede6 0%, #efe1d5 100%)",
       }}
     >
       <div
@@ -84,10 +85,13 @@ export default function AdminLoginPage() {
           <TecdiaLogo size="md" />
         </div>
 
-        <h1 style={{ fontSize: "22px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "4px" }}>
+        <span className="app-shell-eyebrow" style={{ marginBottom: "16px" }}>
+          Admin access
+        </span>
+        <h1 style={{ fontSize: "36px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "6px", lineHeight: 1 }}>
           Admin Access
         </h1>
-        <p style={{ fontSize: "14px", color: "var(--text-muted)", marginBottom: "32px" }}>
+        <p style={{ fontSize: "14px", color: "var(--text-muted)", marginBottom: "32px", lineHeight: 1.7 }}>
           Enter your 6-digit PIN
         </p>
 

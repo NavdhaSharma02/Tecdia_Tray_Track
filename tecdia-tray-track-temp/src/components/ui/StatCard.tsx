@@ -26,11 +26,15 @@ export default function StatCard({
             width: 44,
             height: 44,
             borderRadius: "var(--radius-md)",
-            background: "var(--accent-subtle)",
+            background: "linear-gradient(180deg, rgba(43, 29, 24, 0.08), rgba(187, 129, 105, 0.12))",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: "20px",
+            fontSize: "13px",
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "var(--accent-deep)",
           }}
         >
           {icon}
@@ -38,19 +42,24 @@ export default function StatCard({
       </div>
       <div
         style={{
-          fontSize: "28px",
+          fontSize: "32px",
           fontWeight: 700,
           color: "var(--text-primary)",
           lineHeight: 1.2,
+          fontFamily: "var(--font-display)",
+          letterSpacing: "-0.04em",
         }}
       >
         {value}
       </div>
       <div
         style={{
-          fontSize: "13px",
+          fontSize: "11px",
           color: "var(--text-secondary)",
           marginTop: "4px",
+          textTransform: "uppercase",
+          letterSpacing: "0.12em",
+          fontWeight: 700,
         }}
       >
         {label}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCustomerFlow } from "@/hooks/useCustomerFlow";
-import IdleScreen from "@/components/customer/IdleScreen";
+import IdleScreenEditorial from "@/components/customer/IdleScreenEditorial";
 import EmailAuthScreen from "@/components/customer/EmailAuthScreen";
 
 import TrayScanView from "@/components/customer/TrayScanView";
@@ -15,12 +15,16 @@ import DoneScreen from "@/components/customer/DoneScreen";
  */
 export default function CustomerPage() {
   const { step } = useCustomerFlow();
+  const isScrollLocked = step === "IDLE" || step === "SCANNING";
 
   return (
     <div className="customer-page">
       {/* Step content */}
-      <div className="customer-page__content page-enter" key={step}>
-        {step === "IDLE" && <IdleScreen />}
+      <div
+        className={`customer-page__content page-enter${isScrollLocked ? " customer-page__content--locked" : ""}`}
+        key={step}
+      >
+        {step === "IDLE" && <IdleScreenEditorial />}
         {step === "EMAIL_AUTH" && <EmailAuthScreen />}
 
         {step === "SCANNING" && <TrayScanView />}

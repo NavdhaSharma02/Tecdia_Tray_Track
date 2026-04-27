@@ -62,39 +62,76 @@ export default function FoodResults() {
 
   return (
     <div
-      className="animate-slide-up"
+      className="animate-slide-up customer-results-view"
       style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
         minHeight: "100%",
         height: "100%",
-        padding: "8px 20px 18px",
-        maxWidth: "750px",
+        maxWidth: "860px",
         margin: "0 auto",
         width: "100%",
         overflowY: "auto",
         overflowX: "hidden",
+        scrollbarWidth: "none",
+        msOverflowStyle: "none",
+        direction: "rtl",
       }}
     >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-start",
+          minHeight: "100%",
+          padding: "12px 24px 22px 12px",
+          direction: "ltr",
+        }}
+      >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
           <h2
             style={{
-              fontFamily: "var(--font-display)",
-              fontSize: "34px",
+              fontSize: "clamp(2.35rem, 4.4vw, 3.2rem)",
               fontWeight: 700,
-              color: "var(--text-primary)",
+              color: "#ffffff",
+              textShadow: "0 10px 26px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.28)",
             }}
           >
             Items Detected
           </h2>
-          <p style={{ fontSize: "14px", color: "var(--text-muted)", marginTop: "2px" }}>
+          <p
+            style={{
+              display: "inline-flex",
+              width: "fit-content",
+              maxWidth: "100%",
+              padding: "8px 14px",
+              borderRadius: "999px",
+              background: "rgba(255, 255, 255, 0.72)",
+              border: "1px solid rgba(109, 76, 64, 0.12)",
+              backdropFilter: "blur(10px)",
+              WebkitBackdropFilter: "blur(10px)",
+              fontSize: "15px",
+              color: "#1f1511",
+              marginTop: "6px",
+              textShadow: "none",
+            }}
+          >
             {items.length} items found on your tray
           </p>
         </div>
-        <Badge variant="success">Scan Complete</Badge>
+        <Badge
+          variant="success"
+          className="!text-[var(--text-primary)]"
+          style={{
+            background: "rgba(255, 255, 255, 0.88)",
+            border: "1px solid rgba(109, 76, 64, 0.14)",
+            backdropFilter: "blur(10px)",
+            WebkitBackdropFilter: "blur(10px)",
+            boxShadow: "0 12px 24px rgba(67, 41, 33, 0.1)",
+          }}
+        >
+          Scan Complete
+        </Badge>
       </div>
 
       {/* Food Cards Grid */}
@@ -102,8 +139,8 @@ export default function FoodResults() {
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-          gap: "12px",
-          marginBottom: "12px",
+          gap: "14px",
+          marginBottom: "14px",
         }}
       >
         {items.map((item, idx) => (
@@ -112,13 +149,13 @@ export default function FoodResults() {
             className={`animate-scale-pop stagger-${idx + 1}`}
             style={{
               background: `linear-gradient(rgba(255,255,255,0.82), rgba(255,255,255,0.74)), ${cardColors[idx % cardColors.length]}`,
-              borderRadius: "32px",
-              padding: "16px",
+              borderRadius: "36px",
+              padding: "18px",
               border: "1px solid var(--border)",
               position: "relative",
               opacity: 0,
               transition: "transform 0.2s ease, box-shadow 0.2s ease",
-              boxShadow: "var(--shadow-sm)",
+              boxShadow: "var(--shadow-md)",
               backdropFilter: "blur(12px)",
             }}
           >
@@ -127,17 +164,17 @@ export default function FoodResults() {
               onClick={() => removeItem(item.id)}
               style={{
                 position: "absolute",
-                top: "12px",
-                right: "12px",
-                width: 28,
-                height: 28,
+                top: "14px",
+                right: "14px",
+                width: 32,
+                height: 32,
                 borderRadius: "50%",
                 background: "var(--bg-elevated)",
                 border: "1px solid var(--border)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "12px",
+                fontSize: "13px",
                 color: "var(--text-muted)",
                 cursor: "pointer",
               }}
@@ -151,26 +188,26 @@ export default function FoodResults() {
                 display: "flex",
                 alignItems: "flex-start",
                 justifyContent: "space-between",
-                gap: "14px",
-                marginBottom: "14px",
-                paddingRight: "36px",
+                gap: "16px",
+                marginBottom: "16px",
+                paddingRight: "40px",
               }}
             >
               {/* Category indicator */}
               <div
                 style={{
                   display: "inline-block",
-                  padding: "4px 10px",
-                  borderRadius: "var(--radius-full)",
-                  background: "var(--bg-elevated)",
-                  border: "1px solid var(--border)",
-                  fontSize: "11px",
-                  fontWeight: 600,
-                  color: "var(--text-secondary)",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.04em",
-                  flexShrink: 0,
-                }}
+                padding: "5px 12px",
+                borderRadius: "var(--radius-full)",
+                background: "rgba(255,251,248,0.88)",
+                border: "1px solid var(--border)",
+                fontSize: "12px",
+                fontWeight: 700,
+                color: "var(--text-secondary)",
+                textTransform: "uppercase",
+                letterSpacing: "0.08em",
+                flexShrink: 0,
+              }}
               >
                 {item.category}
               </div>
@@ -179,9 +216,9 @@ export default function FoodResults() {
               <div
                 aria-label={`${item.name} image placeholder`}
                 style={{
-                  width: 64,
-                  height: 64,
-                  borderRadius: "18px",
+                  width: 72,
+                  height: 72,
+                  borderRadius: "20px",
                   border: "1px dashed rgba(94, 139, 58, 0.35)",
                   background:
                     "linear-gradient(135deg, rgba(255,255,255,0.92), rgba(94, 139, 58, 0.08))",
@@ -191,7 +228,7 @@ export default function FoodResults() {
                   textAlign: "center",
                   padding: "6px",
                   color: "var(--text-muted)",
-                  fontSize: "10px",
+                  fontSize: "11px",
                   fontWeight: 600,
                   lineHeight: 1.2,
                   flexShrink: 0,
@@ -204,7 +241,7 @@ export default function FoodResults() {
             {/* Item details */}
             <p
               style={{
-                fontSize: "16px",
+                fontSize: "18px",
                 fontWeight: 700,
                 color: "var(--text-primary)",
                 marginBottom: "4px",
@@ -214,7 +251,7 @@ export default function FoodResults() {
             </p>
 
             <div className="flex items-center gap-2 mb-3">
-              <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>
+              <span style={{ fontSize: "13px", color: "var(--text-muted)" }}>
                 {item.calories} cal
               </span>
               <Badge variant="success">
@@ -226,7 +263,7 @@ export default function FoodResults() {
             <div className="flex items-center justify-between">
               <p
                 style={{
-                  fontSize: "20px",
+                  fontSize: "22px",
                   fontWeight: 800,
                   color: "var(--accent)",
                   fontFamily: "var(--font-mono)",
@@ -248,13 +285,13 @@ export default function FoodResults() {
                 <button
                   onClick={() => updateQuantity(item.id, -1)}
                   style={{
-                    width: 32,
-                    height: 32,
+                    width: 36,
+                    height: 36,
                     borderRadius: "50%",
                     border: "none",
                     background: "transparent",
                     cursor: "pointer",
-                    fontSize: "16px",
+                    fontSize: "18px",
                     fontWeight: 700,
                     color: "var(--text-secondary)",
                     display: "flex",
@@ -278,13 +315,13 @@ export default function FoodResults() {
                 <button
                   onClick={() => updateQuantity(item.id, 1)}
                   style={{
-                    width: 32,
-                    height: 32,
+                    width: 36,
+                    height: 36,
                     borderRadius: "50%",
                     border: "none",
                     background: "var(--accent)",
                     cursor: "pointer",
-                    fontSize: "16px",
+                    fontSize: "18px",
                     fontWeight: 700,
                     color: "white",
                     display: "flex",
@@ -303,7 +340,7 @@ export default function FoodResults() {
       {items.length === 0 && (
         <div
           style={{
-            padding: "60px",
+            padding: "72px",
             textAlign: "center",
             color: "var(--text-muted)",
             background: "var(--bg-elevated)",
@@ -319,11 +356,11 @@ export default function FoodResults() {
       {items.length > 0 && (
         <div
           style={{
-            marginTop: "8px",
-            background: "var(--bg-elevated)",
-            borderRadius: "32px",
-            padding: "18px 22px",
-            boxShadow: "var(--shadow-md)",
+            marginTop: "2px",
+                background: "linear-gradient(180deg, rgba(255,251,247,0.92), rgba(248,238,231,0.88))",
+                borderRadius: "36px",
+                padding: "22px 26px",
+                boxShadow: "var(--shadow-md)",
             border: "1px solid var(--border)",
             display: "flex",
             alignItems: "center",
@@ -333,14 +370,14 @@ export default function FoodResults() {
           }}
         >
           <div>
-            <p style={{ fontSize: "13px", color: "var(--text-muted)", marginBottom: "4px" }}>
+              <p style={{ fontSize: "14px", color: "var(--text-muted)", marginBottom: "4px" }}>
               Total — {items.length} item{items.length === 1 ? "" : "s"}
               {!anyUnknownCalories ? ` · ${totalCaloriesKnown} cal` : ""}
               {anyUnknownCalories ? " · calorie total N/A" : ""}
             </p>
             <p
               style={{
-                fontSize: "32px",
+                fontSize: "36px",
                 fontWeight: 800,
                 color: "var(--accent)",
                 fontFamily: "var(--font-mono)",
@@ -356,12 +393,13 @@ export default function FoodResults() {
             variant="primary"
             size="xl"
             onClick={handleProceed}
-            style={{ fontSize: "17px", minWidth: "220px" }}
+            style={{ fontSize: "18px", minWidth: "240px", transform: "translateY(-4px)" }}
           >
             Proceed to Payment
           </Button>
         </div>
       )}
+      </div>
     </div>
   );
 }

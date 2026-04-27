@@ -30,10 +30,10 @@ export default function ScanOverlay({
       <div
         style={{
           position: "relative",
-          width: "75%",
-          height: "60%",
-          maxWidth: "600px",
-          maxHeight: "400px",
+          width: "82%",
+          height: "66%",
+          maxWidth: "680px",
+          maxHeight: "460px",
         }}
       >
         {/* Corner markers */}
@@ -45,13 +45,13 @@ export default function ScanOverlay({
         ].map((pos, i) => (
           <div
             key={i}
-            style={{
-              position: "absolute",
-              width: "40px",
-              height: "40px",
-              ...pos,
-              borderColor: isScanning ? "var(--success)" : "var(--accent)",
-              transition: "border-color 0.3s ease",
+              style={{
+                position: "absolute",
+                width: "48px",
+                height: "48px",
+                ...pos,
+                borderColor: isScanning ? "var(--success)" : "var(--accent-light)",
+                transition: "border-color 0.3s ease",
             } as React.CSSProperties}
           />
         ))}
@@ -60,8 +60,8 @@ export default function ScanOverlay({
         <div
           style={{
             position: "absolute",
-            inset: "20px",
-            border: `2px dashed ${isScanning ? "var(--success)" : "rgba(108, 92, 231, 0.4)"}`,
+            inset: "24px",
+            border: `2px dashed ${isScanning ? "var(--success)" : "rgba(187, 129, 105, 0.42)"}`,
             borderRadius: "var(--radius-md)",
             transition: "border-color 0.3s ease",
           }}
@@ -72,8 +72,8 @@ export default function ScanOverlay({
           <div
             style={{
               position: "absolute",
-              left: "20px",
-              right: "20px",
+              left: "24px",
+              right: "24px",
               height: "2px",
               background: "linear-gradient(90deg, transparent, var(--success), transparent)",
               boxShadow: "0 0 12px var(--success-glow)",
@@ -86,22 +86,22 @@ export default function ScanOverlay({
         {/* Scanning pulse rings */}
         {isScanning && (
           <>
-            <div
-              style={{
-                position: "absolute",
-                inset: "-10px",
-                border: "2px solid var(--success)",
-                borderRadius: "var(--radius-lg)",
-                animation: "scan-ring 1.5s ease-out infinite",
+          <div
+            style={{
+              position: "absolute",
+              inset: "-14px",
+              border: "2px solid var(--success)",
+              borderRadius: "var(--radius-lg)",
+              animation: "scan-ring 1.5s ease-out infinite",
               }}
             />
-            <div
-              style={{
-                position: "absolute",
-                inset: "-10px",
-                border: "2px solid var(--success)",
-                borderRadius: "var(--radius-lg)",
-                animation: "scan-ring 1.5s ease-out 0.5s infinite",
+          <div
+            style={{
+              position: "absolute",
+              inset: "-14px",
+              border: "2px solid var(--success)",
+              borderRadius: "var(--radius-lg)",
+              animation: "scan-ring 1.5s ease-out 0.5s infinite",
               }}
             />
           </>
@@ -111,22 +111,24 @@ export default function ScanOverlay({
       {/* Instruction text */}
       <div
         style={{
-          marginTop: "24px",
-          padding: "10px 24px",
+          marginTop: "28px",
+          padding: "14px 30px",
           background: isScanning
-            ? "rgba(45, 57, 42, 0.74)"
-            : "rgba(10, 10, 15, 0.74)",
+            ? "rgba(58, 73, 52, 0.78)"
+            : "rgba(27, 21, 18, 0.76)",
           backdropFilter: "blur(8px)",
           borderRadius: "var(--radius-full)",
-          border: `1px solid ${isScanning ? "rgba(145, 179, 89, 0.8)" : "rgba(255,255,255,0.18)"}`,
+          border: `1px solid ${isScanning ? "rgba(170, 199, 159, 0.7)" : "rgba(255,255,255,0.12)"}`,
           transition: "all 0.3s ease",
         }}
       >
         <p
           style={{
             fontSize: "14px",
-            fontWeight: 600,
-            color: isScanning ? "#b8db7b" : "rgba(255,255,255,0.92)",
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: isScanning ? "#e7f1df" : "rgba(255,255,255,0.92)",
           }}
         >
           {isScanning ? "Analyzing your tray..." : instruction}

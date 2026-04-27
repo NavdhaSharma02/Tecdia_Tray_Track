@@ -45,37 +45,38 @@ export default function Header({
     <header className="app-header">
       <div className="app-header__inner">
         <div className="app-header__brand">
-        {showBack && onBack && (
-          <button
-            onClick={onBack}
-            className="btn btn-ghost btn-sm"
-            style={{ marginRight: "8px" }}
-          >
-            Back
-          </button>
-        )}
-        <Link
-          href="/"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            textDecoration: "none",
-          }}
-        >
-          <TecdiaLogo size="sm" align="left" showLines={false} />
-          <span
+          {showBack && onBack && (
+            <button
+              onClick={onBack}
+              className="btn btn-ghost btn-sm"
+              style={{ marginRight: "8px" }}
+            >
+              Back
+            </button>
+          )}
+          <Link
+            href="/customer"
             style={{
-              fontSize: "17px",
-              fontWeight: 700,
-              color: "var(--text-primary)",
-              letterSpacing: "-0.02em",
-              fontFamily: "var(--font-display)",
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              textDecoration: "none",
             }}
           >
-            {APP_NAME}
-          </span>
-        </Link>
+            <TecdiaLogo size="sm" align="left" showLines={false} />
+            <span
+              style={{
+                fontSize: "22px",
+                fontWeight: 700,
+                color: "#1f1511",
+                letterSpacing: "-0.02em",
+                fontFamily: "var(--font-display)",
+                textShadow: "none",
+              }}
+            >
+              {APP_NAME}
+            </span>
+          </Link>
         </div>
 
         <div className="app-header__stepper">
@@ -87,7 +88,7 @@ export default function Header({
           {customerAuth && (
             <button
               className="btn btn-ghost btn-sm"
-              style={{ fontSize: "12px" }}
+              style={{ fontSize: "14px" }}
               onClick={() => setIsFeedbackOpen(true)}
               type="button"
             >
@@ -98,7 +99,7 @@ export default function Header({
             <Link
               href="/admin/login"
               className="btn btn-ghost btn-sm"
-              style={{ fontSize: "12px" }}
+              style={{ fontSize: "14px" }}
             >
               Admin
             </Link>
