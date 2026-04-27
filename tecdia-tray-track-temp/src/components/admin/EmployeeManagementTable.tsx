@@ -2,9 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Badge from "@/components/ui/Badge";
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
-import Modal from "@/components/ui/Modal";
 import { formatCurrency, formatDateTime, getInitials } from "@/lib/utils";
 import * as api from "@/services/api";
 import type { Employee } from "@/types";
@@ -14,12 +11,6 @@ export default function EmployeeManagementTable() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "active" | "on_leave" | "inactive">("all");
-  const [editEmployee, setEditEmployee] = useState<Employee | null>(null);
-  const [editEmployeeCode, setEditEmployeeCode] = useState("");
-  const [editName, setEditName] = useState("");
-  const [editDepartment, setEditDepartment] = useState("");
-  const [editError, setEditError] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     api.getAllEmployees().then((res) => {
@@ -38,49 +29,6 @@ export default function EmployeeManagementTable() {
 
     return matchesFilter && matchesSearch;
   });
-
-  const openEdit = (employee: Employee) => {
-    setEditEmployee(employee);
-    setEditEmployeeCode(employee.id);
-    setEditName(employee.name);
-    setEditDepartment(employee.department);
-    setEditError(null);
-  };
-
-  const handleSaveEdit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    if (!editEmployee) return;
-    if (!editEmployeeCode.trim() || !editName.trim() || !editDepartment.trim()) {
-      setEditError("Employee ID, name, and department are required.");
-      return;
-    }
-    setSaving(true);
-    setEditError(null);
-    const result = await api.updateEmployeeProfile(editEmployee.id, {
-      employeeCode: editEmployeeCode.trim().toUpperCase(),
-      fullName: editName.trim(),
-      department: editDepartment.trim(),
-    });
-    setSaving(false);
-    if (!result.ok) {
-      setEditError(result.error || "Could not update employee.");
-      return;
-    }
-
-    setEmployees((prev) =>
-      prev.map((emp) =>
-        emp.id === editEmployee.id
-          ? {
-              ...emp,
-              id: editEmployeeCode.trim().toUpperCase(),
-              name: editName.trim(),
-              department: editDepartment.trim(),
-            }
-          : emp
-      )
-    );
-    setEditEmployee(null);
-  };
 
   return (
     <div>
@@ -128,21 +76,20 @@ export default function EmployeeManagementTable() {
               <th>Primary Payment</th>
               <th>Last Transaction</th>
               <th>Status</th>
-              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               Array.from({ length: 3 }).map((_, i) => (
                 <tr key={i}>
-                  <td colSpan={10}>
+                  <td colSpan={9}>
                     <div className="animate-shimmer" style={{ height: "20px", borderRadius: "4px" }} />
                   </td>
                 </tr>
               ))
             ) : filtered.length === 0 ? (
               <tr>
-                <td colSpan={10} style={{ textAlign: "center", color: "var(--text-muted)", padding: "32px" }}>
+                <td colSpan={9} style={{ textAlign: "center", color: "var(--text-muted)", padding: "32px" }}>
                   No employees found
                 </td>
               </tr>
@@ -204,65 +151,12 @@ export default function EmployeeManagementTable() {
                       {emp.status?.replace("_", " ") || "active"}
                     </Badge>
                   </td>
-                  <td>
-                    <button
-                      className="btn btn-ghost btn-sm"
-                      style={{ fontSize: "13px" }}
-                      onClick={() => openEdit(emp)}
-                    >
-                      Edit
-                    </button>
-                  </td>
                 </tr>
               ))
             )}
           </tbody>
         </table>
       </div>
-
-      <Modal
-        isOpen={!!editEmployee}
-        onClose={() => setEditEmployee(null)}
-        title="Edit Employee Profile"
-      >
-        <form onSubmit={handleSaveEdit} style={{ display: "grid", gap: "12px" }}>
-          <Input
-            label="Employee ID"
-            value={editEmployeeCode}
-            onChange={(event) => setEditEmployeeCode(event.target.value)}
-            placeholder="Employee ID"
-          />
-          <Input
-            label="Full Name"
-            value={editName}
-            onChange={(event) => setEditName(event.target.value)}
-            placeholder="Employee full name"
-          />
-          <Input
-            label="Department"
-            value={editDepartment}
-            onChange={(event) => setEditDepartment(event.target.value)}
-            placeholder="Department"
-          />
-          {editError && (
-            <p style={{ fontSize: "13px", color: "var(--danger)" }}>{editError}</p>
-          )}
-          <div className="flex gap-3 mt-1">
-            <Button
-              type="button"
-              variant="outline"
-              size="md"
-              className="flex-1"
-              onClick={() => setEditEmployee(null)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" variant="primary" size="md" className="flex-1" isLoading={saving}>
-              Save Changes
-            </Button>
-          </div>
-        </form>
-      </Modal>
     </div>
   );
 }

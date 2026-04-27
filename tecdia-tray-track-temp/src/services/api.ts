@@ -29,6 +29,7 @@ import {
   getSimulatedScanResult,
   MOCK_ADMIN_STATS,
   MOCK_ADMIN_USERS,
+  MOCK_EMPLOYEES,
   MOCK_TRANSACTIONS,
 } from "@/lib/mock-data";
 
@@ -50,10 +51,8 @@ export async function getEmployee(id: string): Promise<ApiResponse<Employee>> {
 }
 
 export async function signUpCustomer(input: {
-  employeeCode: string;
   email: string;
   fullName: string;
-  department: string;
   password: string;
 }): Promise<ApiResponse<AuthResponse>> {
   try {
@@ -85,25 +84,6 @@ export async function loginCustomer(input: {
     return data;
   } catch {
     return { ok: false, error: "Unable to reach login service." };
-  }
-}
-
-export async function resetCustomerPassword(input: {
-  email: string;
-  adminPin: string;
-  newPassword: string;
-}): Promise<ApiResponse<null>> {
-  try {
-    const res = await fetch(`${API_BASE}/auth/reset-password`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
-    });
-    const data = (await res.json()) as ApiResponse<null>;
-    if (!res.ok) return { ok: false, error: data.error || "Password reset failed." };
-    return { ok: true, data: null };
-  } catch {
-    return { ok: false, error: "Unable to reset password." };
   }
 }
 
@@ -304,35 +284,9 @@ export async function deleteMenuItem(id: string): Promise<ApiResponse<null>> {
 
 /** Fetch all employees for admin panel */
 export async function getAllEmployees(): Promise<ApiResponse<Employee[]>> {
-  try {
-    const res = await fetch(`${API_BASE}/admin/employees`, { cache: "no-store" });
-    const data = (await res.json()) as ApiResponse<Employee[]>;
-    if (!res.ok) return { ok: false, error: data.error || "Failed to load employees." };
-    return data;
-  } catch {
-    return { ok: false, error: "Unable to load employees." };
-  }
-}
-
-export async function updateEmployeeProfile(
-  currentEmployeeCode: string,
-  input: { employeeCode: string; fullName: string; department: string }
-): Promise<ApiResponse<Employee>> {
-  try {
-    const res = await fetch(
-      `${API_BASE}/admin/employees/${encodeURIComponent(currentEmployeeCode)}`,
-      {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(input),
-      }
-    );
-    const data = (await res.json()) as ApiResponse<Employee>;
-    if (!res.ok) return { ok: false, error: data.error || "Update failed." };
-    return data;
-  } catch {
-    return { ok: false, error: "Unable to update employee profile." };
-  }
+  // TODO: Replace with real endpoint → GET ${API_BASE}/employees
+  await new Promise((r) => setTimeout(r, 400));
+  return { ok: true, data: MOCK_EMPLOYEES };
 }
 
 export async function getAdminUsers(): Promise<ApiResponse<AdminUser[]>> {

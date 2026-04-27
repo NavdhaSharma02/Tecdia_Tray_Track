@@ -55,10 +55,8 @@ export async function POST(request: Request) {
       data: {
         customer: {
           id: customer.id,
-          employeeCode: customer.employeeCode,
           email: customer.email,
           fullName: customer.fullName,
-          department: customer.department,
           createdAt: customer.createdAt,
         },
       },

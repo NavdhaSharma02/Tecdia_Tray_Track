@@ -15,7 +15,7 @@ function parseCalories(value: unknown): number | null {
 }
 
 /**
- * GET /api/admin/today-menu — persistent menu catalog for admin UI.
+ * GET /api/admin/today-menu — all items scheduled for today (admin UI).
  */
 export async function GET() {
   try {
@@ -24,14 +24,14 @@ export async function GET() {
   } catch (error) {
     console.error("admin today-menu GET failed:", error);
     return NextResponse.json(
-      { ok: false, error: "Could not load menu items." },
+      { ok: false, error: "Could not load today's menu." },
       { status: 500 }
     );
   }
 }
 
 /**
- * POST /api/admin/today-menu — add item to persistent menu catalog.
+ * POST /api/admin/today-menu — add item to today's menu (and catalog row).
  */
 export async function POST(request: Request) {
   try {

@@ -3,7 +3,7 @@ import { listTodayMenuAvailableForScan } from "@/lib/today-menu-db";
 
 /**
  * GET /api/menu/today
- * Available active items from persistent menu catalog.
+ * Available items for the current service day (kiosk / simulated scan).
  */
 export async function GET() {
   try {
@@ -12,7 +12,7 @@ export async function GET() {
   } catch (error) {
     console.error("today menu (public) failed:", error);
     return NextResponse.json(
-      { ok: false, error: "Could not load menu items." },
+      { ok: false, error: "Could not load today's menu." },
       { status: 500 }
     );
   }

@@ -135,10 +135,8 @@ export interface ApiResponse<T> {
 
 export interface AuthCustomer {
   id: string;
-  employeeCode: string;
   email: string;
   fullName: string;
-  department: string;
   createdAt: string;
 }
 

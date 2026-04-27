@@ -83,7 +83,7 @@ export async function DELETE(_request: Request, { params }: RouteParams) {
     const ok = await removeMenuItemFromToday(menuItemId);
     if (!ok) {
       return NextResponse.json(
-        { ok: false, error: "Item not found." },
+        { ok: false, error: "Item not on today's menu." },
         { status: 404 }
       );
     }
