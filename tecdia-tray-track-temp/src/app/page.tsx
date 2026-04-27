@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import TecdiaLogo from "@/components/layout/TecdiaLogo";
-import MarketingTrayShowcase from "@/components/marketing/MarketingTrayShowcase";
 
 const stats = [
   { value: "3.5s", label: "average tray recognition cycle" },
@@ -61,16 +60,16 @@ export default function RootPage() {
             </h1>
             <p>
               Inspired by hospitality-grade digital ordering experiences, Tecdia
-              Tray Track turns tray recognition, billing, and payment into one
-              polished journey that feels fast, clear, and trustworthy.
+              Tray Track turns tray recognition, billing and payment into one
+              polished journey that feels fast, clear and trustworthy.
             </p>
 
             <div className="marketing-cta">
               <Link href="/customer" className="btn btn-primary btn-lg">
-                Experience customer flow
+                Customer Kiosk
               </Link>
               <Link href="/admin" className="btn btn-outline btn-lg">
-                View operations dashboard
+                Admin Dashboard
               </Link>
             </div>
 
@@ -84,7 +83,39 @@ export default function RootPage() {
             </div>
           </div>
 
-          <MarketingTrayShowcase />
+          <div className="marketing-showcase">
+            <div className="marketing-device">
+              <div className="marketing-device__topbar">
+                <span>Tray Vision Session</span>
+                <span>Live Preview</span>
+              </div>
+              <div className="marketing-device__frame">
+                <Image
+                  src="/bg6.jpg"
+                  alt="Cafeteria dining presentation"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+                <div className="marketing-device__overlay">
+                  <div className="marketing-detection-card">
+                    <span className="marketing-detection-card__label">Detected items</span>
+                    <strong>Chicken meal, rice, juice</strong>
+                    <p>Menu matched and bill generated in a single pass.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="marketing-floating-card marketing-floating-card--a">
+              <span>Today&apos;s menu synced</span>
+              <strong>12 active dishes</strong>
+            </div>
+            <div className="marketing-floating-card marketing-floating-card--b">
+              <span>Checkout ready</span>
+              <strong>UPI, card, payroll</strong>
+            </div>
+          </div>
         </div>
       </section>
 
