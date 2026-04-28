@@ -92,6 +92,16 @@ CREATE TABLE IF NOT EXISTS transaction_items (
   line_total NUMERIC(10,2) NOT NULL CHECK (line_total >= 0)
 );
 
+CREATE TABLE IF NOT EXISTS feedbacks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  customer_id UUID NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
+  transaction_id UUID REFERENCES transactions(id) ON DELETE SET NULL,
+  issue_text TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE INDEX IF NOT EXISTS idx_customers_email ON customers(email);
 CREATE INDEX IF NOT EXISTS idx_tray_scans_customer_id ON tray_scans(customer_id);
 CREATE INDEX IF NOT EXISTS idx_transactions_customer_id ON transactions(customer_id);
+CREATE INDEX IF NOT EXISTS idx_feedbacks_customer_id ON feedbacks(customer_id);
+CREATE INDEX IF NOT EXISTS idx_feedbacks_transaction_id ON feedbacks(transaction_id);

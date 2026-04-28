@@ -10,7 +10,9 @@
 import type {
   AdminUser,
   AuthCustomer,
+  CustomerTransactionSummary,
   Employee,
+  FeedbackEntry,
   MenuItem,
   Transaction,
   ScannedItem,
@@ -144,8 +146,57 @@ export async function processPayment(
   items: ScannedItem[],
   method: PaymentMethod
 ): Promise<ApiResponse<Receipt>> {
-  // TODO: Replace with real endpoint → POST ${API_BASE}/payments
+  try {
+    const res = await fetch(`${API_BASE}/customer/checkout`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        items,
+        paymentMethod: method,
+      }),
+    });
+    const data = (await res.json()) as ApiResponse<Receipt>;
+    if (res.ok && data.ok && data.data) {
+      return data;
+    }
+  } catch {
+    // fallback to mock below
+  }
   return mockSubmitPayment(employeeId, items, method);
+}
+
+export async function getCustomerTransactions(): Promise<
+  ApiResponse<CustomerTransactionSummary[]>
+> {
+  try {
+    const res = await fetch(`${API_BASE}/customer/transactions`, {
+      method: "GET",
+      cache: "no-store",
+    });
+    const data = (await res.json()) as ApiResponse<CustomerTransactionSummary[]>;
+    if (!res.ok) return { ok: false, error: data.error || "Failed to load transactions." };
+    return data;
+  } catch {
+    return { ok: false, error: "Unable to load transactions." };
+  }
+}
+
+export async function submitCustomerFeedback(input: {
+  issueText: string;
+  transactionId?: string | null;
+}): Promise<ApiResponse<null>> {
+  try {
+    const res = await fetch(`${API_BASE}/customer/feedback`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    });
+    const data = (await res.json()) as ApiResponse<null>;
+    if (!res.ok) return { ok: false, error: data.error || "Feedback submit failed." };
+    return { ok: true, data: null };
+  } catch {
+    return { ok: false, error: "Unable to submit feedback." };
+  }
 }
 
 // ──────────────────────────────────────────────
@@ -241,6 +292,20 @@ export async function getAllEmployees(): Promise<ApiResponse<Employee[]>> {
 export async function getAdminUsers(): Promise<ApiResponse<AdminUser[]>> {
   await new Promise((r) => setTimeout(r, 350));
   return { ok: true, data: MOCK_ADMIN_USERS };
+}
+
+export async function getAdminFeedbacks(): Promise<ApiResponse<FeedbackEntry[]>> {
+  try {
+    const res = await fetch(`${API_BASE}/admin/feedbacks`, {
+      method: "GET",
+      cache: "no-store",
+    });
+    const data = (await res.json()) as ApiResponse<FeedbackEntry[]>;
+    if (!res.ok) return { ok: false, error: data.error || "Failed to load feedbacks." };
+    return data;
+  } catch {
+    return { ok: false, error: "Unable to load feedbacks." };
+  }
 }
 
 /** Fetch all transactions for admin panel */

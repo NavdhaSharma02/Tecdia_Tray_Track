@@ -6,6 +6,7 @@ import { APP_NAME } from "@/lib/constants";
 import TecdiaLogo from "@/components/layout/TecdiaLogo";
 import FlowStepper from "@/components/layout/FlowStepper";
 import { useCustomerFlow } from "@/hooks/useCustomerFlow";
+import FeedbackModal from "@/components/customer/FeedbackModal";
 
 interface HeaderProps {
   showAdmin?: boolean;
@@ -21,8 +22,9 @@ export default function Header({
   showBack = false,
   onBack,
 }: HeaderProps) {
-  const { step } = useCustomerFlow();
+  const { step, customerAuth, reset } = useCustomerFlow();
   const [time, setTime] = useState("");
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   useEffect(() => {
     function updateTime() {
@@ -82,6 +84,16 @@ export default function Header({
 
         <div className="app-header__actions">
           <span className="app-header__time">{time}</span>
+          {customerAuth && (
+            <button
+              className="btn btn-ghost btn-sm"
+              style={{ fontSize: "12px" }}
+              onClick={() => setIsFeedbackOpen(true)}
+              type="button"
+            >
+              Feedback
+            </button>
+          )}
           {showAdmin && (
             <Link
               href="/admin/login"
@@ -93,6 +105,11 @@ export default function Header({
           )}
         </div>
       </div>
+      <FeedbackModal
+        isOpen={isFeedbackOpen}
+        onClose={() => setIsFeedbackOpen(false)}
+        onSubmitted={reset}
+      />
     </header>
   );
 }

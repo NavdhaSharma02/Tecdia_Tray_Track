@@ -45,6 +45,12 @@ If you created the database **before** calories were made optional, apply the mi
 psql -U postgres -h localhost -d tecdia_tray_track -f db/migrations/002_menu_calories_nullable.sql
 ```
 
+Add feedback table migration:
+
+```powershell
+psql -U postgres -h localhost -d tecdia_tray_track -f db/migrations/003_feedbacks_table.sql
+```
+
 ### Optional: seed one example item for today
 
 So the kiosk has something to scan before you use the admin UI:
@@ -61,6 +67,7 @@ Core relational tables:
 - `service_days` (one row per calendar date the cafeteria operates)
 - `service_day_menu_items` (which catalog items appear **today**, and `available` for today)
 - `tray_scans`, `tray_scan_items`, `transactions`, `transaction_items`
+- `feedbacks` (customer issue reports, optionally linked to a transaction)
 
 ## 2) Environment Variables
 
@@ -103,6 +110,7 @@ Tray **simulated scan** loads **today’s available** rows from PostgreSQL (`GET
 - Admin login is at `/admin/login`. Enter the **6-digit** `ADMIN_PIN` from `.env.local`. The PIN is validated with `POST /api/admin/login` (never embedded in client source).
 - **Menu Management** reads and writes **today’s** menu: `GET/POST /api/admin/today-menu`, `PATCH/DELETE /api/admin/today-menu/:menuItemId`.
 - Editing **name, price, calories** (number or **N/A** → stored as `NULL`), **category** (dropdown), and **availability** persists in Postgres.
+- New **Feedbacks** tab in admin sidebar shows customer-submitted issues, linked to customer identity and optional transaction.
 
 ### Useful SQL (inspect today’s lineup)
 
@@ -131,6 +139,13 @@ ORDER BY mi.name;
 - `POST /api/admin/today-menu` — add catalog + link to today
 - `PATCH /api/admin/today-menu/:menuItemId` — update item + today’s availability
 - `DELETE /api/admin/today-menu/:menuItemId` — remove item from **today’s** menu (catalog row remains unless you remove all day links; safe with existing FKs)
+
+**Checkout + feedback**
+
+- `POST /api/customer/checkout` — persists completed transaction for logged-in customer
+- `GET /api/customer/transactions` — list customer’s historical completed transactions
+- `POST /api/customer/feedback` — submit feedback with optional transaction id
+- `GET /api/admin/feedbacks` — list all feedbacks for admin view
 
 **Admin**
 

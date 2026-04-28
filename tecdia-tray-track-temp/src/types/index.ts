@@ -98,6 +98,24 @@ export interface Receipt {
   status: string;
 }
 
+export interface CustomerTransactionSummary {
+  id: string;
+  total: number;
+  paymentMethod: PaymentMethod;
+  date: string;
+  status: string;
+}
+
+export interface FeedbackEntry {
+  id: string;
+  customerId: string;
+  customerEmail: string;
+  customerName: string;
+  transactionId: string | null;
+  issueText: string;
+  createdAt: string;
+}
+
 /** Admin dashboard aggregated stats */
 export interface AdminStats {
   mealsToday: number;

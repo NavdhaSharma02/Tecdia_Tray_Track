@@ -12,6 +12,7 @@ const navItems = [
   { href: "/admin/employees", label: "Employees" },
   { href: "/admin/menu", label: "Menu Items" },
   { href: "/admin/transactions", label: "Transactions" },
+  { href: "/admin/feedbacks", label: "Feedbacks" },
   { href: "/admin/analytics", label: "Analytics" },
 ];
 
