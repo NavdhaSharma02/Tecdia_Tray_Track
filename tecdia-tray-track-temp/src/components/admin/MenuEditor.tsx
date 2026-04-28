@@ -27,7 +27,7 @@ export default function MenuEditor() {
     if (res.ok && res.data) {
       setItems(res.data);
     } else {
-      setListError(res.error || "Could not load today's menu.");
+      setListError(res.error || "Could not load menu items.");
       setItems([]);
     }
     setLoading(false);

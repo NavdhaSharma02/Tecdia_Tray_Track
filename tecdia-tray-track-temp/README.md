@@ -51,6 +51,12 @@ Add feedback table migration:
 psql -U postgres -h localhost -d tecdia_tray_track -f db/migrations/003_feedbacks_table.sql
 ```
 
+Add customer profile fields migration (employee ID + department):
+
+```powershell
+psql -U postgres -h localhost -d tecdia_tray_track -f db/migrations/004_customers_profile_fields.sql
+```
+
 ### Optional: seed one example item for today
 
 So the kiosk has something to scan before you use the admin UI:
@@ -103,14 +109,16 @@ Open [http://localhost:3000/customer](http://localhost:3000/customer).
 - On the **tray scanning** step only, **Cancel and log out** returns to the main ID screen and clears the cookie.
 - After the tray scan completes (**Bill** step onward), the customer must complete checkout; there is no exit button until the flow finishes or staff intervene via browser refresh (which clears in-memory state; cookie is still cleared after payment).
 
-Tray **simulated scan** loads **today’s available** rows from PostgreSQL (`GET /api/menu/today`) and randomizes detected items. If today’s menu is empty, the scan step shows an error until staff add items under **Admin → Menu**.
+Tray **simulated scan** loads available menu rows from PostgreSQL (`GET /api/menu/today`) and randomizes detected items. If no active menu items exist, the scan step shows an error until staff add/enable items under **Admin → Menu**.
 
-## 5) Admin: PIN and today’s menu
+## 5) Admin: PIN, employees, and menu
 
 - Admin login is at `/admin/login`. Enter the **6-digit** `ADMIN_PIN` from `.env.local`. The PIN is validated with `POST /api/admin/login` (never embedded in client source).
-- **Menu Management** reads and writes **today’s** menu: `GET/POST /api/admin/today-menu`, `PATCH/DELETE /api/admin/today-menu/:menuItemId`.
+- **Menu Management** now uses a persistent menu catalog: items stay until admin edits/deletes them.
 - Editing **name, price, calories** (number or **N/A** → stored as `NULL`), **category** (dropdown), and **availability** persists in Postgres.
 - New **Feedbacks** tab in admin sidebar shows customer-submitted issues, linked to customer identity and optional transaction.
+- **Employees** view now loads from real customer accounts and supports admin editing of employee ID, full name, and department.
+- Login flow includes **Forgot Password** reset authorized by admin 6-digit PIN.
 
 ### Useful SQL (inspect today’s lineup)
 
@@ -131,14 +139,15 @@ ORDER BY mi.name;
 - `POST /api/auth/login`
 - `GET /api/auth/me`
 - `POST /api/auth/logout`
+- `POST /api/auth/reset-password`
 
 **Menu**
 
 - `GET /api/menu/today` — available items for the kiosk scan
-- `GET /api/admin/today-menu` — all items scheduled for today (admin UI)
-- `POST /api/admin/today-menu` — add catalog + link to today
-- `PATCH /api/admin/today-menu/:menuItemId` — update item + today’s availability
-- `DELETE /api/admin/today-menu/:menuItemId` — remove item from **today’s** menu (catalog row remains unless you remove all day links; safe with existing FKs)
+- `GET /api/admin/today-menu` — all persistent menu items (admin UI)
+- `POST /api/admin/today-menu` — add catalog item
+- `PATCH /api/admin/today-menu/:menuItemId` — update catalog item
+- `DELETE /api/admin/today-menu/:menuItemId` — remove catalog item
 
 **Checkout + feedback**
 
@@ -150,6 +159,8 @@ ORDER BY mi.name;
 **Admin**
 
 - `POST /api/admin/login` — body `{ "pin": "123456" }`
+- `GET /api/admin/employees` — list employee accounts from customers table
+- `PATCH /api/admin/employees/:employeeCode` — edit employee ID, name, department
 
 ## 7) How to test quickly
 

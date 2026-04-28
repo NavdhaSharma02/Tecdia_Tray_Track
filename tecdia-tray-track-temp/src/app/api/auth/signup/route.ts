@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
-import { createCustomer, findCustomerByEmail } from "@/lib/customer-auth";
+import {
+  createCustomer,
+  findCustomerByEmail,
+  findCustomerByEmployeeCode,
+} from "@/lib/customer-auth";
 import { hashPassword } from "@/lib/auth";
 import {
   CUSTOMER_SESSION_COOKIE,
@@ -8,8 +12,10 @@ import {
 } from "@/lib/session";
 
 interface SignupBody {
+  employeeCode?: string;
   email?: string;
   fullName?: string;
+  department?: string;
   password?: string;
 }
 
@@ -17,16 +23,26 @@ function normalizeEmail(value: string): string {
   return value.trim().toLowerCase();
 }
 
+function normalizeEmployeeCode(value: string): string {
+  return value.trim().toUpperCase();
+}
+
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as SignupBody;
+    const employeeCode = normalizeEmployeeCode(body.employeeCode || "");
     const email = normalizeEmail(body.email || "");
     const fullName = (body.fullName || "").trim();
+    const department = (body.department || "").trim();
     const password = body.password || "";
 
-    if (!email || !fullName || !password) {
+    if (!employeeCode || !email || !fullName || !department || !password) {
       return NextResponse.json(
-        { ok: false, error: "Email, full name, and password are required." },
+        {
+          ok: false,
+          error:
+            "Employee ID, email, full name, department, and password are required.",
+        },
         { status: 400 }
       );
     }
@@ -44,11 +60,20 @@ export async function POST(request: Request) {
         { status: 409 }
       );
     }
+    const existingEmployeeCode = await findCustomerByEmployeeCode(employeeCode);
+    if (existingEmployeeCode) {
+      return NextResponse.json(
+        { ok: false, error: "This employee ID is already registered." },
+        { status: 409 }
+      );
+    }
 
     const passwordData = hashPassword(password);
     const customer = await createCustomer({
+      employeeCode,
       email,
       fullName,
+      department,
       passwordHash: passwordData.hash,
       passwordSalt: passwordData.salt,
     });
@@ -64,6 +89,17 @@ export async function POST(request: Request) {
     );
     return response;
   } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (error as { code?: string }).code === "23505"
+    ) {
+      return NextResponse.json(
+        { ok: false, error: "Email or employee ID already exists." },
+        { status: 409 }
+      );
+    }
     console.error("Signup failed:", error);
     return NextResponse.json(
       { ok: false, error: "Failed to create account." },

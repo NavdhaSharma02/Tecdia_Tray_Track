@@ -96,7 +96,9 @@ interface CustomerFlowContextValue extends CustomerFlowState {
   openEmailAuth: () => Promise<void>;
   backToIdScan: () => Promise<void>;
   signUpWithEmail: (input: {
+    employeeCode: string;
     fullName: string;
+    department: string;
     email: string;
     password: string;
   }) => Promise<boolean>;
@@ -177,10 +179,10 @@ export function CustomerFlowProvider({ children }: { children: ReactNode }) {
   const hydrateCustomer = useCallback(
     async (customer: AuthCustomer): Promise<boolean> => {
       const employee: Employee = {
-        id: customer.id,
+        id: customer.employeeCode,
         name: customer.fullName,
         email: customer.email,
-        department: "Customer",
+        department: customer.department,
         avatar: null,
         accountBalance: 0,
         joinDate: customer.createdAt,
@@ -196,7 +198,13 @@ export function CustomerFlowProvider({ children }: { children: ReactNode }) {
   );
 
   const signUpWithEmail = useCallback(
-    async (input: { fullName: string; email: string; password: string }) => {
+    async (input: {
+      employeeCode: string;
+      fullName: string;
+      department: string;
+      email: string;
+      password: string;
+    }) => {
       dispatch({ type: "SET_LOADING", payload: true });
       const result = await api.signUpCustomer(input);
       if (!result.ok || !result.data?.customer) {

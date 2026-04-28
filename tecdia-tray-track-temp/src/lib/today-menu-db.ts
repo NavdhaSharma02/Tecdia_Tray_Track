@@ -8,7 +8,7 @@ export interface TodayMenuRow {
   price: string;
   calories: number | null;
   image_url: string | null;
-  available: boolean;
+  is_active: boolean;
 }
 
 function rowToMenuItem(row: TodayMenuRow): MenuItem {
@@ -18,30 +18,14 @@ function rowToMenuItem(row: TodayMenuRow): MenuItem {
     category: row.category,
     price: Number(row.price),
     image: row.image_url,
-    available: row.available,
+    available: row.is_active,
     calories: row.calories,
   };
 }
 
 export async function getOrCreateTodayServiceDayId(): Promise<string> {
-  const pool = getDbPool();
-  let { rows } = await pool.query<{ id: string }>(
-    `
-    INSERT INTO service_days (service_date)
-    VALUES (CURRENT_DATE)
-    ON CONFLICT (service_date) DO NOTHING
-    RETURNING id;
-    `
-  );
-  if (!rows[0]) {
-    ({ rows } = await pool.query<{ id: string }>(
-      `SELECT id FROM service_days WHERE service_date = CURRENT_DATE LIMIT 1;`
-    ));
-  }
-  if (!rows[0]) {
-    throw new Error("Could not resolve service day for CURRENT_DATE");
-  }
-  return rows[0].id;
+  // Kept for compatibility with older call sites; no longer used for persistent menu.
+  return "not-used";
 }
 
 export async function listTodayMenuForAdmin(): Promise<MenuItem[]> {
@@ -55,12 +39,8 @@ export async function listTodayMenuForAdmin(): Promise<MenuItem[]> {
       mi.base_price::text AS price,
       mi.calories,
       mi.image_url,
-      sdmi.available
-    FROM service_day_menu_items sdmi
-    JOIN menu_items mi ON mi.id = sdmi.menu_item_id
-    JOIN service_days sd ON sd.id = sdmi.service_day_id
-    WHERE sd.service_date = CURRENT_DATE
-      AND mi.is_active = TRUE
+      mi.is_active
+    FROM menu_items mi
     ORDER BY mi.name ASC;
     `
   );
@@ -78,13 +58,9 @@ export async function listTodayMenuAvailableForScan(): Promise<MenuItem[]> {
       mi.base_price::text AS price,
       mi.calories,
       mi.image_url,
-      sdmi.available
-    FROM service_day_menu_items sdmi
-    JOIN menu_items mi ON mi.id = sdmi.menu_item_id
-    JOIN service_days sd ON sd.id = sdmi.service_day_id
-    WHERE sd.service_date = CURRENT_DATE
-      AND mi.is_active = TRUE
-      AND sdmi.available = TRUE
+      mi.is_active
+    FROM menu_items mi
+    WHERE mi.is_active = TRUE
     ORDER BY mi.name ASC;
     `
   );
@@ -103,58 +79,29 @@ export async function insertTodayMenuItem(input: {
   available: boolean;
 }): Promise<MenuItem> {
   const pool = getDbPool();
-  const serviceDayId = await getOrCreateTodayServiceDayId();
-
-  const client = await pool.connect();
-  try {
-    await client.query("BEGIN");
-    const insertItem = await client.query<{
-      id: string;
-      name: string;
-      category: string;
-      price: string;
-      calories: number | null;
-      image_url: string | null;
-    }>(
-      `
-      INSERT INTO menu_items (code, name, category, base_price, calories, image_url, is_active)
-      VALUES ($1, $2, $3, $4, $5, NULL, TRUE)
-      RETURNING id::text, name, category, base_price::text AS price, calories, image_url;
-      `,
-      [
-        uniqueMenuCode(),
-        input.name,
-        input.category,
-        input.price,
-        input.calories,
-      ]
-    );
-
-    const mi = insertItem.rows[0];
-    await client.query(
-      `
-      INSERT INTO service_day_menu_items (service_day_id, menu_item_id, available)
-      VALUES ($1, $2::uuid, $3);
-      `,
-      [serviceDayId, mi.id, input.available]
-    );
-    await client.query("COMMIT");
-
-    return {
-      id: mi.id,
-      name: mi.name,
-      category: mi.category,
-      price: Number(mi.price),
-      calories: mi.calories,
-      image: mi.image_url,
-      available: input.available,
-    };
-  } catch (e) {
-    await client.query("ROLLBACK");
-    throw e;
-  } finally {
-    client.release();
-  }
+  const inserted = await pool.query<TodayMenuRow>(
+    `
+    INSERT INTO menu_items (code, name, category, base_price, calories, image_url, is_active)
+    VALUES ($1, $2, $3, $4, $5, NULL, $6)
+    RETURNING
+      id::text AS id,
+      name,
+      category,
+      base_price::text AS price,
+      calories,
+      image_url,
+      is_active;
+    `,
+    [
+      uniqueMenuCode(),
+      input.name,
+      input.category,
+      input.price,
+      input.calories,
+      input.available,
+    ]
+  );
+  return rowToMenuItem(inserted.rows[0]);
 }
 
 export async function updateTodayMenuItem(
@@ -168,105 +115,39 @@ export async function updateTodayMenuItem(
   }
 ): Promise<MenuItem | null> {
   const pool = getDbPool();
-  const serviceDayId = await getOrCreateTodayServiceDayId();
-
-  const client = await pool.connect();
-  try {
-    await client.query("BEGIN");
-    const onToday = await client.query(
-      `
-      SELECT 1
-      FROM service_day_menu_items
-      WHERE service_day_id = $1 AND menu_item_id = $2::uuid
-      LIMIT 1;
-      `,
-      [serviceDayId, menuItemId]
-    );
-    if (!onToday.rowCount) {
-      await client.query("ROLLBACK");
-      return null;
-    }
-
-    const upd = await client.query<{
-      id: string;
-      name: string;
-      category: string;
-      price: string;
-      calories: number | null;
-      image_url: string | null;
-    }>(
-      `
-      UPDATE menu_items
-      SET name = $2,
-          category = $3,
-          base_price = $4,
-          calories = $5
-      WHERE id = $1::uuid
-      RETURNING id::text, name, category, base_price::text AS price, calories, image_url;
-      `,
-      [menuItemId, input.name, input.category, input.price, input.calories]
-    );
-
-    if (!upd.rows.length) {
-      await client.query("ROLLBACK");
-      return null;
-    }
-
-    await client.query(
-      `
-      UPDATE service_day_menu_items
-      SET available = $3
-      WHERE service_day_id = $1 AND menu_item_id = $2::uuid;
-      `,
-      [serviceDayId, menuItemId, input.available]
-    );
-
-    await client.query("COMMIT");
-    const mi = upd.rows[0];
-    return {
-      id: mi.id,
-      name: mi.name,
-      category: mi.category,
-      price: Number(mi.price),
-      calories: mi.calories,
-      image: mi.image_url,
-      available: input.available,
-    };
-  } catch (e) {
-    await client.query("ROLLBACK");
-    throw e;
-  } finally {
-    client.release();
-  }
+  const upd = await pool.query<TodayMenuRow>(
+    `
+    UPDATE menu_items
+    SET name = $2,
+        category = $3,
+        base_price = $4,
+        calories = $5,
+        is_active = $6
+    WHERE id = $1::uuid
+    RETURNING
+      id::text AS id,
+      name,
+      category,
+      base_price::text AS price,
+      calories,
+      image_url,
+      is_active;
+    `,
+    [menuItemId, input.name, input.category, input.price, input.calories, input.available]
+  );
+  if (!upd.rows.length) return null;
+  return rowToMenuItem(upd.rows[0]);
 }
 
 export async function removeMenuItemFromToday(menuItemId: string): Promise<boolean> {
   const pool = getDbPool();
-  const serviceDayId = await getOrCreateTodayServiceDayId();
-
-  const client = await pool.connect();
-  try {
-    await client.query("BEGIN");
-    const del = await client.query(
-      `
-      DELETE FROM service_day_menu_items
-      WHERE service_day_id = $1 AND menu_item_id = $2::uuid
-      RETURNING id;
-      `,
-      [serviceDayId, menuItemId]
-    );
-
-    if (!del.rowCount) {
-      await client.query("ROLLBACK");
-      return false;
-    }
-
-    await client.query("COMMIT");
-    return true;
-  } catch (e) {
-    await client.query("ROLLBACK");
-    throw e;
-  } finally {
-    client.release();
-  }
+  const del = await pool.query(
+    `
+    DELETE FROM menu_items
+    WHERE id = $1::uuid
+    RETURNING id;
+    `,
+    [menuItemId]
+  );
+  return Boolean(del.rowCount);
 }
