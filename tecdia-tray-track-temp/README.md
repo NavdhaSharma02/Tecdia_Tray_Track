@@ -71,7 +71,13 @@ Core relational tables:
 
 ## 2) Environment Variables
 
-Create `.env.local` in `tecdia-tray-track-temp`:
+Copy `.env.example` to `.env.local` in `tecdia-tray-track-temp` and fill in your local values:
+
+```powershell
+Copy-Item .env.example .env.local
+```
+
+Required values in `.env.local`:
 
 ```env
 POSTGRES_HOST=localhost
@@ -85,7 +91,12 @@ AUTH_SESSION_SECRET=use_a_long_random_string_here
 ADMIN_PIN=123456
 ```
 
-You can copy from `.env.example`.
+Optional:
+
+```env
+# Keep /api for local Next.js routes. Change only if you host the API somewhere else.
+NEXT_PUBLIC_API_URL=/api
+```
 
 ## 3) Install and Run
 
@@ -153,7 +164,7 @@ ORDER BY mi.name;
 
 ## 7) How to test quickly
 
-1. Set `ADMIN_PIN` and Postgres vars in `.env.local`, apply schema (+ migration if needed), optionally run `seed_today_menu_example.sql`.
+1. Copy `.env.example` to `.env.local`, set `ADMIN_PIN` and Postgres vars, apply schema (+ migration if needed), optionally run `seed_today_menu_example.sql`.
 2. `npm run dev` → `/admin/login` → open **Menu** and confirm items match the DB query above.
 3. `/customer` → **Use Email** → sign up or log in → **Scan Tray** → review → pay → after the thank-you screen you should land back on the **ID** step; the next customer must log in again.
 4. On the scan step, use **Cancel and log out** to verify you return to the ID screen without finishing payment.
