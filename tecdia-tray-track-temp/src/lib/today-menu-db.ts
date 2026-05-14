@@ -44,7 +44,40 @@ export async function getOrCreateTodayServiceDayId(): Promise<string> {
   return rows[0].id;
 }
 
+/**
+ * When the calendar rolls to a new service date, today's menu rows start empty.
+ * Copy yesterday's service_day_menu_items (availability + optional override price)
+ * onto today so the admin menu and kiosk offerings stay aligned day-to-day.
+ */
+export async function syncTodayMenuItemsFromYesterday(): Promise<void> {
+  const pool = getDbPool();
+  await pool.query(
+    `
+    INSERT INTO service_day_menu_items (service_day_id, menu_item_id, available, override_price)
+    SELECT
+      today_sd.id,
+      y_sdmi.menu_item_id,
+      y_sdmi.available,
+      y_sdmi.override_price
+    FROM service_days yesterday_sd
+    JOIN service_day_menu_items y_sdmi ON y_sdmi.service_day_id = yesterday_sd.id
+    JOIN service_days today_sd ON today_sd.service_date = CURRENT_DATE
+    JOIN menu_items mi ON mi.id = y_sdmi.menu_item_id
+    WHERE yesterday_sd.service_date = CURRENT_DATE - INTERVAL '1 day'
+      AND mi.is_active = TRUE
+    ON CONFLICT (service_day_id, menu_item_id) DO NOTHING;
+    `
+  );
+}
+
+/** Ensure today's service_day row exists and menu links are seeded from yesterday. */
+export async function ensureTodayMenuReady(): Promise<void> {
+  await getOrCreateTodayServiceDayId();
+  await syncTodayMenuItemsFromYesterday();
+}
+
 export async function listTodayMenuForAdmin(): Promise<MenuItem[]> {
+  await ensureTodayMenuReady();
   const pool = getDbPool();
   const { rows } = await pool.query<TodayMenuRow>(
     `
@@ -68,6 +101,7 @@ export async function listTodayMenuForAdmin(): Promise<MenuItem[]> {
 }
 
 export async function listTodayMenuAvailableForScan(): Promise<MenuItem[]> {
+  await ensureTodayMenuReady();
   const pool = getDbPool();
   const { rows } = await pool.query<TodayMenuRow>(
     `
@@ -103,6 +137,7 @@ export async function insertTodayMenuItem(input: {
   available: boolean;
 }): Promise<MenuItem> {
   const pool = getDbPool();
+  await ensureTodayMenuReady();
   const serviceDayId = await getOrCreateTodayServiceDayId();
 
   const client = await pool.connect();
@@ -168,6 +203,7 @@ export async function updateTodayMenuItem(
   }
 ): Promise<MenuItem | null> {
   const pool = getDbPool();
+  await ensureTodayMenuReady();
   const serviceDayId = await getOrCreateTodayServiceDayId();
 
   const client = await pool.connect();
@@ -242,6 +278,7 @@ export async function updateTodayMenuItem(
 
 export async function removeMenuItemFromToday(menuItemId: string): Promise<boolean> {
   const pool = getDbPool();
+  await ensureTodayMenuReady();
   const serviceDayId = await getOrCreateTodayServiceDayId();
 
   const client = await pool.connect();

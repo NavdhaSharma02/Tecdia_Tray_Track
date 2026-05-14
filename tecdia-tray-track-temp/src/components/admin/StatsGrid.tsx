@@ -21,7 +21,7 @@ export default function StatsGrid() {
   if (!stats) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {Array.from({ length: 6 }).map((_, i) => (
+        {Array.from({ length: 7 }).map((_, i) => (
           <div
             key={i}
             className="animate-shimmer"
@@ -40,6 +40,7 @@ export default function StatsGrid() {
       <StatCard icon="S" label="Most Popular Item" value={stats.popularItem} />
       <StatCard icon="A" label="Avg Meal Cost" value={formatCurrency(stats.avgMealCost)} />
       <StatCard icon="Mo" label="Monthly Revenue" value={formatCurrency(stats.monthlyRevenue)} />
+      <StatCard icon="Y" label="Yearly Revenue" value={formatCurrency(stats.yearlyRevenue)} />
     </div>
   );
 }

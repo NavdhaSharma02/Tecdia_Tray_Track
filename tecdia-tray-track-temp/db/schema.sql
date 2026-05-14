@@ -107,3 +107,6 @@ CREATE INDEX IF NOT EXISTS idx_tray_scans_customer_id ON tray_scans(customer_id)
 CREATE INDEX IF NOT EXISTS idx_transactions_customer_id ON transactions(customer_id);
 CREATE INDEX IF NOT EXISTS idx_feedbacks_customer_id ON feedbacks(customer_id);
 CREATE INDEX IF NOT EXISTS idx_feedbacks_transaction_id ON feedbacks(transaction_id);
+CREATE INDEX IF NOT EXISTS idx_transactions_created_at ON transactions (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_transactions_payment_status_created_at ON transactions (payment_status, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_transaction_items_transaction_id ON transaction_items (transaction_id);

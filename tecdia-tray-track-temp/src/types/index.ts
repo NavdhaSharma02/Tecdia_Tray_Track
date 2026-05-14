@@ -124,6 +124,8 @@ export interface AdminStats {
   popularItem: string;
   avgMealCost: number;
   monthlyRevenue: number;
+  /** Sum of completed transaction totals in the current calendar year. */
+  yearlyRevenue: number;
 }
 
 /** Generic API response wrapper */

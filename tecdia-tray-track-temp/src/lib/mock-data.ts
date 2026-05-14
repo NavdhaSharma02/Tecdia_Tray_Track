@@ -229,6 +229,7 @@ export const MOCK_ADMIN_STATS: AdminStats = {
   popularItem: "Chicken Biryani",
   avgMealCost: 125,
   monthlyRevenue: 412500,
+  yearlyRevenue: 3200000,
 };
 
 // ---- SIMULATED SCAN RESULT ----

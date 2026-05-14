@@ -27,9 +27,7 @@ import {
   fetchEmployeeTransactions,
   submitPayment as mockSubmitPayment,
   getSimulatedScanResult,
-  MOCK_ADMIN_STATS,
   MOCK_ADMIN_USERS,
-  MOCK_TRANSACTIONS,
 } from "@/lib/mock-data";
 
 import { API_BASE } from "@/lib/constants";
@@ -362,14 +360,18 @@ export async function getAllTransactions(): Promise<ApiResponse<Transaction[]>> 
     if (!res.ok) return { ok: false, error: data.error || "Failed to load transactions." };
     return data;
   } catch {
-    // Fallback keeps admin table usable if DB route is temporarily down.
-    return { ok: true, data: MOCK_TRANSACTIONS };
+    return { ok: false, error: "Unable to load transactions." };
   }
 }
 
 /** Fetch admin dashboard stats */
 export async function getAdminStats(): Promise<ApiResponse<AdminStats>> {
-  // TODO: Replace with real endpoint → GET ${API_BASE}/admin/stats
-  await new Promise((r) => setTimeout(r, 300));
-  return { ok: true, data: MOCK_ADMIN_STATS };
+  try {
+    const res = await fetch(`${API_BASE}/admin/stats`, { cache: "no-store" });
+    const data = (await res.json()) as ApiResponse<AdminStats>;
+    if (!res.ok) return { ok: false, error: data.error || "Failed to load stats." };
+    return data;
+  } catch {
+    return { ok: false, error: "Unable to load dashboard stats." };
+  }
 }

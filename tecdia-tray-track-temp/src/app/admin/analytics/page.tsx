@@ -22,17 +22,23 @@ interface AnalyticsReportData {
   generatedAt: string;
   revenueToday: number;
   revenueMonth: number;
+  revenueYear: number;
   avgMealCost: number;
   completedTransactionsToday: number;
   completedTransactionsMonth: number;
+  completedTransactionsYear: number;
   averageOrderValueToday: number;
   averageOrderValueMonth: number;
+  averageOrderValueYear: number;
   mostDemandedDish: RankedDish | null;
   secondMostDemandedDish: RankedDish | null;
   topCategory: { name: string; orders: number } | null;
   activeMenuCount: number;
   availableItemsCount: number;
   topItems: RankedDish[];
+  /** Completed checkouts this month by payment method (for export text). */
+  paymentImmediateMonth: number;
+  paymentAccountMonth: number;
 }
 
 function isSameDay(date: Date, reference: Date): boolean {
@@ -48,6 +54,10 @@ function isSameMonth(date: Date, reference: Date): boolean {
     date.getFullYear() === reference.getFullYear() &&
     date.getMonth() === reference.getMonth()
   );
+}
+
+function isSameYear(date: Date, reference: Date): boolean {
+  return date.getFullYear() === reference.getFullYear();
 }
 
 function buildDailyRevenueTrend(transactions: Transaction[]): DailyRevenuePoint[] {
@@ -124,6 +134,9 @@ function buildAnalyticsReport(
   const monthTransactions = completedTransactions.filter((txn) =>
     isSameMonth(new Date(txn.date), now)
   );
+  const yearTransactions = completedTransactions.filter((txn) =>
+    isSameYear(new Date(txn.date), now)
+  );
 
   const itemMap = new Map<string, RankedDish>();
   const categoryMap = new Map<string, number>();
@@ -154,12 +167,22 @@ function buildAnalyticsReport(
     .map(([name, orders]) => ({ name, orders }))
     .sort((a, b) => b.orders - a.orders);
 
+  const paymentImmediateMonth = monthTransactions.filter(
+    (txn) => txn.paymentMethod === "immediate"
+  ).length;
+  const paymentAccountMonth = monthTransactions.filter(
+    (txn) => txn.paymentMethod === "account"
+  ).length;
+
   const revenueToday =
     stats?.revenueToday ??
     todayTransactions.reduce((sum, txn) => sum + txn.total, 0);
   const revenueMonth =
     stats?.monthlyRevenue ??
     monthTransactions.reduce((sum, txn) => sum + txn.total, 0);
+  const revenueYear =
+    stats?.yearlyRevenue ??
+    yearTransactions.reduce((sum, txn) => sum + txn.total, 0);
   const avgMealCost =
     stats?.avgMealCost ??
     (monthTransactions.length
@@ -173,14 +196,19 @@ function buildAnalyticsReport(
     }),
     revenueToday,
     revenueMonth,
+    revenueYear,
     avgMealCost,
     completedTransactionsToday: todayTransactions.length,
     completedTransactionsMonth: monthTransactions.length,
+    completedTransactionsYear: yearTransactions.length,
     averageOrderValueToday: todayTransactions.length
       ? todayTransactions.reduce((sum, txn) => sum + txn.total, 0) / todayTransactions.length
       : 0,
     averageOrderValueMonth: monthTransactions.length
       ? monthTransactions.reduce((sum, txn) => sum + txn.total, 0) / monthTransactions.length
+      : 0,
+    averageOrderValueYear: yearTransactions.length
+      ? yearTransactions.reduce((sum, txn) => sum + txn.total, 0) / yearTransactions.length
       : 0,
     mostDemandedDish: rankedItems[0] || null,
     secondMostDemandedDish: rankedItems[1] || null,
@@ -188,6 +216,8 @@ function buildAnalyticsReport(
     activeMenuCount: menuItems.length,
     availableItemsCount: menuItems.filter((item) => item.available).length,
     topItems: rankedItems.slice(0, 5),
+    paymentImmediateMonth,
+    paymentAccountMonth,
   };
 }
 
@@ -202,13 +232,20 @@ function buildReportText(report: AnalyticsReportData): string {
     `- Top category this month: ${report.topCategory ? `${report.topCategory.name} (${report.topCategory.orders} orders)` : "No category data available"}`,
     `- Overall earnings today: ${formatCurrency(report.revenueToday)}`,
     `- Overall earnings this month: ${formatCurrency(report.revenueMonth)}`,
+    `- Overall earnings this year: ${formatCurrency(report.revenueYear)}`,
     `- Average meal cost: ${formatCurrency(report.avgMealCost)}`,
     `- Average order value today: ${formatCurrency(report.averageOrderValueToday)}`,
     `- Average order value this month: ${formatCurrency(report.averageOrderValueMonth)}`,
+    `- Average order value this year: ${formatCurrency(report.averageOrderValueYear)}`,
+    "",
+    "Payment mix (completed, this month)",
+    `- Pay now: ${report.paymentImmediateMonth}`,
+    `- Account: ${report.paymentAccountMonth}`,
     "",
     "Operational Snapshot",
     `- Completed transactions today: ${report.completedTransactionsToday}`,
     `- Completed transactions this month: ${report.completedTransactionsMonth}`,
+    `- Completed transactions this year: ${report.completedTransactionsYear}`,
     `- Menu items scheduled today: ${report.activeMenuCount}`,
     `- Currently available items: ${report.availableItemsCount}`,
     "",
@@ -263,11 +300,16 @@ function buildReportCsv(report: AnalyticsReportData): string {
     ],
     ["Revenue", "Overall Earnings Today", report.revenueToday],
     ["Revenue", "Overall Earnings This Month", report.revenueMonth],
+    ["Revenue", "Overall Earnings This Year", report.revenueYear],
     ["Revenue", "Average Meal Cost", report.avgMealCost],
     ["Revenue", "Average Order Value Today", report.averageOrderValueToday],
     ["Revenue", "Average Order Value This Month", report.averageOrderValueMonth],
+    ["Revenue", "Average Order Value This Year", report.averageOrderValueYear],
+    ["Payments", "Pay now (this month)", report.paymentImmediateMonth],
+    ["Payments", "Account (this month)", report.paymentAccountMonth],
     ["Operations", "Completed Transactions Today", report.completedTransactionsToday],
     ["Operations", "Completed Transactions This Month", report.completedTransactionsMonth],
+    ["Operations", "Completed Transactions This Year", report.completedTransactionsYear],
     ["Operations", "Menu Items Scheduled Today", report.activeMenuCount],
     ["Operations", "Currently Available Items", report.availableItemsCount],
   ];
@@ -382,18 +424,27 @@ export default function AdminAnalyticsPage() {
     return `conic-gradient(${stops.join(", ")})`;
   }
   const paymentMethodSplit = useMemo(() => {
-    const completed = transactions.filter((txn) => txn.status === "completed");
+    const now = new Date();
+    const completed = transactions.filter((txn) => {
+      if (txn.status !== "completed") return false;
+      const d = new Date(txn.date);
+      if (globalTimeFilter === "day") return isSameDay(d, now);
+      if (globalTimeFilter === "year") return isSameYear(d, now);
+      return isSameMonth(d, now);
+    });
     const immediate = completed.filter((txn) => txn.paymentMethod === "immediate").length;
     const account = completed.filter((txn) => txn.paymentMethod === "account").length;
-    const total = Math.max(immediate + account, 1);
+    const completedCount = immediate + account;
+    const denom = Math.max(completedCount, 1);
 
     return {
       immediate,
       account,
-      immediatePct: (immediate / total) * 100,
-      accountPct: (account / total) * 100,
+      completedCount,
+      immediatePct: (immediate / denom) * 100,
+      accountPct: (account / denom) * 100,
     };
-  }, [transactions]);
+  }, [transactions, globalTimeFilter]);
   const topEmployeeSpenders = useMemo(() => {
     const now = new Date();
     const spendByEmployee = new Map<string, number>();
@@ -429,9 +480,16 @@ export default function AdminAnalyticsPage() {
       glow: "rgba(198, 110, 91, 0.18)",
     },
     {
+      label: "Revenue This Year",
+      value: formatCurrency(report.revenueYear),
+      note: `${report.completedTransactionsYear} completed transactions`,
+      accent: "#6B8FD4",
+      glow: "rgba(107, 143, 212, 0.18)",
+    },
+    {
       label: "Average Meal Cost",
       value: formatCurrency(report.avgMealCost),
-      note: `${formatCurrency(report.averageOrderValueMonth)} average order value`,
+      note: `${formatCurrency(report.averageOrderValueMonth)} average order value (month)`,
       accent: "var(--accent-light)",
       glow: "rgba(231, 169, 100, 0.2)",
     },
@@ -583,6 +641,87 @@ export default function AdminAnalyticsPage() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="mb-8">
+        <Card variant="glass">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
+            <div>
+              <h3 style={{ fontSize: "18px", fontWeight: 700, color: "var(--text-primary)" }}>
+                Payment mix
+              </h3>
+              <p style={{ fontSize: "13px", color: "var(--text-muted)", marginTop: "4px" }}>
+                Completed checkouts by method for{" "}
+                {globalTimeFilter === "day"
+                  ? "today"
+                  : globalTimeFilter === "month"
+                    ? "this month"
+                    : "this calendar year"}
+              </p>
+            </div>
+            <p style={{ fontSize: "13px", color: "var(--text-secondary)", fontFamily: "var(--font-mono)" }}>
+              {paymentMethodSplit.completedCount} total
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)" }}>
+                  Pay now
+                </span>
+                <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-secondary)", fontFamily: "var(--font-mono)" }}>
+                  {paymentMethodSplit.immediate} ({paymentMethodSplit.immediatePct.toFixed(0)}%)
+                </span>
+              </div>
+              <div
+                style={{
+                  width: "100%",
+                  height: "8px",
+                  background: "var(--bg-secondary)",
+                  borderRadius: "4px",
+                  overflow: "hidden",
+                }}
+              >
+                <div
+                  style={{
+                    width: `${paymentMethodSplit.immediatePct}%`,
+                    height: "100%",
+                    background: "linear-gradient(90deg, var(--accent), var(--accent-light))",
+                    borderRadius: "4px",
+                  }}
+                />
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span style={{ fontSize: "14px", fontWeight: 500, color: "var(--text-primary)" }}>
+                  Charge to account
+                </span>
+                <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-secondary)", fontFamily: "var(--font-mono)" }}>
+                  {paymentMethodSplit.account} ({paymentMethodSplit.accountPct.toFixed(0)}%)
+                </span>
+              </div>
+              <div
+                style={{
+                  width: "100%",
+                  height: "8px",
+                  background: "var(--bg-secondary)",
+                  borderRadius: "4px",
+                  overflow: "hidden",
+                }}
+              >
+                <div
+                  style={{
+                    width: `${paymentMethodSplit.accountPct}%`,
+                    height: "100%",
+                    background: "linear-gradient(90deg, var(--success), var(--accent-light))",
+                    borderRadius: "4px",
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </Card>
       </div>
 
 
@@ -893,7 +1032,7 @@ export default function AdminAnalyticsPage() {
               {formatCurrency(report.revenueToday)} today
             </p>
             <p style={{ fontSize: "13px", color: "var(--text-secondary)", marginTop: "4px" }}>
-              {formatCurrency(report.revenueMonth)} for the month
+              {formatCurrency(report.revenueMonth)} for the month · {formatCurrency(report.revenueYear)} year to date
             </p>
           </div>
         </div>

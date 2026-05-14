@@ -31,7 +31,7 @@ export async function listTransactionsForAdmin(): Promise<Transaction[]> {
     FROM transactions t
     JOIN customers c ON c.id = t.customer_id
     ORDER BY t.created_at DESC
-    LIMIT 500;
+    LIMIT 5000;
     `
   );
 
