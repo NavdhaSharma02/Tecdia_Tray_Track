@@ -41,10 +41,9 @@ export interface AdminUser {
   role: AdminRole;
   status: "active" | "invited" | "suspended";
   shift: string;
-  lastActiveAt: string;
-  handledTransactions: number;
+  /** Short description shown below the user name in the admin table. */
   scope: string;
- }
+}
 
 /** Menu item in the cafeteria */
 export interface MenuItem {

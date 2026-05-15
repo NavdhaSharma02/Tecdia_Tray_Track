@@ -27,8 +27,8 @@ import {
   fetchEmployeeTransactions,
   submitPayment as mockSubmitPayment,
   getSimulatedScanResult,
-  MOCK_ADMIN_USERS,
 } from "@/lib/mock-data";
+import type { AdminRole } from "@/types";
 
 import { API_BASE } from "@/lib/constants";
 import { simulateScanFromMenu } from "@/lib/tray-scan-sim";
@@ -334,8 +334,124 @@ export async function updateEmployeeProfile(
 }
 
 export async function getAdminUsers(): Promise<ApiResponse<AdminUser[]>> {
-  await new Promise((r) => setTimeout(r, 350));
-  return { ok: true, data: MOCK_ADMIN_USERS };
+  try {
+    const res = await fetch(`${API_BASE}/admin/users`, { cache: "no-store" });
+    const data = (await res.json()) as ApiResponse<AdminUser[]>;
+    if (!res.ok) return { ok: false, error: data.error || "Failed to load users." };
+    return data;
+  } catch {
+    return { ok: false, error: "Unable to load users." };
+  }
+}
+
+export async function createAdminUser(input: {
+  adminPin: string;
+  userCode?: string;
+  name: string;
+  description: string;
+  email: string;
+  role: AdminRole;
+  shift: string;
+  status: "active" | "invited" | "suspended";
+}): Promise<ApiResponse<AdminUser>> {
+  try {
+    const res = await fetch(`${API_BASE}/admin/users`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        adminPin: input.adminPin,
+        userCode: input.userCode,
+        name: input.name,
+        description: input.description,
+        email: input.email,
+        role: input.role,
+        shift: input.shift,
+        status: input.status,
+      }),
+    });
+    const data = (await res.json()) as ApiResponse<AdminUser>;
+    if (!res.ok) return { ok: false, error: data.error || "Could not create user." };
+    return data;
+  } catch {
+    return { ok: false, error: "Unable to create user." };
+  }
+}
+
+export async function updateAdminUser(
+  currentUserCode: string,
+  input: {
+    adminPin: string;
+    userCode?: string;
+    name: string;
+    description: string;
+    email: string;
+    role: AdminRole;
+    shift: string;
+    status: "active" | "invited" | "suspended";
+  }
+): Promise<ApiResponse<AdminUser>> {
+  try {
+    const res = await fetch(
+      `${API_BASE}/admin/users/${encodeURIComponent(currentUserCode)}`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          adminPin: input.adminPin,
+          userCode: input.userCode,
+          name: input.name,
+          description: input.description,
+          email: input.email,
+          role: input.role,
+          shift: input.shift,
+          status: input.status,
+        }),
+      }
+    );
+    const data = (await res.json()) as ApiResponse<AdminUser>;
+    if (!res.ok) return { ok: false, error: data.error || "Could not update user." };
+    return data;
+  } catch {
+    return { ok: false, error: "Unable to update user." };
+  }
+}
+
+export async function deleteAdminUser(
+  userCode: string,
+  adminPin: string
+): Promise<ApiResponse<null>> {
+  try {
+    const res = await fetch(
+      `${API_BASE}/admin/users/${encodeURIComponent(userCode)}`,
+      {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ adminPin }),
+      }
+    );
+    const data = (await res.json()) as ApiResponse<null>;
+    if (!res.ok) return { ok: false, error: data.error || "Could not delete user." };
+    return data;
+  } catch {
+    return { ok: false, error: "Unable to delete user." };
+  }
+}
+
+export async function verifySuperPin(
+  pin: string
+): Promise<ApiResponse<{ role: "admin" | "cashier" }>> {
+  try {
+    const res = await fetch(`${API_BASE}/auth/verify-super-pin`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ pin }),
+    });
+    const data = (await res.json()) as ApiResponse<{ role: "admin" | "cashier" }>;
+    if (!res.ok) return { ok: false, error: data.error || "Incorrect PIN." };
+    return data;
+  } catch {
+    return { ok: false, error: "Unable to verify PIN." };
+  }
 }
 
 export async function getAdminFeedbacks(): Promise<ApiResponse<FeedbackEntry[]>> {

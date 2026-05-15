@@ -15,41 +15,7 @@ import type {
   Receipt,
 } from "@/types";
 
-export const MOCK_ADMIN_USERS: AdminUser[] = [
-  {
-    id: "USR-001",
-    name: "Maya Fernandez",
-    email: "maya.fernandez@tecdia.com",
-    role: "admin",
-    status: "active",
-    shift: "Morning",
-    lastActiveAt: "2026-04-19T10:48:00",
-    handledTransactions: 128,
-    scope: "Full admin access, analytics, menu, users, employees",
-  },
-  {
-    id: "USR-002",
-    name: "Noel Ramos",
-    email: "noel.ramos@tecdia.com",
-    role: "cashier",
-    status: "active",
-    shift: "Lunch",
-    lastActiveAt: "2026-04-19T11:22:00",
-    handledTransactions: 312,
-    scope: "Transaction handling, employee billing, receipt support",
-  },
-  {
-    id: "USR-003",
-    name: "Aileen Cruz",
-    email: "aileen.cruz@tecdia.com",
-    role: "cashier",
-    status: "invited",
-    shift: "Evening",
-    lastActiveAt: "2026-04-18T16:05:00",
-    handledTransactions: 48,
-    scope: "Cashier tools and account-assisted payments",
-  },
-];
+export const MOCK_ADMIN_USERS: AdminUser[] = [];
 
 // ---- EMPLOYEES ----
 export const MOCK_EMPLOYEES: Employee[] = [

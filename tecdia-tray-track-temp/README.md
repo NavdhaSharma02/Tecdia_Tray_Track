@@ -51,6 +51,12 @@ Add feedback table migration:
 psql -U postgres -h localhost -d tecdia_tray_track -f db/migrations/003_feedbacks_table.sql
 ```
 
+Staff users table (admin Users tab):
+
+```powershell
+psql -U postgres -h localhost -d tecdia_tray_track -f db/migrations/006_staff_users.sql
+```
+
 ### Optional: seed one example item for today
 
 So the kiosk has something to scan before you use the admin UI:
@@ -62,7 +68,8 @@ psql -U postgres -h localhost -d tecdia_tray_track -f db/seed_today_menu_example
 Core relational tables:
 
 - `customers` (email/password auth)
-- `admin_users` (reserved for future per-user admin accounts)
+- `staff_users` (admin and cashier records for the Users tab)
+- `admin_users` (legacy schema; unused by the app)
 - `menu_items` (catalog row per dish; `calories` may be `NULL` = “N/A”)
 - `service_days` (one row per calendar date the cafeteria operates)
 - `service_day_menu_items` (which catalog items appear **today**, and `available` for today)
@@ -89,6 +96,7 @@ AUTH_SESSION_SECRET=use_a_long_random_string_here
 
 # Exactly 6 digits. Checked only on the server (never use NEXT_PUBLIC_ for this).
 ADMIN_PIN=123456
+CASHIER_PIN=654321
 ```
 
 Optional:
@@ -119,6 +127,8 @@ Tray **simulated scan** loads **today’s available** rows from PostgreSQL (`GET
 ## 5) Admin: PIN and today’s menu
 
 - Admin login is at `/admin/login`. Enter the **6-digit** `ADMIN_PIN` from `.env.local`. The PIN is validated with `POST /api/admin/login` (never embedded in client source).
+- **Users** tab (`/admin/users`) loads and saves admins/cashiers in `staff_users`. Creating, editing, or deleting a user requires the admin PIN.
+- On the customer **Bill** step, employees cannot change portions until staff enter `CASHIER_PIN` or `ADMIN_PIN` (`POST /api/auth/verify-super-pin`).
 - **Menu Management** reads and writes **today’s** menu: `GET/POST /api/admin/today-menu`, `PATCH/DELETE /api/admin/today-menu/:menuItemId`.
 - Editing **name, price, calories** (number or **N/A** → stored as `NULL`), **category** (dropdown), and **availability** persists in Postgres.
 - New **Feedbacks** tab in admin sidebar shows customer-submitted issues, linked to customer identity and optional transaction.
@@ -161,6 +171,11 @@ ORDER BY mi.name;
 **Admin**
 
 - `POST /api/admin/login` — body `{ "pin": "123456" }`
+- `GET /api/admin/users` — list staff users
+- `POST /api/admin/users` — create user (body includes `adminPin`)
+- `PATCH /api/admin/users/:userCode` — update user (body includes `adminPin`)
+- `DELETE /api/admin/users/:userCode` — delete user (body includes `adminPin`)
+- `POST /api/auth/verify-super-pin` — body `{ "pin": "654321" }` (cashier or admin PIN)
 
 ## 7) How to test quickly
 

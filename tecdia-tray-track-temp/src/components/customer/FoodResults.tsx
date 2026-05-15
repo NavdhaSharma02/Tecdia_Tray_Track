@@ -4,7 +4,9 @@ import { useState, useMemo } from "react";
 import { useCustomerFlow } from "@/hooks/useCustomerFlow";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
+import PinPadModal from "@/components/ui/PinPadModal";
 import { formatCurrency } from "@/lib/utils";
+import * as api from "@/services/api";
 import type { ScannedItem } from "@/types";
 
 /**
@@ -13,6 +15,8 @@ import type { ScannedItem } from "@/types";
 export default function FoodResults() {
   const { scannedItems, updateItems, goToPayment } = useCustomerFlow();
   const [items, setItems] = useState<ScannedItem[]>(scannedItems);
+  const [portionsUnlocked, setPortionsUnlocked] = useState(false);
+  const [pinModalOpen, setPinModalOpen] = useState(false);
 
   const total = useMemo(
     () => items.reduce((sum, item) => sum + item.price * item.quantity, 0),
@@ -33,6 +37,7 @@ export default function FoodResults() {
   );
 
   const updateQuantity = (id: string, delta: number) => {
+    if (!portionsUnlocked) return;
     setItems((prev) =>
       prev
         .map((item) =>
@@ -45,7 +50,17 @@ export default function FoodResults() {
   };
 
   const removeItem = (id: string) => {
+    if (!portionsUnlocked) return;
     setItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const handlePortionPinSubmit = async (pin: string) => {
+    const result = await api.verifySuperPin(pin);
+    if (!result.ok) {
+      return { ok: false, error: result.error };
+    }
+    setPortionsUnlocked(true);
+    return { ok: true };
   };
 
   const handleProceed = () => {
@@ -134,6 +149,30 @@ export default function FoodResults() {
         </Badge>
       </div>
 
+      {!portionsUnlocked && (
+        <div
+          className="mb-4"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "16px",
+            flexWrap: "wrap",
+            padding: "14px 18px",
+            borderRadius: "var(--radius-lg)",
+            background: "rgba(255, 251, 247, 0.92)",
+            border: "1px solid var(--border)",
+          }}
+        >
+          <p style={{ fontSize: "14px", color: "var(--text-secondary)", margin: 0 }}>
+            Portion adjustments require cashier or admin authorization.
+          </p>
+          <Button variant="primary" size="sm" onClick={() => setPinModalOpen(true)}>
+            Adjust Portions (Staff)
+          </Button>
+        </div>
+      )}
+
       {/* Food Cards Grid */}
       <div
         style={{
@@ -162,6 +201,7 @@ export default function FoodResults() {
             {/* Remove button */}
             <button
               onClick={() => removeItem(item.id)}
+              disabled={!portionsUnlocked}
               style={{
                 position: "absolute",
                 top: "14px",
@@ -176,9 +216,10 @@ export default function FoodResults() {
                 justifyContent: "center",
                 fontSize: "13px",
                 color: "var(--text-muted)",
-                cursor: "pointer",
+                cursor: portionsUnlocked ? "pointer" : "not-allowed",
+                opacity: portionsUnlocked ? 1 : 0.4,
               }}
-              title="Remove item"
+              title={portionsUnlocked ? "Remove item" : "Staff PIN required"}
             >
               x
             </button>
@@ -284,13 +325,15 @@ export default function FoodResults() {
               >
                 <button
                   onClick={() => updateQuantity(item.id, -1)}
+                  disabled={!portionsUnlocked}
                   style={{
                     width: 36,
                     height: 36,
                     borderRadius: "50%",
                     border: "none",
                     background: "transparent",
-                    cursor: "pointer",
+                    cursor: portionsUnlocked ? "pointer" : "not-allowed",
+                    opacity: portionsUnlocked ? 1 : 0.4,
                     fontSize: "18px",
                     fontWeight: 700,
                     color: "var(--text-secondary)",
@@ -314,16 +357,18 @@ export default function FoodResults() {
                 </span>
                 <button
                   onClick={() => updateQuantity(item.id, 1)}
+                  disabled={!portionsUnlocked}
                   style={{
                     width: 36,
                     height: 36,
                     borderRadius: "50%",
                     border: "none",
-                    background: "var(--accent)",
-                    cursor: "pointer",
+                    background: portionsUnlocked ? "var(--accent)" : "var(--bg-elevated)",
+                    cursor: portionsUnlocked ? "pointer" : "not-allowed",
+                    opacity: portionsUnlocked ? 1 : 0.5,
                     fontSize: "18px",
                     fontWeight: 700,
-                    color: "white",
+                    color: portionsUnlocked ? "white" : "var(--text-muted)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -400,6 +445,15 @@ export default function FoodResults() {
         </div>
       )}
       </div>
+
+      <PinPadModal
+        isOpen={pinModalOpen}
+        onClose={() => setPinModalOpen(false)}
+        title="Staff Authorization"
+        description="Enter the cashier PIN or admin PIN to adjust item portions."
+        submitLabel="Unlock Adjustments"
+        onSubmit={handlePortionPinSubmit}
+      />
     </div>
   );
 }
