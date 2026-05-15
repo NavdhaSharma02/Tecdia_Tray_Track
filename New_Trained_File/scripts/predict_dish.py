@@ -7,15 +7,9 @@ from PIL import Image
 from ultralytics import YOLO
 from sklearn.metrics.pairwise import cosine_similarity
 
-# -----------------------------
-# LOAD YOLO
-# -----------------------------
-
-detector = YOLO(r"C:\Users\nomaa\runs\detect\models\detection\cafeteria_detector-2\weights\best.pt")
-
-# -----------------------------
-# LOAD CLIP
-# -----------------------------
+detector = YOLO(
+    r"C:\Users\nomaa\runs\detect\models\detection\cafeteria_detector-2\weights\best.pt"
+)
 
 device = "cpu"
 
@@ -26,41 +20,37 @@ model, _, preprocess = open_clip.create_model_and_transforms(
 
 model.eval()
 
-# -----------------------------
-# LOAD EMBEDDINGS
-# -----------------------------
+embeddings = np.load(
+    "data/processed/embeddings/dish_embeddings.npy"
+)
 
-embeddings = np.load("data/processed/embeddings/dish_embeddings.npy")
-
-with open("data/processed/embeddings/dish_labels.json", "r") as f:
+with open(
+    "data/processed/embeddings/dish_labels.json",
+    "r"
+) as f:
     labels = json.load(f)
 
-# -----------------------------
-# LOAD TODAY MENU
-# -----------------------------
-
-with open("data/today_menu.json", "r") as f:
+with open(
+    "data/today_menu.json",
+    "r"
+) as f:
     today_menu = json.load(f)
 
 available_dishes = today_menu["available_dishes"]
 
-# -----------------------------
-# LOAD TEST IMAGE
-# -----------------------------
-
-image_path = r"D:\tecdia_final\data\raw\tarys\1EE9AE85-EF88-4AE7-BDEF-950B51D6F1F5.jpg"
+image_path = (
+    r"D:\tecdia_final\data\raw\tarys\1EE9AE85-EF88-4AE7-BDEF-950B51D6F1F5.jpg"
+)
 
 image = cv2.imread(image_path)
 
-# -----------------------------
-# RUN DETECTION
-# -----------------------------
+results = detector.predict(
+    image,
+    conf=0.4
+)
 
-results = detector.predict(image, conf=0.4)
-
-# -----------------------------
-# PROCESS DETECTIONS
-# -----------------------------
+UNKNOWN_THRESHOLD = 0.65
+MAX_SCORE_GAP = 0.12
 
 for result in results:
 
@@ -72,7 +62,6 @@ for result in results:
 
         class_name = detector.names[cls]
 
-        # ONLY classify FOOD
         if class_name != "food":
             continue
 
@@ -80,13 +69,12 @@ for result in results:
 
         crop = image[y1:y2, x1:x2]
 
-        # Convert crop to PIL
-        crop_pil = Image.fromarray(cv2.cvtColor(crop, cv2.COLOR_BGR2RGB))
+        crop_pil = Image.fromarray(
+            cv2.cvtColor(crop, cv2.COLOR_BGR2RGB)
+        )
 
-        # Preprocess
         input_image = preprocess(crop_pil).unsqueeze(0)
 
-        # Get embedding
         with torch.no_grad():
             features = model.encode_image(input_image)
 
@@ -94,10 +82,11 @@ for result in results:
 
         features_np = features.cpu().numpy()
 
-        # Similarity
-        similarities = cosine_similarity(features_np, embeddings)[0]
+        similarities = cosine_similarity(
+            features_np,
+            embeddings
+        )[0]
 
-        # Top K
         top_k = similarities.argsort()[-5:][::-1]
 
         print("\nTOP PREDICTIONS:")
@@ -111,17 +100,61 @@ for result in results:
 
             print(f"{dish_name}: {score:.4f}")
 
-            # FILTER USING TODAY MENU
             if dish_name in available_dishes:
-                filtered_predictions.append((dish_name, score))
+                filtered_predictions.append(
+                    (dish_name, score)
+                )
 
-        # FINAL SELECTION
-        if filtered_predictions:
+        top_prediction_idx = top_k[0]
 
-            final_prediction = max(filtered_predictions, key=lambda x: x[1])
+        top_prediction_name = labels[top_prediction_idx]
+        top_prediction_score = similarities[top_prediction_idx]
 
-            print(f"\nFINAL DISH: {final_prediction[0]}")
-            print(f"CONFIDENCE: {final_prediction[1]:.4f}")
+        if top_prediction_name in available_dishes:
+
+            print(f"\nFINAL DISH: {top_prediction_name}")
+            print(f"CONFIDENCE: {top_prediction_score:.4f}")
+
+        elif filtered_predictions:
+
+            best_menu_prediction = max(
+                filtered_predictions,
+                key=lambda x: x[1]
+            )
+
+            menu_name = best_menu_prediction[0]
+            menu_score = best_menu_prediction[1]
+
+            score_gap = (
+                top_prediction_score - menu_score
+            )
+
+            print(
+                f"\nTop prediction not in today's menu."
+            )
+
+            print(
+                f"Best menu match: {menu_name}"
+            )
+
+            print(
+                f"Score gap: {score_gap:.4f}"
+            )
+
+            if (
+                menu_score > UNKNOWN_THRESHOLD
+                and score_gap < MAX_SCORE_GAP
+            ):
+
+                print(f"\nFINAL DISH: {menu_name}")
+                print(f"CONFIDENCE: {menu_score:.4f}")
+
+            else:
+
+                print("\nFINAL DISH: UNKNOWN")
+                print("Manual verification required.")
 
         else:
-            print("\nNo matching dish in today's menu.")
+
+            print("\nFINAL DISH: UNKNOWN")
+            print("No matching dish in today's menu.")
