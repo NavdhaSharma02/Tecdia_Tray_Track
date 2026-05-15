@@ -198,24 +198,6 @@ export const MOCK_ADMIN_STATS: AdminStats = {
   yearlyRevenue: 3200000,
 };
 
-// ---- SIMULATED SCAN RESULT ----
-export function getSimulatedScanResult(): ScannedItem[] {
-  const available = MOCK_MENU_ITEMS.filter((i) => i.available);
-  const count = 2 + Math.floor(Math.random() * 3); // 2 to 4 items
-  const shuffled = [...available].sort(() => 0.5 - Math.random());
-  const selected = shuffled.slice(0, count);
-
-  return selected.map((item) => ({
-    id: item.id,
-    name: item.name,
-    category: item.category,
-    price: item.price,
-    quantity: 1,
-    confidence: parseFloat((0.85 + Math.random() * 0.14).toFixed(2)),
-    calories: item.calories,
-  }));
-}
-
 // ---- MOCK API HELPERS ----
 function delay(ms: number = 800): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -238,12 +220,6 @@ export async function fetchEmployeeTransactions(empId: string): Promise<ApiRespo
     (t) => t.employeeId.toLowerCase() === empId.toLowerCase()
   );
   return { ok: true, data: txns };
-}
-
-/** Run tray scan (simulated) */
-export async function runTrayScan(): Promise<ApiResponse<ScannedItem[]>> {
-  await delay(3500);
-  return { ok: true, data: getSimulatedScanResult() };
 }
 
 /** Submit payment */

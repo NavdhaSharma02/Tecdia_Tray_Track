@@ -1,4 +1,9 @@
 import { getDbPool } from "@/lib/db";
+import {
+  SEBAW_MENU_CODE,
+  SEBAW_MENU_NAME,
+  SOUP_CATEGORY,
+} from "@/lib/constants";
 import type { MenuItem } from "@/types";
 
 export interface TodayMenuRow {
@@ -267,6 +272,68 @@ export async function updateTodayMenuItem(
       calories: mi.calories,
       image: mi.image_url,
       available: input.available,
+    };
+  } catch (e) {
+    await client.query("ROLLBACK");
+    throw e;
+  } finally {
+    client.release();
+  }
+}
+
+/** Ensure catalog row for free meatless soup (Sebaw) and link to today's menu. */
+export async function upsertSebawForToday(available: boolean): Promise<MenuItem> {
+  const pool = getDbPool();
+  await ensureTodayMenuReady();
+  const serviceDayId = await getOrCreateTodayServiceDayId();
+
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+
+    const catalog = await client.query<{
+      id: string;
+      name: string;
+      category: string;
+      price: string;
+      calories: number | null;
+      image_url: string | null;
+    }>(
+      `
+      INSERT INTO menu_items (code, name, category, base_price, calories, image_url, is_active)
+      VALUES ($1, $2, $3, 0, NULL, NULL, TRUE)
+      ON CONFLICT (code) DO UPDATE SET
+        name = EXCLUDED.name,
+        category = EXCLUDED.category,
+        base_price = EXCLUDED.base_price,
+        calories = EXCLUDED.calories,
+        is_active = TRUE
+      RETURNING id::text, name, category, base_price::text AS price, calories, image_url;
+      `,
+      [SEBAW_MENU_CODE, SEBAW_MENU_NAME, SOUP_CATEGORY]
+    );
+
+    const mi = catalog.rows[0];
+    await client.query(
+      `
+      INSERT INTO service_day_menu_items (service_day_id, menu_item_id, available)
+      VALUES ($1, $2::uuid, $3)
+      ON CONFLICT (service_day_id, menu_item_id)
+      DO UPDATE SET available = EXCLUDED.available;
+      `,
+      [serviceDayId, mi.id, available]
+    );
+
+    await client.query("COMMIT");
+
+    return {
+      id: mi.id,
+      name: mi.name,
+      category: mi.category,
+      price: Number(mi.price),
+      calories: mi.calories,
+      image: mi.image_url,
+      available,
     };
   } catch (e) {
     await client.query("ROLLBACK");

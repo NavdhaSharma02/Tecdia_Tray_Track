@@ -15,7 +15,7 @@ import type { ScannedItem } from "@/types";
  * Shows dish detection directly in the main page without a dark modal backdrop.
  */
 export default function TrayScanView() {
-  const { completeScan, setError } = useCustomerFlow();
+  const { completeScan, setError, error, clearError } = useCustomerFlow();
   const { videoRef, isReady, error: camError, start, stop, captureFrame } = useCamera();
 
   const [isScanning, setIsScanning] = useState(false);
@@ -40,6 +40,7 @@ export default function TrayScanView() {
 
   async function runScan() {
     if (hasScanned.current) return;
+    if (error) clearError();
     hasScanned.current = true;
 
     setIsScanning(true);
@@ -192,6 +193,24 @@ export default function TrayScanView() {
           </>
         )}
       </div>
+
+      {!isScanning && error && (
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "480px",
+            marginTop: "12px",
+            padding: "14px 16px",
+            borderRadius: "14px",
+            background: "rgba(220, 53, 69, 0.12)",
+            border: "1px solid rgba(220, 53, 69, 0.35)",
+          }}
+        >
+          <p style={{ color: "var(--danger)", fontSize: "15px", fontWeight: 600, textAlign: "center" }}>
+            {error}
+          </p>
+        </div>
+      )}
 
       {!isScanning && (
         <div

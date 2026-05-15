@@ -2,9 +2,6 @@
 
 import MenuEditor from "@/components/admin/MenuEditor";
 
-/**
- * Admin — Menu Management page.
- */
 export default function AdminMenuPage() {
   return (
     <div className="animate-fade-in">
@@ -16,10 +13,10 @@ export default function AdminMenuPage() {
             color: "var(--text-primary)",
           }}
         >
-          Menu Management
+          Menu Items
         </h1>
         <p style={{ fontSize: "14px", color: "var(--text-muted)", marginTop: "4px" }}>
-          Add, edit, and manage cafeteria menu items
+          Manage today&apos;s cafeteria menu and reference photos for tray scanning
         </p>
       </div>
       <MenuEditor />

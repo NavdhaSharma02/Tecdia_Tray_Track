@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { enrichMenuItemsWithEmbeddingFlags } from "@/lib/embeddings-db";
+import { SEBAW_MENU_NAME, isSebawMenuItem } from "@/lib/constants";
 import {
   insertTodayMenuItem,
   listTodayMenuForAdmin,
@@ -19,7 +21,9 @@ function parseCalories(value: unknown): number | null {
  */
 export async function GET() {
   try {
-    const items = await listTodayMenuForAdmin();
+    const items = await enrichMenuItemsWithEmbeddingFlags(
+      await listTodayMenuForAdmin()
+    );
     return NextResponse.json({ ok: true, data: items });
   } catch (error) {
     console.error("admin today-menu GET failed:", error);
@@ -47,6 +51,13 @@ export async function POST(request: Request) {
     const category = (body.category || "").trim();
     const price = Number(body.price);
     const available = body.available !== false;
+
+    if (isSebawMenuItem({ name, category }) || name.toLowerCase() === SEBAW_MENU_NAME.toLowerCase()) {
+      return NextResponse.json(
+        { ok: false, error: "Use the Sebaw panel to configure free soup." },
+        { status: 400 }
+      );
+    }
 
     if (!name || !category) {
       return NextResponse.json(

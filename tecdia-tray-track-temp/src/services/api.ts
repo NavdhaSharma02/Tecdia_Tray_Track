@@ -1,11 +1,4 @@
-/**
- * API service layer for Tecida Tray Track.
- *
- * Currently uses mock data functions. When the FastAPI backend is ready,
- * replace each function body with a real fetch/axios call to the backend.
- *
- * All functions return ApiResponse<T> for consistent error handling.
- */
+/** API client for kiosk and admin (Next.js route handlers on localhost). */
 
 import type {
   AdminUser,
@@ -26,12 +19,10 @@ import {
   fetchEmployeeById,
   fetchEmployeeTransactions,
   submitPayment as mockSubmitPayment,
-  getSimulatedScanResult,
 } from "@/lib/mock-data";
 import type { AdminRole } from "@/types";
 
 import { API_BASE } from "@/lib/constants";
-import { simulateScanFromMenu } from "@/lib/tray-scan-sim";
 
 interface AuthResponse {
   customer: AuthCustomer;
@@ -118,31 +109,129 @@ export async function getEmployeeTransactions(
 // ──────────────────────────────────────────────
 
 /**
- * Send a captured camera frame to the backend for food detection.
- * Falls back to simulated mock scan data when the backend is unreachable,
- * so the full customer flow (Scan → Bill → Payment) always works.
- * @param imageBlob - JPEG frame captured from the camera
+ * Send a captured camera frame to local /api/scan for CLIP matching.
+ * Requests stay on localhost (same tablet) — no cloud dependency at runtime.
+ * Falls back to simulation only when the app server is unreachable.
  */
 export async function scanTray(
-  _imageBlob?: Blob
+  imageBlob?: Blob
 ): Promise<ApiResponse<ScannedItem[]>> {
-  void _imageBlob;
-  // Simulate processing time
-  await new Promise((r) => setTimeout(r, 3500));
+  if (!imageBlob) {
+    return {
+      ok: false,
+      error: "Camera not ready. Position the tray and try again.",
+    };
+  }
+
+  const form = new FormData();
+  form.append("image", imageBlob, "tray.jpg");
+
   try {
-    const res = await fetch(`${API_BASE}/menu/today`, { cache: "no-store" });
-    if (!res.ok) {
-      // Backend reachable but returned error — fall back to mock
-      return { ok: true, data: getSimulatedScanResult() };
+    const res = await fetch(`${API_BASE}/scan`, {
+      method: "POST",
+      body: form,
+    });
+    const json = (await res.json()) as ApiResponse<ScannedItem[]> & {
+      meta?: { mode?: string; message?: string };
+    };
+
+    if (res.ok && json.ok && json.data?.length) {
+      return { ok: true, data: json.data };
     }
-    const json = (await res.json()) as ApiResponse<MenuItem[]>;
-    if (!json.ok || !json.data || json.data.length === 0) {
-      return { ok: true, data: getSimulatedScanResult() };
-    }
-    return { ok: true, data: simulateScanFromMenu(json.data) };
+
+    return {
+      ok: false,
+      error:
+        json.error ||
+        "Could not recognize dishes. Ask staff to verify today's reference photos.",
+    };
   } catch {
-    // Backend offline / network error — use mock data so the flow still works
-    return { ok: true, data: getSimulatedScanResult() };
+    return {
+      ok: false,
+      error: "Scan service unavailable. Ensure the app is running on this tablet.",
+    };
+  }
+}
+
+/** Upload today's reference photo; server computes and stores CLIP embedding. */
+export async function uploadMenuItemReferenceImage(
+  menuItemId: string,
+  file: File
+): Promise<
+  ApiResponse<{
+    menuItemId: string;
+    hasEmbedding: boolean;
+    hasReferencePhoto?: boolean;
+    imageUrl: string;
+    dimensions: number;
+    warning?: string;
+  }>
+> {
+  const form = new FormData();
+  form.append("image", file, file.name || "reference.jpg");
+
+  try {
+    const res = await fetch(
+      `${API_BASE}/admin/today-menu/${encodeURIComponent(menuItemId)}/image`,
+      { method: "POST", body: form }
+    );
+    const data = (await res.json()) as ApiResponse<{
+      menuItemId: string;
+      hasEmbedding: boolean;
+      hasReferencePhoto?: boolean;
+      imageUrl: string;
+      dimensions: number;
+      warning?: string;
+    }>;
+    if (!res.ok) {
+      return { ok: false, error: data.error || "Image upload failed." };
+    }
+    return data;
+  } catch {
+    return { ok: false, error: "Could not reach image upload service." };
+  }
+}
+
+export async function rebuildMenuReferenceEmbeddings(): Promise<
+  ApiResponse<{
+    processed: number;
+    succeeded: number;
+    failed: { menuItemId: string; name: string; error: string }[];
+  }>
+> {
+  try {
+    const res = await fetch(`${API_BASE}/admin/ml/rebuild-references`, {
+      method: "POST",
+    });
+    const data = (await res.json()) as ApiResponse<{
+      processed: number;
+      succeeded: number;
+      failed: { menuItemId: string; name: string; error: string }[];
+    }>;
+    if (!res.ok) {
+      return { ok: false, error: data.error || "Rebuild failed." };
+    }
+    return data;
+  } catch {
+    return { ok: false, error: "Could not reach vision rebuild service." };
+  }
+}
+
+export async function deleteMenuItemReferenceImage(
+  menuItemId: string
+): Promise<ApiResponse<null>> {
+  try {
+    const res = await fetch(
+      `${API_BASE}/admin/today-menu/${encodeURIComponent(menuItemId)}/image`,
+      { method: "DELETE" }
+    );
+    const data = (await res.json()) as ApiResponse<null>;
+    if (!res.ok) {
+      return { ok: false, error: data.error || "Could not remove image." };
+    }
+    return { ok: true, data: null };
+  } catch {
+    return { ok: false, error: "Could not reach image service." };
   }
 }
 
@@ -230,6 +319,24 @@ export async function getMenuItems(): Promise<ApiResponse<MenuItem[]>> {
     return data;
   } catch {
     return { ok: false, error: "Unable to reach menu service." };
+  }
+}
+
+/** Set whether free Sebaw soup is available on today's menu. */
+export async function saveSebawToday(
+  available: boolean
+): Promise<ApiResponse<MenuItem>> {
+  try {
+    const res = await fetch(`${API_BASE}/admin/today-menu/sebaw`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ available }),
+    });
+    const data = (await res.json()) as ApiResponse<MenuItem>;
+    if (!res.ok) return { ok: false, error: data.error || "Could not save Sebaw." };
+    return data;
+  } catch {
+    return { ok: false, error: "Unable to save Sebaw." };
   }
 }
 

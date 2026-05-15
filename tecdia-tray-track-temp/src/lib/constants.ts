@@ -28,15 +28,15 @@ export const PAYMENT_METHODS = {
 export const SCAN_DURATION_MS = 3500;
 export const DONE_REDIRECT_MS = 6000;
 
-/** Food categories list */
-export const FOOD_CATEGORIES = [
-  "All",
-  "Main Course",
-  "Rice",
-  "Bread",
-  "Side",
-  "Dessert",
-  "Beverage",
-] as const;
+/** Food categories for menu management and filtering */
+export const FOOD_CATEGORIES = ["All", "Main Course", "Soup"] as const;
+
+export const SOUP_CATEGORY = "Soup";
+export const SEBAW_MENU_CODE = "SEBAW";
+export const SEBAW_MENU_NAME = "Sebaw";
+
+export function isSebawMenuItem(item: { name: string; category: string }): boolean {
+  return item.category === SOUP_CATEGORY && item.name === SEBAW_MENU_NAME;
+}
 
 export const IDLE_TIMEOUT_MS = 120_000;

@@ -44,3 +44,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .eslintcache
+
+# ML / menu reference images (local kiosk data)
+/data/menu-images/
+/data/ml-cache/

@@ -3,7 +3,7 @@ import { listTodayMenuAvailableForScan } from "@/lib/today-menu-db";
 
 /**
  * GET /api/menu/today
- * Available items for the current service day (kiosk / simulated scan).
+ * Available items for the current service day.
  */
 export async function GET() {
   try {

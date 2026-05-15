@@ -1,8 +1,6 @@
 import type { MenuItem, ScannedItem } from "@/types";
 
-/**
- * Simulated ML output: pick a random subset of today's available menu items.
- */
+/** Dev only (ML_INFERENCE_MODE=simulate). Not used in production scans. */
 export function simulateScanFromMenu(menu: MenuItem[]): ScannedItem[] {
   const pool = menu.filter((i) => i.available);
   if (pool.length === 0) return [];

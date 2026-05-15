@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { SEBAW_MENU_NAME, isSebawMenuItem } from "@/lib/constants";
 import {
   removeMenuItemFromToday,
   updateTodayMenuItem,
@@ -37,6 +38,16 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     const category = (body.category || "").trim();
     const price = Number(body.price);
     const available = body.available !== false;
+
+    if (
+      isSebawMenuItem({ name, category }) ||
+      name.toLowerCase() === SEBAW_MENU_NAME.toLowerCase()
+    ) {
+      return NextResponse.json(
+        { ok: false, error: "Use the Sebaw panel to update free soup." },
+        { status: 400 }
+      );
+    }
 
     if (!name || !category) {
       return NextResponse.json(

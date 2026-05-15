@@ -55,6 +55,10 @@ export interface MenuItem {
   available: boolean;
   /** Numeric kcal, or null when unknown / “N/A”. */
   calories: number | null;
+  /** True when a CLIP reference embedding exists (permanent catalog). */
+  hasEmbedding?: boolean;
+  /** True when a reference image file or URL is stored (may lack embedding yet). */
+  hasReferencePhoto?: boolean;
 }
 
 /** Item detected during tray scan */
