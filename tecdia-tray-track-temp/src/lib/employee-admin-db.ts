@@ -7,6 +7,7 @@ interface EmployeeAggRow {
   email: string;
   department: string;
   created_at: Date;
+  account_balance: string;
   total_transactions: string;
   total_spent: string;
   last_transaction_at: Date | null;
@@ -23,6 +24,13 @@ export async function listEmployeesForAdmin(): Promise<Employee[]> {
       c.email,
       c.department,
       c.created_at,
+      COALESCE((
+        SELECT SUM(t3.total_amount)
+        FROM transactions t3
+        WHERE t3.customer_id = c.id
+          AND t3.payment_method = 'account'
+          AND t3.payment_status = 'completed'
+      ), 0)::text AS account_balance,
       COUNT(t.id)::text AS total_transactions,
       COALESCE(SUM(t.total_amount), 0)::text AS total_spent,
       MAX(t.created_at) AS last_transaction_at,
@@ -46,7 +54,7 @@ export async function listEmployeesForAdmin(): Promise<Employee[]> {
     department: row.department,
     email: row.email,
     avatar: null,
-    accountBalance: 0,
+    accountBalance: Number(row.account_balance || 0),
     joinDate: row.created_at.toISOString(),
     status: "active",
     totalTransactions: Number(row.total_transactions || 0),

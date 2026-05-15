@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { findCustomerByEmail } from "@/lib/customer-auth";
+import { getCustomerAccountBalance } from "@/lib/customer-activity-db";
 import { verifyPassword } from "@/lib/auth";
 import {
   CUSTOMER_SESSION_COOKIE,
@@ -50,6 +51,8 @@ export async function POST(request: Request) {
       );
     }
 
+    const accountBalance = await getCustomerAccountBalance(customer.id);
+
     const response = NextResponse.json({
       ok: true,
       data: {
@@ -60,6 +63,7 @@ export async function POST(request: Request) {
           fullName: customer.fullName,
           department: customer.department,
           createdAt: customer.createdAt,
+          accountBalance,
         },
       },
     });

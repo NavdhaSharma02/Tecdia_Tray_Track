@@ -23,6 +23,24 @@ function formatPaymentStatus(status: string): string {
   return status || "completed";
 }
 
+/** Sum of completed "add to account" charges for this customer. */
+export async function getCustomerAccountBalance(
+  customerId: string
+): Promise<number> {
+  const pool = getDbPool();
+  const { rows } = await pool.query<{ total: string }>(
+    `
+    SELECT COALESCE(SUM(total_amount), 0)::text AS total
+    FROM transactions
+    WHERE customer_id = $1::uuid
+      AND payment_method = 'account'
+      AND payment_status = 'completed';
+    `,
+    [customerId]
+  );
+  return Number(rows[0]?.total || 0);
+}
+
 export async function createCheckoutTransaction(input: {
   customerId: string;
   items: ScannedItem[];

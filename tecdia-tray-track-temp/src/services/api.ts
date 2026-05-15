@@ -15,11 +15,7 @@ import type {
   PaymentMethod,
 } from "@/types";
 
-import {
-  fetchEmployeeById,
-  fetchEmployeeTransactions,
-  submitPayment as mockSubmitPayment,
-} from "@/lib/mock-data";
+import { submitPayment as mockSubmitPayment } from "@/lib/mock-data";
 import type { AdminRole } from "@/types";
 
 import { API_BASE } from "@/lib/constants";
@@ -32,10 +28,34 @@ interface AuthResponse {
 // Employee
 // ──────────────────────────────────────────────
 
-/** Fetch a single employee by their ID */
+/** Fetch a single employee by their ID (employee code). */
 export async function getEmployee(id: string): Promise<ApiResponse<Employee>> {
-  // TODO: Replace with real endpoint → GET ${API_BASE}/employees/${id}
-  return fetchEmployeeById(id);
+  try {
+    const res = await fetch(
+      `${API_BASE}/customer/employees/${encodeURIComponent(id)}`,
+      { cache: "no-store" }
+    );
+    const data = (await res.json()) as ApiResponse<Employee>;
+    if (!res.ok) return { ok: false, error: data.error || "Employee not found." };
+    return data;
+  } catch {
+    return { ok: false, error: "Unable to load employee." };
+  }
+}
+
+/** Fetch logged-in customer profile with live account balance. */
+export async function getCustomerProfile(): Promise<ApiResponse<Employee>> {
+  try {
+    const res = await fetch(`${API_BASE}/customer/profile`, {
+      method: "GET",
+      cache: "no-store",
+    });
+    const data = (await res.json()) as ApiResponse<Employee>;
+    if (!res.ok) return { ok: false, error: data.error || "Failed to load profile." };
+    return data;
+  } catch {
+    return { ok: false, error: "Unable to load profile." };
+  }
 }
 
 export async function signUpCustomer(input: {
@@ -96,12 +116,32 @@ export async function resetCustomerPassword(input: {
   }
 }
 
-/** Fetch transaction history for an employee */
+/** Fetch transaction history for the logged-in customer. */
 export async function getEmployeeTransactions(
-  employeeId: string
+  _employeeId: string
 ): Promise<ApiResponse<Transaction[]>> {
-  // TODO: Replace with real endpoint → GET ${API_BASE}/employees/${employeeId}/transactions
-  return fetchEmployeeTransactions(employeeId);
+  try {
+    const res = await fetch(`${API_BASE}/customer/transactions`, {
+      method: "GET",
+      cache: "no-store",
+    });
+    const data = (await res.json()) as ApiResponse<CustomerTransactionSummary[]>;
+    if (!res.ok) {
+      return { ok: false, error: data.error || "Failed to load transactions." };
+    }
+    const transactions: Transaction[] = (data.data || []).map((row) => ({
+      id: row.id,
+      employeeId: _employeeId,
+      items: [],
+      total: row.total,
+      paymentMethod: row.paymentMethod,
+      date: row.date,
+      status: row.status,
+    }));
+    return { ok: true, data: transactions };
+  } catch {
+    return { ok: false, error: "Unable to load transactions." };
+  }
 }
 
 // ──────────────────────────────────────────────

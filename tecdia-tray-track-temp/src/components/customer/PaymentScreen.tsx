@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useCustomerFlow } from "@/hooks/useCustomerFlow";
 import Button from "@/components/ui/Button";
 import { formatCurrency } from "@/lib/utils";
@@ -16,8 +16,13 @@ export default function PaymentScreen() {
     paymentMethod,
     selectPayment,
     confirmPayment,
+    refreshEmployeeBalance,
     isLoading,
   } = useCustomerFlow();
+
+  useEffect(() => {
+    void refreshEmployeeBalance();
+  }, [refreshEmployeeBalance]);
 
   const total = useMemo(
     () => scannedItems.reduce((sum, i) => sum + i.price * i.quantity, 0),

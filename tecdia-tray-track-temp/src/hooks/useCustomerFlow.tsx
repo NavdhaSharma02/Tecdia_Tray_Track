@@ -66,6 +66,10 @@ function flowReducer(
       };
     case "UPDATE_ITEMS":
       return { ...state, scannedItems: action.payload };
+    case "UPDATE_EMPLOYEE":
+      return state.employee
+        ? { ...state, employee: action.payload }
+        : state;
     case "SELECT_PAYMENT":
       return { ...state, paymentMethod: action.payload };
     case "PAYMENT_COMPLETE":
@@ -110,6 +114,7 @@ interface CustomerFlowContextValue extends CustomerFlowState {
   selectPayment: (method: PaymentMethod) => void;
   confirmPayment: () => Promise<void>;
   goToPayment: () => void;
+  refreshEmployeeBalance: () => Promise<void>;
   setError: (msg: string) => void;
   clearError: () => void;
   reset: () => Promise<void>;
@@ -178,19 +183,32 @@ export function CustomerFlowProvider({ children }: { children: ReactNode }) {
 
   const hydrateCustomer = useCallback(
     async (customer: AuthCustomer): Promise<boolean> => {
-      const employee: Employee = {
-        id: customer.employeeCode,
-        name: customer.fullName,
-        email: customer.email,
-        department: customer.department,
-        avatar: null,
-        accountBalance: 0,
-        joinDate: customer.createdAt,
-      };
       setCustomerAuth(customer);
+
+      const [profileResult, txnResult] = await Promise.all([
+        api.getCustomerProfile(),
+        api.getEmployeeTransactions(customer.employeeCode),
+      ]);
+
+      const employee: Employee =
+        profileResult.ok && profileResult.data
+          ? profileResult.data
+          : {
+              id: customer.employeeCode,
+              name: customer.fullName,
+              email: customer.email,
+              department: customer.department,
+              avatar: null,
+              accountBalance: customer.accountBalance ?? 0,
+              joinDate: customer.createdAt,
+            };
+
       dispatch({
         type: "SET_EMPLOYEE",
-        payload: { employee, transactions: [] },
+        payload: {
+          employee,
+          transactions: txnResult.data || [],
+        },
       });
       return true;
     },
@@ -248,6 +266,13 @@ export function CustomerFlowProvider({ children }: { children: ReactNode }) {
 
   const goToPayment = useCallback(() => {
     dispatch({ type: "SET_STEP", payload: "PAYMENT" });
+  }, []);
+
+  const refreshEmployeeBalance = useCallback(async () => {
+    const profileResult = await api.getCustomerProfile();
+    if (profileResult.ok && profileResult.data) {
+      dispatch({ type: "UPDATE_EMPLOYEE", payload: profileResult.data });
+    }
   }, []);
 
   /**
@@ -317,6 +342,7 @@ export function CustomerFlowProvider({ children }: { children: ReactNode }) {
         selectPayment,
         confirmPayment,
         goToPayment,
+        refreshEmployeeBalance,
         setError,
         clearError,
         reset,

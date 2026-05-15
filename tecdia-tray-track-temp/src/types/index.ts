@@ -145,6 +145,7 @@ export interface AuthCustomer {
   fullName: string;
   department: string;
   createdAt: string;
+  accountBalance?: number;
 }
 
 /** Customer flow state */
@@ -168,6 +169,7 @@ export type CustomerFlowAction =
   | { type: 'START_SCAN' }
   | { type: 'SCAN_COMPLETE'; payload: ScannedItem[] }
   | { type: 'UPDATE_ITEMS'; payload: ScannedItem[] }
+  | { type: 'UPDATE_EMPLOYEE'; payload: Employee }
   | { type: 'SELECT_PAYMENT'; payload: PaymentMethod }
   | { type: 'PAYMENT_COMPLETE'; payload: Receipt }
   | { type: 'SET_ERROR'; payload: string }
