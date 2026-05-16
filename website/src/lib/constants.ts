@@ -92,8 +92,9 @@ export function isPermanentMenuItem(item: { name: string; category: string }): b
   return isSebawMenuItem(item) || isPermanentRiceMenuItem(item);
 }
 
+/** Lowercase dish names; words may be separated by spaces (e.g. "chicken teriyaki"). */
 export function isCompactDishName(name: string): boolean {
-  return /^[a-z]+$/.test(name);
+  return /^[a-z]+(?: [a-z]+)*$/.test(name);
 }
 
 export const IDLE_TIMEOUT_MS = 120_000;

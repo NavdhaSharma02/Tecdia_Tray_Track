@@ -84,7 +84,7 @@ export default function MenuItemForm({
       return;
     }
     if (!isCompactDishName(trimmedName)) {
-      setNameError("Use lowercase letters only, with no spaces.");
+      setNameError("Use lowercase letters only; separate words with spaces.");
       return;
     }
     setNameError(undefined);
@@ -178,7 +178,7 @@ export default function MenuItemForm({
             setName(e.target.value);
             if (nameError) setNameError(undefined);
           }}
-          placeholder={isSoupItem ? "e.g. tomatosoup" : "e.g. chickenteriyaki"}
+          placeholder={isSoupItem ? "e.g. tomato soup" : "e.g. chicken teriyaki"}
           className="input"
           required
         />

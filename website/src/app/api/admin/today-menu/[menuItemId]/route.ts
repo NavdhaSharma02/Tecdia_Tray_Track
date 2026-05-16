@@ -79,7 +79,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     }
     if (!isCompactDishName(name)) {
       return NextResponse.json(
-        { ok: false, error: "Dish name must use lowercase letters only, with no spaces." },
+        { ok: false, error: "Dish name must use lowercase letters only; separate words with spaces." },
         { status: 400 }
       );
     }
