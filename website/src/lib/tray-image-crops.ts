@@ -1,5 +1,5 @@
 import { Jimp } from "jimp";
-import type { YoloFoodBox } from "@/lib/yolo-detector";
+import type { YoloDetectionBox } from "@/lib/yolo-detector";
 
 interface CropRegion {
   left: number;
@@ -11,7 +11,7 @@ interface CropRegion {
 /** Crop each YOLO food box (normalized 0–1 coords on the source image). */
 export async function buildTrayCropsFromBoxes(
   imageBuffer: Buffer,
-  boxes: YoloFoodBox[]
+  boxes: YoloDetectionBox[]
 ): Promise<Buffer[]> {
   const base = await Jimp.read(imageBuffer);
   const w = base.bitmap.width;

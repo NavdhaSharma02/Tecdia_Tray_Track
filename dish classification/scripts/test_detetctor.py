@@ -1,7 +1,10 @@
+from pathlib import Path
+
 from ultralytics import YOLO
 import cv2
 
-model = YOLO(r"C:\Users\nomaa\runs\detect\models\detection\cafeteria_detector-2\weights\best.pt")
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+model = YOLO(_REPO_ROOT / "Dish Localization" / "best.pt")
 
 results = model.predict(
     source=r"data\raw\tarys",

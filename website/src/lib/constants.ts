@@ -48,12 +48,21 @@ export const RICE_SMALL_CODE = "RICE_SMALL";
 export const RICE_BIG_NAME = "rice_big";
 export const RICE_SMALL_NAME = "rice_small";
 
-/** YOLO dish-localization detector class names (see Dish Localization / data.yaml). */
+/** YOLO dish-localization detector class names (see Dish Localization/best.pt). */
 export const YOLO_DETECTION_CLASSES = [
+  "drink",
   "food",
   "meatless soup",
   "rice_big",
   "rice_small",
+  "soup",
+] as const;
+
+/** Non-rice YOLO regions sent to CLIP (one best match per box, no score cutoff). */
+export const YOLO_CLIP_CROP_CLASSES = [
+  "drink",
+  "food",
+  "meatless soup",
   "soup",
 ] as const;
 

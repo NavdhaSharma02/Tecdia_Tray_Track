@@ -7,9 +7,10 @@ from PIL import Image
 from ultralytics import YOLO
 from sklearn.metrics.pairwise import cosine_similarity
 
-detector = YOLO(
-    r"C:\Users\nomaa\runs\detect\models\detection\cafeteria_detector-2\weights\best.pt"
-)
+from pathlib import Path
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+detector = YOLO(_REPO_ROOT / "Dish Localization" / "best.pt")
 
 device = "cpu"
 
@@ -61,6 +62,10 @@ for result in results:
         cls = int(box.cls[0])
 
         class_name = detector.names[cls]
+
+        if class_name in ("rice_big", "rice_small"):
+            print(f"\nRICE: {class_name}")
+            continue
 
         if class_name != "food":
             continue

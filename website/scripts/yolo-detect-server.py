@@ -1,9 +1,11 @@
 """
-Local YOLO food-region detector for the kiosk (optional).
+Local YOLO dish-localization detector for tray scan (required in production).
 
   pip install ultralytics flask opencv-python-headless
-  set ML_YOLO_MODEL_PATH=C:\path\to\best.pt
   python scripts/yolo-detect-server.py
+
+Defaults to ../Dish Localization/best.pt (override with ML_YOLO_MODEL_PATH).
+Set ML_YOLO_SERVICE_URL=http://127.0.0.1:5001/detect in website/.env.
 
 Node calls POST http://127.0.0.1:5001/detect with multipart field "image".
 """
@@ -12,6 +14,7 @@ from __future__ import annotations
 
 import os
 from io import BytesIO
+from pathlib import Path
 
 import cv2
 import numpy as np
@@ -20,12 +23,19 @@ from ultralytics import YOLO
 
 app = Flask(__name__)
 
-MODEL_PATH = os.environ.get(
-    "ML_YOLO_MODEL_PATH",
-    r"C:\Users\nomaa\runs\detect\models\detection\cafeteria_detector-2\weights\best.pt",
-)
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+_DEFAULT_MODEL = _REPO_ROOT / "Dish Localization" / "best.pt"
+
+MODEL_PATH = os.environ.get("ML_YOLO_MODEL_PATH", str(_DEFAULT_MODEL))
 CONF = float(os.environ.get("ML_YOLO_CONF", "0.4"))
-FOOD_CLASS = os.environ.get("ML_YOLO_FOOD_CLASS", "food")
+
+# Classes returned to Node (comma-separated override). Drink is excluded by default.
+_DEFAULT_CLASSES = "drink,food,meatless soup,rice_big,rice_small,soup"
+EMIT_CLASSES = frozenset(
+    c.strip()
+    for c in os.environ.get("ML_YOLO_EMIT_CLASSES", _DEFAULT_CLASSES).split(",")
+    if c.strip()
+)
 
 detector = YOLO(MODEL_PATH)
 
@@ -50,12 +60,13 @@ def detect():
         for box in result.boxes:
             cls_id = int(box.cls[0])
             class_name = result.names.get(cls_id, "")
-            if class_name != FOOD_CLASS:
+            if class_name not in EMIT_CLASSES:
                 continue
 
             x1, y1, x2, y2 = box.xyxy[0].tolist()
             boxes.append(
                 {
+                    "class": class_name,
                     "x1": x1 / w,
                     "y1": y1 / h,
                     "x2": x2 / w,
@@ -70,5 +81,8 @@ def detect():
 if __name__ == "__main__":
     host = os.environ.get("ML_YOLO_HOST", "127.0.0.1")
     port = int(os.environ.get("ML_YOLO_PORT", "5001"))
-    print(f"YOLO detect server on http://{host}:{port}/detect  model={MODEL_PATH}")
+    print(
+        f"YOLO detect server on http://{host}:{port}/detect  "
+        f"model={MODEL_PATH}  classes={sorted(EMIT_CLASSES)}"
+    )
     app.run(host=host, port=port, threaded=True)
