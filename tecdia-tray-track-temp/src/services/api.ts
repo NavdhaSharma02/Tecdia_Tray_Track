@@ -193,10 +193,10 @@ export async function scanTray(
   }
 }
 
-/** Upload today's reference photo; server computes and stores CLIP embedding. */
+/** Upload today's reference photos; server computes and stores CLIP embedding. */
 export async function uploadMenuItemReferenceImage(
   menuItemId: string,
-  file: File
+  files: File[]
 ): Promise<
   ApiResponse<{
     menuItemId: string;
@@ -204,11 +204,14 @@ export async function uploadMenuItemReferenceImage(
     hasReferencePhoto?: boolean;
     imageUrl: string;
     dimensions: number;
+    referencePhotoCount?: number;
     warning?: string;
   }>
 > {
   const form = new FormData();
-  form.append("image", file, file.name || "reference.jpg");
+  files.forEach((file) => {
+    form.append("images", file, file.name || "reference.jpg");
+  });
 
   try {
     const res = await fetch(
@@ -221,6 +224,7 @@ export async function uploadMenuItemReferenceImage(
       hasReferencePhoto?: boolean;
       imageUrl: string;
       dimensions: number;
+      referencePhotoCount?: number;
       warning?: string;
     }>;
     if (!res.ok) {

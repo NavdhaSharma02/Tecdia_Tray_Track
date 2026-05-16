@@ -39,4 +39,8 @@ export function isSebawMenuItem(item: { name: string; category: string }): boole
   return item.category === SOUP_CATEGORY && item.name === SEBAW_MENU_NAME;
 }
 
+export function isCompactDishName(name: string): boolean {
+  return /^[a-z]+$/.test(name);
+}
+
 export const IDLE_TIMEOUT_MS = 120_000;

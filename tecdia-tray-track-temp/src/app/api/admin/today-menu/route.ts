@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { enrichMenuItemsWithEmbeddingFlags } from "@/lib/embeddings-db";
-import { SEBAW_MENU_NAME, isSebawMenuItem } from "@/lib/constants";
+import { SEBAW_MENU_NAME, isCompactDishName, isSebawMenuItem } from "@/lib/constants";
 import {
   insertTodayMenuItem,
   listTodayMenuForAdmin,
@@ -62,6 +62,12 @@ export async function POST(request: Request) {
     if (!name || !category) {
       return NextResponse.json(
         { ok: false, error: "Name and category are required." },
+        { status: 400 }
+      );
+    }
+    if (!isCompactDishName(name)) {
+      return NextResponse.json(
+        { ok: false, error: "Dish name must use lowercase letters only, with no spaces." },
         { status: 400 }
       );
     }

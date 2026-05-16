@@ -63,7 +63,7 @@ export default function MenuEditor() {
   const showSebawPanel =
     activeView === "today" || filter === "All" || filter === SOUP_CATEGORY;
 
-  const handleSave = async (item: MenuItem, referenceImage?: File | null) => {
+  const handleSave = async (item: MenuItem, referenceImages?: File[] | null) => {
     setListError(null);
     setSaving(true);
     let menuItemId = editItem?.id;
@@ -87,12 +87,12 @@ export default function MenuEditor() {
       menuItemId = res.data.id;
     }
 
-    if (referenceImage && menuItemId) {
-      const up = await api.uploadMenuItemReferenceImage(menuItemId, referenceImage);
+    if (referenceImages?.length && menuItemId) {
+      const up = await api.uploadMenuItemReferenceImage(menuItemId, referenceImages);
       if (!up.ok) {
         setListError(
           up.error ||
-            "Item saved but reference photo failed. Edit the item and upload again."
+            "Item saved but reference photos failed. Edit the item and upload again."
         );
         setSaving(false);
         await loadItems();

@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Button from "@/components/ui/Button";
 import {
   FOOD_CATEGORIES,
   SEBAW_MENU_NAME,
   SOUP_CATEGORY,
+  isCompactDishName,
   isSebawMenuItem,
 } from "@/lib/constants";
 import type { MenuItem } from "@/types";
@@ -13,14 +14,10 @@ import type { MenuItem } from "@/types";
 interface MenuItemFormProps {
   item?: MenuItem | null;
   defaultCategory?: string;
-  onSave: (item: MenuItem, referenceImage?: File | null) => void;
+  onSave: (item: MenuItem, referenceImages?: File[] | null) => void;
   onCancel: () => void;
 }
 
-/**
- * Add/Edit menu item form (main course or priced soup).
- * Sebaw is configured separately via SebawPanel.
- */
 export default function MenuItemForm({
   item,
   defaultCategory,
@@ -38,17 +35,27 @@ export default function MenuItemForm({
   const [available, setAvailable] = useState(item?.available ?? true);
   const [caloriesError, setCaloriesError] = useState<string | undefined>();
   const [nameError, setNameError] = useState<string | undefined>();
-  const [referenceFile, setReferenceFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(item?.image || null);
+  const [referenceFiles, setReferenceFiles] = useState<File[]>([]);
+  const [referenceError, setReferenceError] = useState<string | undefined>();
 
   const isSoupItem = category === SOUP_CATEGORY;
+  const existingImage = item?.image;
+  const previewUrls = useMemo(
+    () =>
+      referenceFiles.length
+        ? referenceFiles.map((file) => URL.createObjectURL(file))
+        : existingImage
+          ? [existingImage]
+          : [],
+    [existingImage, referenceFiles]
+  );
 
   useEffect(() => {
-    if (!referenceFile) return;
-    const url = URL.createObjectURL(referenceFile);
-    setPreviewUrl(url);
-    return () => URL.revokeObjectURL(url);
-  }, [referenceFile]);
+    if (!referenceFiles.length) return;
+    return () => {
+      previewUrls.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [previewUrls, referenceFiles.length]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,7 +69,22 @@ export default function MenuItemForm({
       setNameError(`"${SEBAW_MENU_NAME}" is reserved for free soup. Use the Sebaw panel above.`);
       return;
     }
+    if (!isCompactDishName(trimmedName)) {
+      setNameError("Use lowercase letters only, with no spaces.");
+      return;
+    }
     setNameError(undefined);
+
+    const hasExistingReference = Boolean(item?.hasReferencePhoto || item?.image);
+    if (!isSoupItem && !hasExistingReference && referenceFiles.length < 4) {
+      setReferenceError("Upload at least 4 reference photos.");
+      return;
+    }
+    if (referenceFiles.length > 0 && referenceFiles.length < 4) {
+      setReferenceError("Upload at least 4 reference photos.");
+      return;
+    }
+    setReferenceError(undefined);
 
     const trimmedCal = calories.trim();
     let caloriesValue: number | null;
@@ -88,8 +110,9 @@ export default function MenuItemForm({
       image: item?.image || null,
       available,
       hasEmbedding: item?.hasEmbedding,
+      hasReferencePhoto: item?.hasReferencePhoto,
     };
-    onSave(menuItem, referenceFile);
+    onSave(menuItem, referenceFiles.length ? referenceFiles : null);
   };
 
   if (item && isSebawMenuItem(item)) {
@@ -117,9 +140,14 @@ export default function MenuItemForm({
       </div>
 
       <ReferencePhotoSection
-        previewUrl={previewUrl}
+        previewUrls={previewUrls}
         hasEmbedding={item?.hasEmbedding}
-        onPickFile={setReferenceFile}
+        fileCount={referenceFiles.length}
+        error={referenceError}
+        onPickFiles={(files) => {
+          setReferenceFiles(files);
+          if (referenceError) setReferenceError(undefined);
+        }}
         optional={isSoupItem}
       />
 
@@ -134,7 +162,7 @@ export default function MenuItemForm({
             setName(e.target.value);
             if (nameError) setNameError(undefined);
           }}
-          placeholder={isSoupItem ? "e.g. Tomato Soup" : "e.g. Chicken Teriyaki"}
+          placeholder={isSoupItem ? "e.g. tomatosoup" : "e.g. chickenteriyaki"}
           className="input"
           required
         />
@@ -146,7 +174,7 @@ export default function MenuItemForm({
       <div className="flex gap-4">
         <div className="flex flex-col gap-2 flex-1">
           <label style={{ fontSize: "13px", fontWeight: 500, color: "var(--text-secondary)" }}>
-            Price (₹)
+            Price
           </label>
           <input
             type="number"
@@ -201,42 +229,67 @@ export default function MenuItemForm({
 }
 
 function ReferencePhotoSection({
-  previewUrl,
+  previewUrls,
   hasEmbedding,
-  onPickFile,
+  fileCount,
+  error,
+  onPickFiles,
   optional,
 }: {
-  previewUrl: string | null;
+  previewUrls: string[];
   hasEmbedding?: boolean;
-  onPickFile: (file: File | null) => void;
+  fileCount: number;
+  error?: string;
+  onPickFiles: (files: File[]) => void;
   optional?: boolean;
 }) {
   return (
     <div className="flex flex-col gap-2">
       <label style={{ fontSize: "13px", fontWeight: 500, color: "var(--text-secondary)" }}>
-        Reference photo{optional ? " (optional)" : ""} — saved permanently
+        Reference photos{optional ? " (optional)" : ""} - minimum 4
       </label>
       <p style={{ fontSize: "12px", color: "var(--text-muted)", margin: 0, lineHeight: 1.45 }}>
         {optional
-          ? "Upload if this soup should be detected on the tray scanner."
-          : "Photograph the dish as it is usually served. The photo is kept on this tablet and reused on future days; vision must show Ready for scanning."}
+          ? "Upload at least 4 photos if this soup should be detected on the tray scanner."
+          : "Upload at least 4 photos of the dish as it is usually served. The first photo is used as the preview; all photos improve the vision reference."}
       </p>
-      {previewUrl && (
+      {previewUrls.length > 0 && (
         <div
           style={{
-            borderRadius: "12px",
-            overflow: "hidden",
-            border: "1px solid var(--border)",
-            maxWidth: "220px",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(96px, 1fr))",
+            gap: "8px",
+            maxWidth: "460px",
           }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={previewUrl}
-            alt="Reference preview"
-            style={{ width: "100%", height: "auto", display: "block" }}
-          />
+          {previewUrls.slice(0, 4).map((previewUrl, index) => (
+            <div
+              key={previewUrl}
+              style={{
+                borderRadius: "12px",
+                overflow: "hidden",
+                border: "1px solid var(--border)",
+                aspectRatio: "1 / 1",
+                background: "var(--bg-elevated)",
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={previewUrl}
+                alt={`Reference preview ${index + 1}`}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              />
+            </div>
+          ))}
         </div>
+      )}
+      {fileCount > 0 && (
+        <span style={{ fontSize: "12px", color: fileCount >= 4 ? "var(--success)" : "var(--danger)" }}>
+          {fileCount} photo{fileCount === 1 ? "" : "s"} selected
+        </span>
+      )}
+      {error && (
+        <span style={{ fontSize: "12px", color: "var(--danger)" }}>{error}</span>
       )}
       {hasEmbedding && (
         <span style={{ fontSize: "12px", color: "var(--success)" }}>
@@ -247,7 +300,8 @@ function ReferencePhotoSection({
         type="file"
         accept="image/jpeg,image/png,image/webp"
         capture="environment"
-        onChange={(e) => onPickFile(e.target.files?.[0] ?? null)}
+        multiple
+        onChange={(e) => onPickFiles(Array.from(e.target.files ?? []))}
         className="input"
       />
     </div>

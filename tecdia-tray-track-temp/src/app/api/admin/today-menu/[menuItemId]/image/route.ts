@@ -23,6 +23,14 @@ interface RouteParams {
   params: Promise<{ menuItemId: string }>;
 }
 
+function averageEmbeddings(embeddings: number[][]): number[] {
+  const dimensions = embeddings[0]?.length ?? 0;
+  return Array.from({ length: dimensions }, (_, index) => {
+    const total = embeddings.reduce((sum, embedding) => sum + embedding[index], 0);
+    return total / embeddings.length;
+  });
+}
+
 async function menuItemOnToday(menuItemId: string): Promise<boolean> {
   const items = await listTodayMenuForAdmin();
   return items.some((i) => i.id === menuItemId);
@@ -70,23 +78,27 @@ export async function POST(request: Request, { params }: RouteParams) {
     }
 
     const form = await request.formData();
-    const file = form.get("image");
-    if (!file || !(file instanceof Blob)) {
+    const files = [...form.getAll("images"), ...form.getAll("image")].filter(
+      (file): file is Blob => file instanceof Blob
+    );
+    if (files.length < 4) {
       return NextResponse.json(
-        { ok: false, error: "Missing image file." },
+        { ok: false, error: "Upload at least 4 reference photos." },
         { status: 400 }
       );
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer());
-    if (buffer.length < 100) {
+    const buffers = await Promise.all(
+      files.map(async (file) => Buffer.from(await file.arrayBuffer()))
+    );
+    if (buffers.some((buffer) => buffer.length < 100)) {
       return NextResponse.json(
-        { ok: false, error: "Image file is too small." },
+        { ok: false, error: "One or more image files are too small." },
         { status: 400 }
       );
     }
 
-    const imagePath = await saveMenuItemImage(menuItemId, buffer);
+    const imagePath = await saveMenuItemImage(menuItemId, buffers[0]);
     const imageUrl = menuItemImageApiPath(menuItemId);
 
     await upsertMenuItemCatalogReference({
@@ -100,7 +112,8 @@ export async function POST(request: Request, { params }: RouteParams) {
     let embeddingWarning: string | undefined;
 
     try {
-      embedding = await embedMenuReferenceImage(buffer);
+      const embeddings = await Promise.all(buffers.map(embedMenuReferenceImage));
+      embedding = averageEmbeddings(embeddings);
       await upsertMenuItemCatalogReference({
         menuItemId,
         imageUrl,
@@ -129,6 +142,7 @@ export async function POST(request: Request, { params }: RouteParams) {
         hasReferencePhoto: true,
         imageUrl,
         dimensions: embedding?.length ?? 0,
+        referencePhotoCount: buffers.length,
         warning: embeddingWarning,
       },
     });
