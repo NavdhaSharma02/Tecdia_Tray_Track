@@ -5,6 +5,7 @@ import { useCustomerFlow } from "@/hooks/useCustomerFlow";
 import { useCamera } from "@/hooks/useCamera";
 import ScanOverlay from "@/components/camera/ScanOverlay";
 import Button from "@/components/ui/Button";
+import PinPadModal from "@/components/ui/PinPadModal";
 import Spinner from "@/components/ui/Spinner";
 import { formatCurrency } from "@/lib/utils";
 import * as api from "@/services/api";
@@ -15,7 +16,8 @@ import type { ScannedItem } from "@/types";
  * Shows dish detection directly in the main page without a dark modal backdrop.
  */
 export default function TrayScanView() {
-  const { completeScan, setError, error, clearError } = useCustomerFlow();
+  const { completeScan, enterManualBilling, setError, error, clearError } =
+    useCustomerFlow();
   const { videoRef, isReady, error: camError, start, stop, captureFrame } = useCamera();
 
   const [isScanning, setIsScanning] = useState(false);
@@ -23,6 +25,7 @@ export default function TrayScanView() {
   const [detectedItems, setDetectedItems] = useState<ScannedItem[]>([]);
   const [uploadedTrayImage, setUploadedTrayImage] = useState<File | null>(null);
   const [uploadedPreviewUrl, setUploadedPreviewUrl] = useState<string | null>(null);
+  const [manualPinOpen, setManualPinOpen] = useState(false);
 
   const progressRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const uploadInputRef = useRef<HTMLInputElement | null>(null);
@@ -56,6 +59,16 @@ export default function TrayScanView() {
     setUploadedPreviewUrl(URL.createObjectURL(file));
     hasScanned.current = false;
     if (error) clearError();
+  }
+
+  async function handleManualBillingPin(pin: string) {
+    const result = await api.verifySuperPin(pin);
+    if (!result.ok) {
+      return { ok: false, error: result.error };
+    }
+    setManualPinOpen(false);
+    enterManualBilling();
+    return { ok: true };
   }
 
   async function runScan() {
@@ -265,11 +278,18 @@ export default function TrayScanView() {
             borderRadius: "14px",
             background: "rgba(220, 53, 69, 0.12)",
             border: "1px solid rgba(220, 53, 69, 0.35)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "12px",
           }}
         >
           <p style={{ color: "var(--danger)", fontSize: "15px", fontWeight: 600, textAlign: "center" }}>
             {error}
           </p>
+          <Button variant="primary" size="sm" onClick={() => setManualPinOpen(true)}>
+            Manual billing (Staff)
+          </Button>
         </div>
       )}
 
@@ -313,8 +333,27 @@ export default function TrayScanView() {
               {uploadedTrayImage ? "Scan Uploaded Image" : "Scan Tray"}
             </Button>
           </div>
+          <Button
+            variant="primary"
+            size="lg"
+            type="button"
+            onClick={() => setManualPinOpen(true)}
+            className="btn-scan-action"
+            style={{ width: "100%", fontSize: "16px", transform: "translateY(-4px)" }}
+          >
+            Manual billing (Staff)
+          </Button>
         </div>
       )}
+
+      <PinPadModal
+        isOpen={manualPinOpen}
+        onClose={() => setManualPinOpen(false)}
+        title="Manual billing"
+        description="Enter the cashier PIN or admin PIN to bill this tray without scanning."
+        submitLabel="Start manual billing"
+        onSubmit={handleManualBillingPin}
+      />
 
       {isScanning && (
         <div

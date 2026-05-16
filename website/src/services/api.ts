@@ -145,6 +145,20 @@ export async function getEmployeeTransactions(
 }
 
 // ──────────────────────────────────────────────
+/** Today's available menu for kiosk manual billing. */
+export async function getTodayMenu(): Promise<ApiResponse<MenuItem[]>> {
+  try {
+    const res = await fetch(`${API_BASE}/menu/today`, { cache: "no-store" });
+    const data = (await res.json()) as ApiResponse<MenuItem[]>;
+    if (!res.ok) {
+      return { ok: false, error: data.error || "Could not load today's menu." };
+    }
+    return data;
+  } catch {
+    return { ok: false, error: "Could not load today's menu." };
+  }
+}
+
 // Tray Scanning
 // ──────────────────────────────────────────────
 

@@ -6,6 +6,7 @@ import EmailAuthScreen from "@/components/customer/EmailAuthScreen";
 
 import TrayScanView from "@/components/customer/TrayScanView";
 import FoodResults from "@/components/customer/FoodResults";
+import ManualBillingView from "@/components/customer/ManualBillingView";
 import PaymentScreen from "@/components/customer/PaymentScreen";
 import DoneScreen from "@/components/customer/DoneScreen";
 
@@ -14,7 +15,7 @@ import DoneScreen from "@/components/customer/DoneScreen";
  * the appropriate step component based on flow state.
  */
 export default function CustomerPage() {
-  const { step } = useCustomerFlow();
+  const { step, billingMode } = useCustomerFlow();
   const isScrollLocked = step === "IDLE" || step === "SCANNING";
 
   return (
@@ -28,7 +29,8 @@ export default function CustomerPage() {
         {step === "EMAIL_AUTH" && <EmailAuthScreen />}
 
         {step === "SCANNING" && <TrayScanView />}
-        {step === "BILL" && <FoodResults />}
+        {step === "BILL" && billingMode === "manual" && <ManualBillingView />}
+        {step === "BILL" && billingMode !== "manual" && <FoodResults />}
         {step === "PAYMENT" && <PaymentScreen />}
         {step === "DONE" && <DoneScreen />}
       </div>

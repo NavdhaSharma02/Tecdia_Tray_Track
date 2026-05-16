@@ -28,6 +28,8 @@ const initialState: CustomerFlowState = {
   employee: null,
   transactions: [],
   scannedItems: [],
+  billingMode: "scan",
+  staffBillingAuthorized: false,
   paymentMethod: null,
   receipt: null,
   error: null,
@@ -60,10 +62,33 @@ function flowReducer(
       return {
         ...state,
         step: "BILL",
+        billingMode: "scan",
+        staffBillingAuthorized: false,
         scannedItems: action.payload,
         isLoading: false,
         error: null,
       };
+    case "ENTER_MANUAL_BILLING":
+      return {
+        ...state,
+        step: "BILL",
+        billingMode: "manual",
+        staffBillingAuthorized: true,
+        scannedItems: [],
+        isLoading: false,
+        error: null,
+      };
+    case "BACK_TO_TRAY_SCAN":
+      return {
+        ...state,
+        step: "SCANNING",
+        billingMode: "scan",
+        staffBillingAuthorized: false,
+        scannedItems: [],
+        error: null,
+      };
+    case "STAFF_BILLING_AUTHORIZED":
+      return { ...state, staffBillingAuthorized: true };
     case "UPDATE_ITEMS":
       return { ...state, scannedItems: action.payload };
     case "UPDATE_EMPLOYEE":
@@ -110,6 +135,11 @@ interface CustomerFlowContextValue extends CustomerFlowState {
   identifyEmployee: (id: string) => Promise<void>;
   startScan: () => void;
   completeScan: (items: ScannedItem[]) => void;
+  enterManualBilling: () => void;
+  backToTrayScan: () => void;
+  authorizeStaffBilling: () => void;
+  billingMode: CustomerFlowState["billingMode"];
+  staffBillingAuthorized: boolean;
   updateItems: (items: ScannedItem[]) => void;
   selectPayment: (method: PaymentMethod) => void;
   confirmPayment: () => Promise<void>;
@@ -255,6 +285,18 @@ export function CustomerFlowProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "SCAN_COMPLETE", payload: items });
   }, []);
 
+  const enterManualBilling = useCallback(() => {
+    dispatch({ type: "ENTER_MANUAL_BILLING" });
+  }, []);
+
+  const backToTrayScan = useCallback(() => {
+    dispatch({ type: "BACK_TO_TRAY_SCAN" });
+  }, []);
+
+  const authorizeStaffBilling = useCallback(() => {
+    dispatch({ type: "STAFF_BILLING_AUTHORIZED" });
+  }, []);
+
   const updateItems = useCallback((items: ScannedItem[]) => {
     dispatch({ type: "UPDATE_ITEMS", payload: items });
   }, []);
@@ -338,6 +380,9 @@ export function CustomerFlowProvider({ children }: { children: ReactNode }) {
         identifyEmployee,
         startScan,
         completeScan,
+        enterManualBilling,
+        backToTrayScan,
+        authorizeStaffBilling,
         updateItems,
         selectPayment,
         confirmPayment,

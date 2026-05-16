@@ -15,6 +15,9 @@ export type FlowStep =
 /** Payment method options */
 export type PaymentMethod = 'immediate' | 'account';
 
+/** How the current bill was built on the kiosk */
+export type BillingMode = "scan" | "manual";
+
 export type AdminRole = "admin" | "cashier";
 
 /** Employee record */
@@ -156,6 +159,9 @@ export interface CustomerFlowState {
   employee: Employee | null;
   transactions: Transaction[];
   scannedItems: ScannedItem[];
+  billingMode: BillingMode;
+  /** Cashier/admin authorized edits (manual billing or portion PIN). */
+  staffBillingAuthorized: boolean;
   paymentMethod: PaymentMethod | null;
   receipt: Receipt | null;
   error: string | null;
@@ -170,6 +176,9 @@ export type CustomerFlowAction =
   | { type: "RESET_TO_EMAIL_AUTH" }
   | { type: 'START_SCAN' }
   | { type: 'SCAN_COMPLETE'; payload: ScannedItem[] }
+  | { type: 'ENTER_MANUAL_BILLING' }
+  | { type: 'BACK_TO_TRAY_SCAN' }
+  | { type: 'STAFF_BILLING_AUTHORIZED' }
   | { type: 'UPDATE_ITEMS'; payload: ScannedItem[] }
   | { type: 'UPDATE_EMPLOYEE'; payload: Employee }
   | { type: 'SELECT_PAYMENT'; payload: PaymentMethod }

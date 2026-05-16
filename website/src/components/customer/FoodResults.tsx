@@ -5,17 +5,25 @@ import { useCustomerFlow } from "@/hooks/useCustomerFlow";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
 import PinPadModal from "@/components/ui/PinPadModal";
+import StaffMenuAddPanel from "@/components/customer/StaffMenuAddPanel";
+import { addMenuItemToBill } from "@/lib/manual-bill";
 import { formatCurrency } from "@/lib/utils";
 import * as api from "@/services/api";
-import type { ScannedItem } from "@/types";
+import type { MenuItem, ScannedItem } from "@/types";
 
 /**
  * Food Detection Results step — card-based layout, no emojis.
  */
 export default function FoodResults() {
-  const { scannedItems, updateItems, goToPayment } = useCustomerFlow();
+  const {
+    scannedItems,
+    updateItems,
+    goToPayment,
+    staffBillingAuthorized,
+    authorizeStaffBilling,
+  } = useCustomerFlow();
   const [items, setItems] = useState<ScannedItem[]>(scannedItems);
-  const [portionsUnlocked, setPortionsUnlocked] = useState(false);
+  const [portionsUnlocked, setPortionsUnlocked] = useState(staffBillingAuthorized);
   const [pinModalOpen, setPinModalOpen] = useState(false);
 
   const total = useMemo(
@@ -60,7 +68,12 @@ export default function FoodResults() {
       return { ok: false, error: result.error };
     }
     setPortionsUnlocked(true);
+    authorizeStaffBilling();
     return { ok: true };
+  };
+
+  const handleAddMenuItem = (menuItem: MenuItem) => {
+    setItems((prev) => addMenuItemToBill(prev, menuItem, 1));
   };
 
   const handleProceed = () => {
@@ -165,12 +178,20 @@ export default function FoodResults() {
           }}
         >
           <p style={{ fontSize: "14px", color: "var(--text-secondary)", margin: 0 }}>
-            Portion adjustments require cashier or admin authorization.
+            Staff PIN unlocks portion edits and adding dishes from today&apos;s menu.
           </p>
           <Button variant="primary" size="sm" onClick={() => setPinModalOpen(true)}>
-            Adjust Portions (Staff)
+            Staff controls (PIN)
           </Button>
         </div>
+      )}
+
+      {portionsUnlocked && (
+        <StaffMenuAddPanel
+          billItems={items}
+          onAdd={handleAddMenuItem}
+          title="Add missing items from today's menu"
+        />
       )}
 
       {/* Food Cards Grid */}
@@ -450,8 +471,8 @@ export default function FoodResults() {
         isOpen={pinModalOpen}
         onClose={() => setPinModalOpen(false)}
         title="Staff Authorization"
-        description="Enter the cashier PIN or admin PIN to adjust item portions."
-        submitLabel="Unlock Adjustments"
+        description="Enter the cashier PIN or admin PIN to edit the bill and add menu items."
+        submitLabel="Unlock staff controls"
         onSubmit={handlePortionPinSubmit}
       />
     </div>
