@@ -21,8 +21,11 @@ export default function TrayScanView() {
   const [isScanning, setIsScanning] = useState(false);
   const [progress, setProgress] = useState(0);
   const [detectedItems, setDetectedItems] = useState<ScannedItem[]>([]);
+  const [uploadedTrayImage, setUploadedTrayImage] = useState<File | null>(null);
+  const [uploadedPreviewUrl, setUploadedPreviewUrl] = useState<string | null>(null);
 
   const progressRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const uploadInputRef = useRef<HTMLInputElement | null>(null);
   const hasScanned = useRef(false);
 
   const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -37,6 +40,23 @@ export default function TrayScanView() {
       if (progressRef.current) clearInterval(progressRef.current);
     };
   }, []);
+
+  useEffect(() => {
+    return () => {
+      if (uploadedPreviewUrl) URL.revokeObjectURL(uploadedPreviewUrl);
+    };
+  }, [uploadedPreviewUrl]);
+
+  function handleUploadImage(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (uploadedPreviewUrl) URL.revokeObjectURL(uploadedPreviewUrl);
+    setUploadedTrayImage(file);
+    setUploadedPreviewUrl(URL.createObjectURL(file));
+    hasScanned.current = false;
+    if (error) clearError();
+  }
 
   async function runScan() {
     if (hasScanned.current) return;
@@ -55,11 +75,13 @@ export default function TrayScanView() {
     }, 200);
 
     try {
-      let imageBlob: Blob | undefined;
-      try {
-        imageBlob = await captureFrame();
-      } catch {
-        // Camera not ready; backend can still fall back if needed.
+      let imageBlob: Blob | undefined = uploadedTrayImage ?? undefined;
+      if (!imageBlob) {
+        try {
+          imageBlob = await captureFrame();
+        } catch {
+          // Camera not ready; the scan API will return a user-facing error.
+        }
       }
 
       const result = await api.scanTray(imageBlob);
@@ -117,7 +139,13 @@ export default function TrayScanView() {
           textShadow: "0 10px 26px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.28)",
         }}
       >
-        {isScanning ? "Scanning Your Tray..." : "Position Your Tray"}
+        {isScanning
+          ? detectedItems.length
+            ? "Detected and Scanned"
+            : "Scanning Your Tray..."
+          : uploadedTrayImage
+            ? "Uploaded Tray Ready"
+            : "Position Your Tray"}
       </h2>
 
       <div
@@ -135,7 +163,40 @@ export default function TrayScanView() {
           display: isScanning ? "none" : "block",
         }}
       >
-        {camError ? (
+        {uploadedPreviewUrl ? (
+          <>
+            <div
+              role="img"
+              aria-label="Uploaded tray"
+              style={{
+                width: "100%",
+                height: "100%",
+                backgroundImage: `url("${uploadedPreviewUrl}")`,
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                backgroundSize: "cover",
+                backgroundColor: "var(--bg-primary)",
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                left: "20px",
+                bottom: "18px",
+                zIndex: 15,
+                padding: "9px 14px",
+                borderRadius: "999px",
+                background: "rgba(27, 21, 18, 0.76)",
+                color: "#ffffff",
+                fontSize: "13px",
+                fontWeight: 700,
+                backdropFilter: "blur(10px)",
+              }}
+            >
+              Uploaded image selected
+            </div>
+          </>
+        ) : camError ? (
           <div
             style={{
               display: "flex",
@@ -215,17 +276,43 @@ export default function TrayScanView() {
       {!isScanning && (
         <div
           className="mt-6 flex flex-col items-center gap-3"
-          style={{ width: "100%", maxWidth: "480px", marginTop: "8px" }}
+          style={{ width: "100%", maxWidth: "720px", marginTop: "8px" }}
         >
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={() => void runScan()}
-            className="btn-scan-action"
-            style={{ width: "100%", fontSize: "16px", transform: "translateY(-4px)" }}
+          <input
+            ref={uploadInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleUploadImage}
+            style={{ display: "none" }}
+          />
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "14px",
+            }}
           >
-            Scan Tray
-          </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              type="button"
+              onClick={() => uploadInputRef.current?.click()}
+              className="btn-scan-action"
+              style={{ flex: "1 1 220px", fontSize: "16px", transform: "translateY(-4px)" }}
+            >
+              Upload Image
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => void runScan()}
+              className="btn-scan-action"
+              style={{ flex: "1 1 220px", fontSize: "16px", transform: "translateY(-4px)" }}
+            >
+              {uploadedTrayImage ? "Scan Uploaded Image" : "Scan Tray"}
+            </Button>
+          </div>
         </div>
       )}
 
@@ -269,7 +356,7 @@ export default function TrayScanView() {
               }}
             >
               {detectedItems.length
-                ? `${detectedItems.length} dish${detectedItems.length === 1 ? "" : "es"} detected`
+                ? `${detectedItems.length} dish${detectedItems.length === 1 ? "" : "es"} detected and scanned`
                 : "Scanning your tray..."}
             </h2>
             <p style={{ fontSize: "15px", color: "var(--text-secondary)", marginTop: "4px" }}>

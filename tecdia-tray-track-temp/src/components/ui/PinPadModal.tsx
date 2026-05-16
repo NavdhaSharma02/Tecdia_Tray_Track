@@ -78,7 +78,7 @@ export default function PinPadModal({
           {description}
         </p>
       )}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} style={{ direction: "ltr" }}>
         <div
           className={shake ? "animate-shake" : ""}
           style={{
@@ -124,18 +124,18 @@ export default function PinPadModal({
             marginBottom: "20px",
           }}
         >
-          {["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "←"].map((key) =>
+          {["1", "2", "3", "4", "5", "6", "7", "8", "9", "", "0", "Back"].map((key) =>
             key === "" ? (
               <div key="empty" />
             ) : (
               <button
                 key={key}
                 type="button"
-                onClick={() => (key === "←" ? handleBackspace() : handlePadPress(key))}
+                onClick={() => (key === "Back" ? handleBackspace() : handlePadPress(key))}
                 className="btn btn-ghost"
                 style={{
                   height: "52px",
-                  fontSize: "20px",
+                  fontSize: key === "Back" ? "14px" : "20px",
                   fontWeight: 600,
                   borderRadius: "var(--radius-md)",
                   border: "1px solid var(--border)",
