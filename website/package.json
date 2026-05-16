@@ -1,0 +1,37 @@
+{
+  "name": "tecida-tray-track-temp",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --webpack",
+    "dev:turbo": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "ml:setup": "node scripts/ml-setup.mjs",
+    "ml:migrate-009": "node scripts/run-migration-009.mjs",
+    "ml:migrate-010": "node scripts/run-migration-010.mjs",
+    "ml:import-vision": "npx tsx scripts/import-vision-bank.ts"
+  },
+  "dependencies": {
+    "@xenova/transformers": "^2.17.2",
+    "jimp": "^1.6.1",
+    "next": "^16.2.6",
+    "pg": "^8.20.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "sharp": "^0.34.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^25.6.0",
+    "@types/pg": "^8.20.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.3",
+    "tailwindcss": "^4",
+    "tsx": "^4.22.0",
+    "typescript": "^6.0.2"
+  }
+}

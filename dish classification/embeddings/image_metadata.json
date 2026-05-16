@@ -1,0 +1,2872 @@
+[
+  {
+    "path": "./Train\\Balbacua\\Balbacua__ann142.png",
+    "class_name": "Balbacua",
+    "class_idx": 0
+  },
+  {
+    "path": "./Train\\Balbacua\\Balbacua__ann143.png",
+    "class_name": "Balbacua",
+    "class_idx": 0
+  },
+  {
+    "path": "./Train\\Balbacua\\Balbacua__ann144.png",
+    "class_name": "Balbacua",
+    "class_idx": 0
+  },
+  {
+    "path": "./Train\\Balbacua\\Balbacua__ann145.png",
+    "class_name": "Balbacua",
+    "class_idx": 0
+  },
+  {
+    "path": "./Train\\Balbacua\\Balbacua__ann146.png",
+    "class_name": "Balbacua",
+    "class_idx": 0
+  },
+  {
+    "path": "./Train\\Balbacua\\Balbacua__ann147.png",
+    "class_name": "Balbacua",
+    "class_idx": 0
+  },
+  {
+    "path": "./Train\\Balbacua\\Balbacua__ann151.png",
+    "class_name": "Balbacua",
+    "class_idx": 0
+  },
+  {
+    "path": "./Train\\Balbacua\\Balbacua__ann154.png",
+    "class_name": "Balbacua",
+    "class_idx": 0
+  },
+  {
+    "path": "./Train\\Banana Heart Salad\\Banana Heart Salad__ann483.png",
+    "class_name": "Banana Heart Salad",
+    "class_idx": 1
+  },
+  {
+    "path": "./Train\\Banana Heart Salad\\Banana Heart Salad__ann484.png",
+    "class_name": "Banana Heart Salad",
+    "class_idx": 1
+  },
+  {
+    "path": "./Train\\Banana Heart Salad\\Banana Heart Salad__ann485.png",
+    "class_name": "Banana Heart Salad",
+    "class_idx": 1
+  },
+  {
+    "path": "./Train\\Banana Heart Salad\\Banana Heart Salad__ann486.png",
+    "class_name": "Banana Heart Salad",
+    "class_idx": 1
+  },
+  {
+    "path": "./Train\\Banana Heart Salad\\Banana Heart Salad__ann487.png",
+    "class_name": "Banana Heart Salad",
+    "class_idx": 1
+  },
+  {
+    "path": "./Train\\Banana Heart Salad\\Banana Heart Salad__ann488.png",
+    "class_name": "Banana Heart Salad",
+    "class_idx": 1
+  },
+  {
+    "path": "./Train\\Banana Heart Salad\\Banana Heart Salad__ann489.png",
+    "class_name": "Banana Heart Salad",
+    "class_idx": 1
+  },
+  {
+    "path": "./Train\\Banana Heart Salad\\Banana Heart Salad__ann490.png",
+    "class_name": "Banana Heart Salad",
+    "class_idx": 1
+  },
+  {
+    "path": "./Train\\Bangus Daing\\Bangus Daing__ann177.png",
+    "class_name": "Bangus Daing",
+    "class_idx": 2
+  },
+  {
+    "path": "./Train\\Bangus Daing\\Bangus Daing__ann179.png",
+    "class_name": "Bangus Daing",
+    "class_idx": 2
+  },
+  {
+    "path": "./Train\\Bangus Daing\\Bangus Daing__ann180.png",
+    "class_name": "Bangus Daing",
+    "class_idx": 2
+  },
+  {
+    "path": "./Train\\Bangus Daing\\Bangus Daing__ann181.png",
+    "class_name": "Bangus Daing",
+    "class_idx": 2
+  },
+  {
+    "path": "./Train\\Bangus Daing\\Bangus Daing__ann182.png",
+    "class_name": "Bangus Daing",
+    "class_idx": 2
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann491.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann492.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann493.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann494.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann495.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann496.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann497.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann498.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann499.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann500.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann501.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann502.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann503.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann504.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann505.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann51.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann52.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann53.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann54.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann55.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann56.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann57.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann58.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann59.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann60.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann61.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann62.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Bangus Nilarang with Gata\\Bangus Nilarang with Gata__ann63.png",
+    "class_name": "Bangus Nilarang with Gata",
+    "class_idx": 3
+  },
+  {
+    "path": "./Train\\Batong Guisado\\Batong Guisado__ann124.png",
+    "class_name": "Batong Guisado",
+    "class_idx": 4
+  },
+  {
+    "path": "./Train\\Batong Guisado\\Batong Guisado__ann132.png",
+    "class_name": "Batong Guisado",
+    "class_idx": 4
+  },
+  {
+    "path": "./Train\\Batong Guisado\\Batong Guisado__ann133.png",
+    "class_name": "Batong Guisado",
+    "class_idx": 4
+  },
+  {
+    "path": "./Train\\Batong Guisado\\Batong Guisado__ann134.png",
+    "class_name": "Batong Guisado",
+    "class_idx": 4
+  },
+  {
+    "path": "./Train\\Bihon Guisado\\Bihon Guisado__ann101.png",
+    "class_name": "Bihon Guisado",
+    "class_idx": 5
+  },
+  {
+    "path": "./Train\\Bihon Guisado\\Bihon Guisado__ann106.png",
+    "class_name": "Bihon Guisado",
+    "class_idx": 5
+  },
+  {
+    "path": "./Train\\Bihon Guisado\\Bihon Guisado__ann120.png",
+    "class_name": "Bihon Guisado",
+    "class_idx": 5
+  },
+  {
+    "path": "./Train\\Bihon Guisado\\Bihon Guisado__ann121.png",
+    "class_name": "Bihon Guisado",
+    "class_idx": 5
+  },
+  {
+    "path": "./Train\\Bihon Guisado\\Bihon Guisado__ann122.png",
+    "class_name": "Bihon Guisado",
+    "class_idx": 5
+  },
+  {
+    "path": "./Train\\Bihon Guisado\\Bihon Guisado__ann123.png",
+    "class_name": "Bihon Guisado",
+    "class_idx": 5
+  },
+  {
+    "path": "./Train\\Bihon Guisado\\Bihon Guisado__ann94.png",
+    "class_name": "Bihon Guisado",
+    "class_idx": 5
+  },
+  {
+    "path": "./Train\\Bihon Guisado\\Bihon Guisado__ann95.png",
+    "class_name": "Bihon Guisado",
+    "class_idx": 5
+  },
+  {
+    "path": "./Train\\Bihon Guisado\\Bihon Guisado__ann96.png",
+    "class_name": "Bihon Guisado",
+    "class_idx": 5
+  },
+  {
+    "path": "./Train\\Bihon Guisado\\Bihon Guisado__ann97.png",
+    "class_name": "Bihon Guisado",
+    "class_idx": 5
+  },
+  {
+    "path": "./Train\\Bihon Guisado\\Bihon Guisado__ann98.png",
+    "class_name": "Bihon Guisado",
+    "class_idx": 5
+  },
+  {
+    "path": "./Train\\Bihon Guisado\\Bihon Guisado__ann99.png",
+    "class_name": "Bihon Guisado",
+    "class_idx": 5
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann233.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann235.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann237.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann238.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann239.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann240.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann241.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann242.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann243.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann244.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann245.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann246.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann247.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann248.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann249.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann250.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann251.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann252.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann253.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann254.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann255.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann256.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann257.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann258.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann259.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann260.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann261.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann262.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann263.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann264.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann265.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann266.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann267.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Bola Bola\\Bola Bola__ann268.png",
+    "class_name": "Bola Bola",
+    "class_idx": 6
+  },
+  {
+    "path": "./Train\\Breaded Chicken\\Breaded Chicken__ann456.png",
+    "class_name": "Breaded Chicken",
+    "class_idx": 7
+  },
+  {
+    "path": "./Train\\Breaded Chicken\\Breaded Chicken__ann457.png",
+    "class_name": "Breaded Chicken",
+    "class_idx": 7
+  },
+  {
+    "path": "./Train\\Breaded Chicken\\Breaded Chicken__ann458.png",
+    "class_name": "Breaded Chicken",
+    "class_idx": 7
+  },
+  {
+    "path": "./Train\\Breaded Chicken\\Breaded Chicken__ann460.png",
+    "class_name": "Breaded Chicken",
+    "class_idx": 7
+  },
+  {
+    "path": "./Train\\Breaded Chicken\\Breaded Chicken__ann464.png",
+    "class_name": "Breaded Chicken",
+    "class_idx": 7
+  },
+  {
+    "path": "./Train\\Breaded Chicken\\Breaded Chicken__ann468.png",
+    "class_name": "Breaded Chicken",
+    "class_idx": 7
+  },
+  {
+    "path": "./Train\\Breaded Chicken\\Breaded Chicken__ann469.png",
+    "class_name": "Breaded Chicken",
+    "class_idx": 7
+  },
+  {
+    "path": "./Train\\Breaded Chicken\\Breaded Chicken__ann470.png",
+    "class_name": "Breaded Chicken",
+    "class_idx": 7
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann396.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann401.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann403.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann411.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann412.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann413.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann414.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann415.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann418.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann448.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann449.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann516.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann529.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann530.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann531.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann532.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann533.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann534.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann535.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann536.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann537.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann538.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Fish Fillet\\Breaded Fish Fillet__ann539.png",
+    "class_name": "Breaded Fish Fillet",
+    "class_idx": 8
+  },
+  {
+    "path": "./Train\\Breaded Porkchop\\Breaded Porkchop__ann100.png",
+    "class_name": "Breaded Porkchop",
+    "class_idx": 9
+  },
+  {
+    "path": "./Train\\Breaded Porkchop\\Breaded Porkchop__ann103.png",
+    "class_name": "Breaded Porkchop",
+    "class_idx": 9
+  },
+  {
+    "path": "./Train\\Breaded Porkchop\\Breaded Porkchop__ann104.png",
+    "class_name": "Breaded Porkchop",
+    "class_idx": 9
+  },
+  {
+    "path": "./Train\\Breaded Porkchop\\Breaded Porkchop__ann105.png",
+    "class_name": "Breaded Porkchop",
+    "class_idx": 9
+  },
+  {
+    "path": "./Train\\Breaded Porkchop\\Breaded Porkchop__ann236.png",
+    "class_name": "Breaded Porkchop",
+    "class_idx": 9
+  },
+  {
+    "path": "./Train\\Breaded Porkchop\\Breaded Porkchop__ann279.png",
+    "class_name": "Breaded Porkchop",
+    "class_idx": 9
+  },
+  {
+    "path": "./Train\\Breaded Porkchop\\Breaded Porkchop__ann280.png",
+    "class_name": "Breaded Porkchop",
+    "class_idx": 9
+  },
+  {
+    "path": "./Train\\Breaded Porkchop\\Breaded Porkchop__ann281.png",
+    "class_name": "Breaded Porkchop",
+    "class_idx": 9
+  },
+  {
+    "path": "./Train\\Breaded Porkchop\\Breaded Porkchop__ann295.png",
+    "class_name": "Breaded Porkchop",
+    "class_idx": 9
+  },
+  {
+    "path": "./Train\\Breaded Porkchop\\Breaded Porkchop__ann303.png",
+    "class_name": "Breaded Porkchop",
+    "class_idx": 9
+  },
+  {
+    "path": "./Train\\Breaded Porkchop\\Breaded Porkchop__ann309.png",
+    "class_name": "Breaded Porkchop",
+    "class_idx": 9
+  },
+  {
+    "path": "./Train\\Breaded Porkchop\\Breaded Porkchop__ann311.png",
+    "class_name": "Breaded Porkchop",
+    "class_idx": 9
+  },
+  {
+    "path": "./Train\\Breaded Porkchop\\Breaded Porkchop__ann86.png",
+    "class_name": "Breaded Porkchop",
+    "class_idx": 9
+  },
+  {
+    "path": "./Train\\Breaded Porkchop\\Breaded Porkchop__ann92.png",
+    "class_name": "Breaded Porkchop",
+    "class_idx": 9
+  },
+  {
+    "path": "./Train\\Breaded Porkchop\\Breaded Porkchop__ann93.png",
+    "class_name": "Breaded Porkchop",
+    "class_idx": 9
+  },
+  {
+    "path": "./Train\\Carbonara\\Carbonara__ann68.png",
+    "class_name": "Carbonara",
+    "class_idx": 10
+  },
+  {
+    "path": "./Train\\Carbonara\\Carbonara__ann77.png",
+    "class_name": "Carbonara",
+    "class_idx": 10
+  },
+  {
+    "path": "./Train\\Carbonara\\Carbonara__ann78.png",
+    "class_name": "Carbonara",
+    "class_idx": 10
+  },
+  {
+    "path": "./Train\\Carbonara\\Carbonara__ann79.png",
+    "class_name": "Carbonara",
+    "class_idx": 10
+  },
+  {
+    "path": "./Train\\Chicken Adobo\\Chicken Adobo__ann187.png",
+    "class_name": "Chicken Adobo",
+    "class_idx": 11
+  },
+  {
+    "path": "./Train\\Chicken Adobo\\Chicken Adobo__ann188.png",
+    "class_name": "Chicken Adobo",
+    "class_idx": 11
+  },
+  {
+    "path": "./Train\\Chicken Adobo\\Chicken Adobo__ann189.png",
+    "class_name": "Chicken Adobo",
+    "class_idx": 11
+  },
+  {
+    "path": "./Train\\Chicken Adobo\\Chicken Adobo__ann190.png",
+    "class_name": "Chicken Adobo",
+    "class_idx": 11
+  },
+  {
+    "path": "./Train\\Chicken Adobo\\Chicken Adobo__ann192.png",
+    "class_name": "Chicken Adobo",
+    "class_idx": 11
+  },
+  {
+    "path": "./Train\\Chicken Adobo\\Chicken Adobo__ann195.png",
+    "class_name": "Chicken Adobo",
+    "class_idx": 11
+  },
+  {
+    "path": "./Train\\Chicken Adobo\\Chicken Adobo__ann208.png",
+    "class_name": "Chicken Adobo",
+    "class_idx": 11
+  },
+  {
+    "path": "./Train\\Chicken Afritada\\Chicken Afritada__ann118.png",
+    "class_name": "Chicken Afritada",
+    "class_idx": 12
+  },
+  {
+    "path": "./Train\\Chicken Afritada\\Chicken Afritada__ann119.png",
+    "class_name": "Chicken Afritada",
+    "class_idx": 12
+  },
+  {
+    "path": "./Train\\Chicken Caldereta\\Chicken Caldereta__ann1.png",
+    "class_name": "Chicken Caldereta",
+    "class_idx": 13
+  },
+  {
+    "path": "./Train\\Chicken Caldereta\\Chicken Caldereta__ann18.png",
+    "class_name": "Chicken Caldereta",
+    "class_idx": 13
+  },
+  {
+    "path": "./Train\\Chicken Caldereta\\Chicken Caldereta__ann2.png",
+    "class_name": "Chicken Caldereta",
+    "class_idx": 13
+  },
+  {
+    "path": "./Train\\Chicken Caldereta\\Chicken Caldereta__ann20.png",
+    "class_name": "Chicken Caldereta",
+    "class_idx": 13
+  },
+  {
+    "path": "./Train\\Chicken Caldereta\\Chicken Caldereta__ann22.png",
+    "class_name": "Chicken Caldereta",
+    "class_idx": 13
+  },
+  {
+    "path": "./Train\\Chicken Caldereta\\Chicken Caldereta__ann23.png",
+    "class_name": "Chicken Caldereta",
+    "class_idx": 13
+  },
+  {
+    "path": "./Train\\Chicken Caldereta\\Chicken Caldereta__ann3.png",
+    "class_name": "Chicken Caldereta",
+    "class_idx": 13
+  },
+  {
+    "path": "./Train\\Chicken Caldereta\\Chicken Caldereta__ann45.png",
+    "class_name": "Chicken Caldereta",
+    "class_idx": 13
+  },
+  {
+    "path": "./Train\\Chicken Caldereta\\Chicken Caldereta__ann46.png",
+    "class_name": "Chicken Caldereta",
+    "class_idx": 13
+  },
+  {
+    "path": "./Train\\Chicken Caldereta\\Chicken Caldereta__ann47.png",
+    "class_name": "Chicken Caldereta",
+    "class_idx": 13
+  },
+  {
+    "path": "./Train\\Chicken Casserole\\Chicken Casserole__ann234.png",
+    "class_name": "Chicken Casserole",
+    "class_idx": 14
+  },
+  {
+    "path": "./Train\\Chicken Casserole\\Chicken Casserole__ann269.png",
+    "class_name": "Chicken Casserole",
+    "class_idx": 14
+  },
+  {
+    "path": "./Train\\Chicken Casserole\\Chicken Casserole__ann270.png",
+    "class_name": "Chicken Casserole",
+    "class_idx": 14
+  },
+  {
+    "path": "./Train\\Chicken Longganisa\\Chicken Longganisa__ann328.png",
+    "class_name": "Chicken Longganisa",
+    "class_idx": 15
+  },
+  {
+    "path": "./Train\\Chicken Longganisa\\Chicken Longganisa__ann329.png",
+    "class_name": "Chicken Longganisa",
+    "class_idx": 15
+  },
+  {
+    "path": "./Train\\Chicken Longganisa\\Chicken Longganisa__ann330.png",
+    "class_name": "Chicken Longganisa",
+    "class_idx": 15
+  },
+  {
+    "path": "./Train\\Chicken Longganisa\\Chicken Longganisa__ann331.png",
+    "class_name": "Chicken Longganisa",
+    "class_idx": 15
+  },
+  {
+    "path": "./Train\\Chicken Longganisa\\Chicken Longganisa__ann332.png",
+    "class_name": "Chicken Longganisa",
+    "class_idx": 15
+  },
+  {
+    "path": "./Train\\Chicken Longganisa\\Chicken Longganisa__ann333.png",
+    "class_name": "Chicken Longganisa",
+    "class_idx": 15
+  },
+  {
+    "path": "./Train\\Chicken Mechado\\Chicken Mechado__ann506.png",
+    "class_name": "Chicken Mechado",
+    "class_idx": 16
+  },
+  {
+    "path": "./Train\\Chicken Mechado\\Chicken Mechado__ann507.png",
+    "class_name": "Chicken Mechado",
+    "class_idx": 16
+  },
+  {
+    "path": "./Train\\Chicken Mechado\\Chicken Mechado__ann508.png",
+    "class_name": "Chicken Mechado",
+    "class_idx": 16
+  },
+  {
+    "path": "./Train\\Chicken Mechado\\Chicken Mechado__ann522.png",
+    "class_name": "Chicken Mechado",
+    "class_idx": 16
+  },
+  {
+    "path": "./Train\\Chicken Mechado\\Chicken Mechado__ann524.png",
+    "class_name": "Chicken Mechado",
+    "class_idx": 16
+  },
+  {
+    "path": "./Train\\Chicken Mechado\\Chicken Mechado__ann525.png",
+    "class_name": "Chicken Mechado",
+    "class_idx": 16
+  },
+  {
+    "path": "./Train\\Chicken Mechado\\Chicken Mechado__ann526.png",
+    "class_name": "Chicken Mechado",
+    "class_idx": 16
+  },
+  {
+    "path": "./Train\\Chicken Mechado\\Chicken Mechado__ann527.png",
+    "class_name": "Chicken Mechado",
+    "class_idx": 16
+  },
+  {
+    "path": "./Train\\Chicken Mechado\\Chicken Mechado__ann528.png",
+    "class_name": "Chicken Mechado",
+    "class_idx": 16
+  },
+  {
+    "path": "./Train\\Chicken Mechado\\Chicken Mechado__ann551.png",
+    "class_name": "Chicken Mechado",
+    "class_idx": 16
+  },
+  {
+    "path": "./Train\\Chicken Mechado\\Chicken Mechado__ann552.png",
+    "class_name": "Chicken Mechado",
+    "class_idx": 16
+  },
+  {
+    "path": "./Train\\Chicken Sinantomas\\Chicken Sinantomas__ann397.png",
+    "class_name": "Chicken Sinantomas",
+    "class_idx": 17
+  },
+  {
+    "path": "./Train\\Chicken Sinantomas\\Chicken Sinantomas__ann404.png",
+    "class_name": "Chicken Sinantomas",
+    "class_idx": 17
+  },
+  {
+    "path": "./Train\\Chicken Sinantomas\\Chicken Sinantomas__ann405.png",
+    "class_name": "Chicken Sinantomas",
+    "class_idx": 17
+  },
+  {
+    "path": "./Train\\Chicken Sinantomas\\Chicken Sinantomas__ann407.png",
+    "class_name": "Chicken Sinantomas",
+    "class_idx": 17
+  },
+  {
+    "path": "./Train\\Chicken Sinantomas\\Chicken Sinantomas__ann408.png",
+    "class_name": "Chicken Sinantomas",
+    "class_idx": 17
+  },
+  {
+    "path": "./Train\\Chicken Sinantomas\\Chicken Sinantomas__ann450.png",
+    "class_name": "Chicken Sinantomas",
+    "class_idx": 17
+  },
+  {
+    "path": "./Train\\Chicken Sinantomas\\Chicken Sinantomas__ann451.png",
+    "class_name": "Chicken Sinantomas",
+    "class_idx": 17
+  },
+  {
+    "path": "./Train\\Chicken Sinantomas\\Chicken Sinantomas__ann452.png",
+    "class_name": "Chicken Sinantomas",
+    "class_idx": 17
+  },
+  {
+    "path": "./Train\\Chicken Sinantomas\\Chicken Sinantomas__ann453.png",
+    "class_name": "Chicken Sinantomas",
+    "class_idx": 17
+  },
+  {
+    "path": "./Train\\Chicken Teriyaki\\Chicken Teriyaki__ann125.png",
+    "class_name": "Chicken Teriyaki",
+    "class_idx": 18
+  },
+  {
+    "path": "./Train\\Chicken Teriyaki\\Chicken Teriyaki__ann126.png",
+    "class_name": "Chicken Teriyaki",
+    "class_idx": 18
+  },
+  {
+    "path": "./Train\\Chicken Teriyaki\\Chicken Teriyaki__ann129.png",
+    "class_name": "Chicken Teriyaki",
+    "class_idx": 18
+  },
+  {
+    "path": "./Train\\Chicken Teriyaki\\Chicken Teriyaki__ann130.png",
+    "class_name": "Chicken Teriyaki",
+    "class_idx": 18
+  },
+  {
+    "path": "./Train\\Chicken Teriyaki\\Chicken Teriyaki__ann131.png",
+    "class_name": "Chicken Teriyaki",
+    "class_idx": 18
+  },
+  {
+    "path": "./Train\\Chicken Tinola with malunggay\\Chicken Tinola with malunggay__ann509.png",
+    "class_name": "Chicken Tinola with malunggay",
+    "class_idx": 19
+  },
+  {
+    "path": "./Train\\Chicken Tinola with malunggay\\Chicken Tinola with malunggay__ann510.png",
+    "class_name": "Chicken Tinola with malunggay",
+    "class_idx": 19
+  },
+  {
+    "path": "./Train\\Chicken Tinola with malunggay\\Chicken Tinola with malunggay__ann511.png",
+    "class_name": "Chicken Tinola with malunggay",
+    "class_idx": 19
+  },
+  {
+    "path": "./Train\\Chicken Tinola with malunggay\\Chicken Tinola with malunggay__ann512.png",
+    "class_name": "Chicken Tinola with malunggay",
+    "class_idx": 19
+  },
+  {
+    "path": "./Train\\Chicken Tinola with malunggay\\Chicken Tinola with malunggay__ann513.png",
+    "class_name": "Chicken Tinola with malunggay",
+    "class_idx": 19
+  },
+  {
+    "path": "./Train\\Chicken Tinola with malunggay\\Chicken Tinola with malunggay__ann514.png",
+    "class_name": "Chicken Tinola with malunggay",
+    "class_idx": 19
+  },
+  {
+    "path": "./Train\\Chicken Tinola with malunggay\\Chicken Tinola with malunggay__ann515.png",
+    "class_name": "Chicken Tinola with malunggay",
+    "class_idx": 19
+  },
+  {
+    "path": "./Train\\Chicken Tinola with malunggay\\Chicken Tinola with malunggay__ann517.png",
+    "class_name": "Chicken Tinola with malunggay",
+    "class_idx": 19
+  },
+  {
+    "path": "./Train\\Chicken Tinola with malunggay\\Chicken Tinola with malunggay__ann518.png",
+    "class_name": "Chicken Tinola with malunggay",
+    "class_idx": 19
+  },
+  {
+    "path": "./Train\\Chicken Tinola with malunggay\\Chicken Tinola with malunggay__ann519.png",
+    "class_name": "Chicken Tinola with malunggay",
+    "class_idx": 19
+  },
+  {
+    "path": "./Train\\Chicken Tinola with malunggay\\Chicken Tinola with malunggay__ann520.png",
+    "class_name": "Chicken Tinola with malunggay",
+    "class_idx": 19
+  },
+  {
+    "path": "./Train\\Chicken Tinola with malunggay\\Chicken Tinola with malunggay__ann521.png",
+    "class_name": "Chicken Tinola with malunggay",
+    "class_idx": 19
+  },
+  {
+    "path": "./Train\\Chicken Tinola with malunggay\\Chicken Tinola with malunggay__ann523.png",
+    "class_name": "Chicken Tinola with malunggay",
+    "class_idx": 19
+  },
+  {
+    "path": "./Train\\Crispy Fry Talong\\Crispy Fry Talong__ann465.png",
+    "class_name": "Crispy Fry Talong",
+    "class_idx": 20
+  },
+  {
+    "path": "./Train\\Fish Escabeche\\Fish Escabeche__ann162.png",
+    "class_name": "Fish Escabeche",
+    "class_idx": 21
+  },
+  {
+    "path": "./Train\\Fish Escabeche\\Fish Escabeche__ann163.png",
+    "class_name": "Fish Escabeche",
+    "class_idx": 21
+  },
+  {
+    "path": "./Train\\Fish Escabeche\\Fish Escabeche__ann170.png",
+    "class_name": "Fish Escabeche",
+    "class_idx": 21
+  },
+  {
+    "path": "./Train\\Fish Escabeche\\Fish Escabeche__ann171.png",
+    "class_name": "Fish Escabeche",
+    "class_idx": 21
+  },
+  {
+    "path": "./Train\\Fish Escabeche\\Fish Escabeche__ann172.png",
+    "class_name": "Fish Escabeche",
+    "class_idx": 21
+  },
+  {
+    "path": "./Train\\Fish Escabeche\\Fish Escabeche__ann178.png",
+    "class_name": "Fish Escabeche",
+    "class_idx": 21
+  },
+  {
+    "path": "./Train\\Fish Escabeche\\Fish Escabeche__ann183.png",
+    "class_name": "Fish Escabeche",
+    "class_idx": 21
+  },
+  {
+    "path": "./Train\\Fish Escabeche\\Fish Escabeche__ann185.png",
+    "class_name": "Fish Escabeche",
+    "class_idx": 21
+  },
+  {
+    "path": "./Train\\Fish Kinilaw\\Fish Kinilaw__ann102.png",
+    "class_name": "Fish Kinilaw",
+    "class_idx": 22
+  },
+  {
+    "path": "./Train\\Fish Kinilaw\\Fish Kinilaw__ann107.png",
+    "class_name": "Fish Kinilaw",
+    "class_idx": 22
+  },
+  {
+    "path": "./Train\\Fish Kinilaw\\Fish Kinilaw__ann108.png",
+    "class_name": "Fish Kinilaw",
+    "class_idx": 22
+  },
+  {
+    "path": "./Train\\Fish Kinilaw\\Fish Kinilaw__ann109.png",
+    "class_name": "Fish Kinilaw",
+    "class_idx": 22
+  },
+  {
+    "path": "./Train\\Fish Kinilaw\\Fish Kinilaw__ann85.png",
+    "class_name": "Fish Kinilaw",
+    "class_idx": 22
+  },
+  {
+    "path": "./Train\\Fish Kinilaw\\Fish Kinilaw__ann87.png",
+    "class_name": "Fish Kinilaw",
+    "class_idx": 22
+  },
+  {
+    "path": "./Train\\Fish Kinilaw\\Fish Kinilaw__ann88.png",
+    "class_name": "Fish Kinilaw",
+    "class_idx": 22
+  },
+  {
+    "path": "./Train\\Fish Kinilaw\\Fish Kinilaw__ann89.png",
+    "class_name": "Fish Kinilaw",
+    "class_idx": 22
+  },
+  {
+    "path": "./Train\\Fish Kinilaw\\Fish Kinilaw__ann90.png",
+    "class_name": "Fish Kinilaw",
+    "class_idx": 22
+  },
+  {
+    "path": "./Train\\Fish Kinilaw\\Fish Kinilaw__ann91.png",
+    "class_name": "Fish Kinilaw",
+    "class_idx": 22
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann282.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann283.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann284.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann285.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann286.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann287.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann288.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann289.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann290.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann291.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann292.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann294.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann300.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann301.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann302.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann304.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann305.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann306.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann307.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann308.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann31.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann310.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Paksiw\\Fish Paksiw__ann32.png",
+    "class_name": "Fish Paksiw",
+    "class_idx": 23
+  },
+  {
+    "path": "./Train\\Fish Sarciado\\Fish Sarciado__ann423.png",
+    "class_name": "Fish Sarciado",
+    "class_idx": 24
+  },
+  {
+    "path": "./Train\\Fish Sarciado\\Fish Sarciado__ann426.png",
+    "class_name": "Fish Sarciado",
+    "class_idx": 24
+  },
+  {
+    "path": "./Train\\Fish Sarciado\\Fish Sarciado__ann427.png",
+    "class_name": "Fish Sarciado",
+    "class_idx": 24
+  },
+  {
+    "path": "./Train\\Fish Sarciado\\Fish Sarciado__ann432.png",
+    "class_name": "Fish Sarciado",
+    "class_idx": 24
+  },
+  {
+    "path": "./Train\\Fish Sarciado\\Fish Sarciado__ann433.png",
+    "class_name": "Fish Sarciado",
+    "class_idx": 24
+  },
+  {
+    "path": "./Train\\Fish Sarciado\\Fish Sarciado__ann434.png",
+    "class_name": "Fish Sarciado",
+    "class_idx": 24
+  },
+  {
+    "path": "./Train\\Fish Sarciado\\Fish Sarciado__ann435.png",
+    "class_name": "Fish Sarciado",
+    "class_idx": 24
+  },
+  {
+    "path": "./Train\\Fish Sarciado\\Fish Sarciado__ann436.png",
+    "class_name": "Fish Sarciado",
+    "class_idx": 24
+  },
+  {
+    "path": "./Train\\Fish Sarciado\\Fish Sarciado__ann437.png",
+    "class_name": "Fish Sarciado",
+    "class_idx": 24
+  },
+  {
+    "path": "./Train\\Fish Sarciado\\Fish Sarciado__ann438.png",
+    "class_name": "Fish Sarciado",
+    "class_idx": 24
+  },
+  {
+    "path": "./Train\\Fish Sarciado\\Fish Sarciado__ann439.png",
+    "class_name": "Fish Sarciado",
+    "class_idx": 24
+  },
+  {
+    "path": "./Train\\Fish Sarciado\\Fish Sarciado__ann440.png",
+    "class_name": "Fish Sarciado",
+    "class_idx": 24
+  },
+  {
+    "path": "./Train\\Fish Sarciado\\Fish Sarciado__ann441.png",
+    "class_name": "Fish Sarciado",
+    "class_idx": 24
+  },
+  {
+    "path": "./Train\\Fish Sarciado\\Fish Sarciado__ann442.png",
+    "class_name": "Fish Sarciado",
+    "class_idx": 24
+  },
+  {
+    "path": "./Train\\Fish Sarciado\\Fish Sarciado__ann443.png",
+    "class_name": "Fish Sarciado",
+    "class_idx": 24
+  },
+  {
+    "path": "./Train\\Fish Sarciado\\Fish Sarciado__ann445.png",
+    "class_name": "Fish Sarciado",
+    "class_idx": 24
+  },
+  {
+    "path": "./Train\\Fish Sarciado\\Fish Sarciado__ann446.png",
+    "class_name": "Fish Sarciado",
+    "class_idx": 24
+  },
+  {
+    "path": "./Train\\Fish Sarciado\\Fish Sarciado__ann447.png",
+    "class_name": "Fish Sarciado",
+    "class_idx": 24
+  },
+  {
+    "path": "./Train\\Fish Tinola\\Fish Tinola__ann110.png",
+    "class_name": "Fish Tinola",
+    "class_idx": 25
+  },
+  {
+    "path": "./Train\\Fish Tinola\\Fish Tinola__ann111.png",
+    "class_name": "Fish Tinola",
+    "class_idx": 25
+  },
+  {
+    "path": "./Train\\Fish Tinola\\Fish Tinola__ann112.png",
+    "class_name": "Fish Tinola",
+    "class_idx": 25
+  },
+  {
+    "path": "./Train\\Fish Tinola\\Fish Tinola__ann113.png",
+    "class_name": "Fish Tinola",
+    "class_idx": 25
+  },
+  {
+    "path": "./Train\\Fish Tinola\\Fish Tinola__ann114.png",
+    "class_name": "Fish Tinola",
+    "class_idx": 25
+  },
+  {
+    "path": "./Train\\Fish Tinola\\Fish Tinola__ann115.png",
+    "class_name": "Fish Tinola",
+    "class_idx": 25
+  },
+  {
+    "path": "./Train\\Fish Tinola\\Fish Tinola__ann116.png",
+    "class_name": "Fish Tinola",
+    "class_idx": 25
+  },
+  {
+    "path": "./Train\\Fish Tinola\\Fish Tinola__ann117.png",
+    "class_name": "Fish Tinola",
+    "class_idx": 25
+  },
+  {
+    "path": "./Train\\Fish Tinola\\Fish Tinola__ann380.png",
+    "class_name": "Fish Tinola",
+    "class_idx": 25
+  },
+  {
+    "path": "./Train\\Fish Tinola\\Fish Tinola__ann381.png",
+    "class_name": "Fish Tinola",
+    "class_idx": 25
+  },
+  {
+    "path": "./Train\\Fish Tinola\\Fish Tinola__ann382.png",
+    "class_name": "Fish Tinola",
+    "class_idx": 25
+  },
+  {
+    "path": "./Train\\Fish Tinola\\Fish Tinola__ann383.png",
+    "class_name": "Fish Tinola",
+    "class_idx": 25
+  },
+  {
+    "path": "./Train\\Fish Tinola\\Fish Tinola__ann384.png",
+    "class_name": "Fish Tinola",
+    "class_idx": 25
+  },
+  {
+    "path": "./Train\\Fish Tinola\\Fish Tinola__ann385.png",
+    "class_name": "Fish Tinola",
+    "class_idx": 25
+  },
+  {
+    "path": "./Train\\Fish Tinola\\Fish Tinola__ann386.png",
+    "class_name": "Fish Tinola",
+    "class_idx": 25
+  },
+  {
+    "path": "./Train\\Fish Tinola\\Fish Tinola__ann387.png",
+    "class_name": "Fish Tinola",
+    "class_idx": 25
+  },
+  {
+    "path": "./Train\\Fresh Lumpia\\Fresh Lumpia__ann474.png",
+    "class_name": "Fresh Lumpia",
+    "class_idx": 26
+  },
+  {
+    "path": "./Train\\Fresh Lumpia\\Fresh Lumpia__ann475.png",
+    "class_name": "Fresh Lumpia",
+    "class_idx": 26
+  },
+  {
+    "path": "./Train\\Fresh Lumpia\\Fresh Lumpia__ann476.png",
+    "class_name": "Fresh Lumpia",
+    "class_idx": 26
+  },
+  {
+    "path": "./Train\\Fresh Lumpia\\Fresh Lumpia__ann477.png",
+    "class_name": "Fresh Lumpia",
+    "class_idx": 26
+  },
+  {
+    "path": "./Train\\Fresh Lumpia\\Fresh Lumpia__ann480.png",
+    "class_name": "Fresh Lumpia",
+    "class_idx": 26
+  },
+  {
+    "path": "./Train\\Fresh Lumpia\\Fresh Lumpia__ann481.png",
+    "class_name": "Fresh Lumpia",
+    "class_idx": 26
+  },
+  {
+    "path": "./Train\\Fresh Lumpia\\Fresh Lumpia__ann482.png",
+    "class_name": "Fresh Lumpia",
+    "class_idx": 26
+  },
+  {
+    "path": "./Train\\Fried Buwad Bolinao\\Fried Buwad Bolinao__ann29.png",
+    "class_name": "Fried Buwad Bolinao",
+    "class_idx": 27
+  },
+  {
+    "path": "./Train\\Fried Buwad Bolinao\\Fried Buwad Bolinao__ann30.png",
+    "class_name": "Fried Buwad Bolinao",
+    "class_idx": 27
+  },
+  {
+    "path": "./Train\\Fried Buwad Bolinao\\Fried Buwad Bolinao__ann36.png",
+    "class_name": "Fried Buwad Bolinao",
+    "class_idx": 27
+  },
+  {
+    "path": "./Train\\Fried Buwad Bolinao\\Fried Buwad Bolinao__ann37.png",
+    "class_name": "Fried Buwad Bolinao",
+    "class_idx": 27
+  },
+  {
+    "path": "./Train\\Fried Buwad Bolinao\\Fried Buwad Bolinao__ann40.png",
+    "class_name": "Fried Buwad Bolinao",
+    "class_idx": 27
+  },
+  {
+    "path": "./Train\\Fried Buwad Bolinao\\Fried Buwad Bolinao__ann41.png",
+    "class_name": "Fried Buwad Bolinao",
+    "class_idx": 27
+  },
+  {
+    "path": "./Train\\Fried Buwad Bolinao\\Fried Buwad Bolinao__ann42.png",
+    "class_name": "Fried Buwad Bolinao",
+    "class_idx": 27
+  },
+  {
+    "path": "./Train\\Fried Buwad Bolinao\\Fried Buwad Bolinao__ann43.png",
+    "class_name": "Fried Buwad Bolinao",
+    "class_idx": 27
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann136.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann137.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann138.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann186.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann191.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann193.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann209.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann226.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann227.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann228.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann232.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann293.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann296.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann297.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann298.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann299.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann312.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann540.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann543.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann544.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann545.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann546.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann548.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann549.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann550.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann557.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann80.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann81.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann82.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann83.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken\\Fried Chicken__ann84.png",
+    "class_name": "Fried Chicken",
+    "class_idx": 28
+  },
+  {
+    "path": "./Train\\Fried Chicken Backbone\\Fried Chicken Backbone__ann373.png",
+    "class_name": "Fried Chicken Backbone",
+    "class_idx": 29
+  },
+  {
+    "path": "./Train\\Fried Chicken Backbone\\Fried Chicken Backbone__ann374.png",
+    "class_name": "Fried Chicken Backbone",
+    "class_idx": 29
+  },
+  {
+    "path": "./Train\\Fried Chicken Backbone\\Fried Chicken Backbone__ann388.png",
+    "class_name": "Fried Chicken Backbone",
+    "class_idx": 29
+  },
+  {
+    "path": "./Train\\Fried Chicken Backbone\\Fried Chicken Backbone__ann393.png",
+    "class_name": "Fried Chicken Backbone",
+    "class_idx": 29
+  },
+  {
+    "path": "./Train\\Fried Chicken Backbone\\Fried Chicken Backbone__ann394.png",
+    "class_name": "Fried Chicken Backbone",
+    "class_idx": 29
+  },
+  {
+    "path": "./Train\\Fried Fish Soy Sauce\\Fried Fish Soy Sauce__ann370.png",
+    "class_name": "Fried Fish Soy Sauce",
+    "class_idx": 30
+  },
+  {
+    "path": "./Train\\Fried Fish Soy Sauce\\Fried Fish Soy Sauce__ann371.png",
+    "class_name": "Fried Fish Soy Sauce",
+    "class_idx": 30
+  },
+  {
+    "path": "./Train\\Fried Fish Soy Sauce\\Fried Fish Soy Sauce__ann372.png",
+    "class_name": "Fried Fish Soy Sauce",
+    "class_idx": 30
+  },
+  {
+    "path": "./Train\\Fried Fish Soy Sauce\\Fried Fish Soy Sauce__ann375.png",
+    "class_name": "Fried Fish Soy Sauce",
+    "class_idx": 30
+  },
+  {
+    "path": "./Train\\Fried Fish Soy Sauce\\Fried Fish Soy Sauce__ann376.png",
+    "class_name": "Fried Fish Soy Sauce",
+    "class_idx": 30
+  },
+  {
+    "path": "./Train\\Fried Fish Soy Sauce\\Fried Fish Soy Sauce__ann377.png",
+    "class_name": "Fried Fish Soy Sauce",
+    "class_idx": 30
+  },
+  {
+    "path": "./Train\\Fried Fish Soy Sauce\\Fried Fish Soy Sauce__ann378.png",
+    "class_name": "Fried Fish Soy Sauce",
+    "class_idx": 30
+  },
+  {
+    "path": "./Train\\Fried Fish Soy Sauce\\Fried Fish Soy Sauce__ann379.png",
+    "class_name": "Fried Fish Soy Sauce",
+    "class_idx": 30
+  },
+  {
+    "path": "./Train\\Fried Fish Soy Sauce\\Fried Fish Soy Sauce__ann389.png",
+    "class_name": "Fried Fish Soy Sauce",
+    "class_idx": 30
+  },
+  {
+    "path": "./Train\\Fried Fish Soy Sauce\\Fried Fish Soy Sauce__ann390.png",
+    "class_name": "Fried Fish Soy Sauce",
+    "class_idx": 30
+  },
+  {
+    "path": "./Train\\Fried Fish Soy Sauce\\Fried Fish Soy Sauce__ann391.png",
+    "class_name": "Fried Fish Soy Sauce",
+    "class_idx": 30
+  },
+  {
+    "path": "./Train\\Fried Fish Soy Sauce\\Fried Fish Soy Sauce__ann392.png",
+    "class_name": "Fried Fish Soy Sauce",
+    "class_idx": 30
+  },
+  {
+    "path": "./Train\\Ginisang Sardinas\\Ginisang Sardinas__ann341.png",
+    "class_name": "Ginisang Sardinas",
+    "class_idx": 31
+  },
+  {
+    "path": "./Train\\Ginisang Sardinas\\Ginisang Sardinas__ann342.png",
+    "class_name": "Ginisang Sardinas",
+    "class_idx": 31
+  },
+  {
+    "path": "./Train\\Ginisang Sardinas\\Ginisang Sardinas__ann343.png",
+    "class_name": "Ginisang Sardinas",
+    "class_idx": 31
+  },
+  {
+    "path": "./Train\\Ginisang Sardinas\\Ginisang Sardinas__ann344.png",
+    "class_name": "Ginisang Sardinas",
+    "class_idx": 31
+  },
+  {
+    "path": "./Train\\Ginisang Sardinas\\Ginisang Sardinas__ann345.png",
+    "class_name": "Ginisang Sardinas",
+    "class_idx": 31
+  },
+  {
+    "path": "./Train\\Ground Pork Picadillo\\Ground Pork Picadillo__ann558.png",
+    "class_name": "Ground Pork Picadillo",
+    "class_idx": 32
+  },
+  {
+    "path": "./Train\\Ground Pork Picadillo\\Ground Pork Picadillo__ann559.png",
+    "class_name": "Ground Pork Picadillo",
+    "class_idx": 32
+  },
+  {
+    "path": "./Train\\Ground Pork Picadillo\\Ground Pork Picadillo__ann560.png",
+    "class_name": "Ground Pork Picadillo",
+    "class_idx": 32
+  },
+  {
+    "path": "./Train\\Ground Pork Picadillo\\Ground Pork Picadillo__ann561.png",
+    "class_name": "Ground Pork Picadillo",
+    "class_idx": 32
+  },
+  {
+    "path": "./Train\\Ground Pork Picadillo\\Ground Pork Picadillo__ann562.png",
+    "class_name": "Ground Pork Picadillo",
+    "class_idx": 32
+  },
+  {
+    "path": "./Train\\Ground Pork Picadillo\\Ground Pork Picadillo__ann563.png",
+    "class_name": "Ground Pork Picadillo",
+    "class_idx": 32
+  },
+  {
+    "path": "./Train\\Ground Pork Picadillo\\Ground Pork Picadillo__ann564.png",
+    "class_name": "Ground Pork Picadillo",
+    "class_idx": 32
+  },
+  {
+    "path": "./Train\\Ground Pork Picadillo\\Ground Pork Picadillo__ann565.png",
+    "class_name": "Ground Pork Picadillo",
+    "class_idx": 32
+  },
+  {
+    "path": "./Train\\Ground Pork Picadillo\\Ground Pork Picadillo__ann566.png",
+    "class_name": "Ground Pork Picadillo",
+    "class_idx": 32
+  },
+  {
+    "path": "./Train\\Ground Pork Picadillo\\Ground Pork Picadillo__ann567.png",
+    "class_name": "Ground Pork Picadillo",
+    "class_idx": 32
+  },
+  {
+    "path": "./Train\\Hotdog\\Hotdog__ann210.png",
+    "class_name": "Hotdog",
+    "class_idx": 33
+  },
+  {
+    "path": "./Train\\Hotdog\\Hotdog__ann212.png",
+    "class_name": "Hotdog",
+    "class_idx": 33
+  },
+  {
+    "path": "./Train\\Hotdog\\Hotdog__ann213.png",
+    "class_name": "Hotdog",
+    "class_idx": 33
+  },
+  {
+    "path": "./Train\\Hotdog\\Hotdog__ann214.png",
+    "class_name": "Hotdog",
+    "class_idx": 33
+  },
+  {
+    "path": "./Train\\Hotdog\\Hotdog__ann215.png",
+    "class_name": "Hotdog",
+    "class_idx": 33
+  },
+  {
+    "path": "./Train\\Hotdog\\Hotdog__ann313.png",
+    "class_name": "Hotdog",
+    "class_idx": 33
+  },
+  {
+    "path": "./Train\\Hotdog\\Hotdog__ann314.png",
+    "class_name": "Hotdog",
+    "class_idx": 33
+  },
+  {
+    "path": "./Train\\Hotdog\\Hotdog__ann315.png",
+    "class_name": "Hotdog",
+    "class_idx": 33
+  },
+  {
+    "path": "./Train\\Hotdog\\Hotdog__ann316.png",
+    "class_name": "Hotdog",
+    "class_idx": 33
+  },
+  {
+    "path": "./Train\\Hotdog\\Hotdog__ann346.png",
+    "class_name": "Hotdog",
+    "class_idx": 33
+  },
+  {
+    "path": "./Train\\Kangkong Guisado\\Kangkong Guisado__ann355.png",
+    "class_name": "Kangkong Guisado",
+    "class_idx": 34
+  },
+  {
+    "path": "./Train\\Kangkong Guisado\\Kangkong Guisado__ann356.png",
+    "class_name": "Kangkong Guisado",
+    "class_idx": 34
+  },
+  {
+    "path": "./Train\\Kangkong Guisado\\Kangkong Guisado__ann364.png",
+    "class_name": "Kangkong Guisado",
+    "class_idx": 34
+  },
+  {
+    "path": "./Train\\Kangkong Guisado\\Kangkong Guisado__ann365.png",
+    "class_name": "Kangkong Guisado",
+    "class_idx": 34
+  },
+  {
+    "path": "./Train\\Kangkong Guisado\\Kangkong Guisado__ann367.png",
+    "class_name": "Kangkong Guisado",
+    "class_idx": 34
+  },
+  {
+    "path": "./Train\\Kangkong Guisado\\Kangkong Guisado__ann368.png",
+    "class_name": "Kangkong Guisado",
+    "class_idx": 34
+  },
+  {
+    "path": "./Train\\Lean Pork Menudo\\Lean Pork Menudo__ann148.png",
+    "class_name": "Lean Pork Menudo",
+    "class_idx": 35
+  },
+  {
+    "path": "./Train\\Lean Pork Menudo\\Lean Pork Menudo__ann149.png",
+    "class_name": "Lean Pork Menudo",
+    "class_idx": 35
+  },
+  {
+    "path": "./Train\\Lean Pork Menudo\\Lean Pork Menudo__ann150.png",
+    "class_name": "Lean Pork Menudo",
+    "class_idx": 35
+  },
+  {
+    "path": "./Train\\Lean Pork Menudo\\Lean Pork Menudo__ann152.png",
+    "class_name": "Lean Pork Menudo",
+    "class_idx": 35
+  },
+  {
+    "path": "./Train\\Lean Pork Menudo\\Lean Pork Menudo__ann153.png",
+    "class_name": "Lean Pork Menudo",
+    "class_idx": 35
+  },
+  {
+    "path": "./Train\\Lean Pork Menudo\\Lean Pork Menudo__ann541.png",
+    "class_name": "Lean Pork Menudo",
+    "class_idx": 35
+  },
+  {
+    "path": "./Train\\Lean Pork Menudo\\Lean Pork Menudo__ann542.png",
+    "class_name": "Lean Pork Menudo",
+    "class_idx": 35
+  },
+  {
+    "path": "./Train\\Lean Pork Menudo\\Lean Pork Menudo__ann547.png",
+    "class_name": "Lean Pork Menudo",
+    "class_idx": 35
+  },
+  {
+    "path": "./Train\\Lean Pork Menudo\\Lean Pork Menudo__ann553.png",
+    "class_name": "Lean Pork Menudo",
+    "class_idx": 35
+  },
+  {
+    "path": "./Train\\Lean Pork Menudo\\Lean Pork Menudo__ann554.png",
+    "class_name": "Lean Pork Menudo",
+    "class_idx": 35
+  },
+  {
+    "path": "./Train\\Lean Pork Menudo\\Lean Pork Menudo__ann555.png",
+    "class_name": "Lean Pork Menudo",
+    "class_idx": 35
+  },
+  {
+    "path": "./Train\\Lean Pork Menudo\\Lean Pork Menudo__ann556.png",
+    "class_name": "Lean Pork Menudo",
+    "class_idx": 35
+  },
+  {
+    "path": "./Train\\Lukot Salad\\Lukot Salad__ann455.png",
+    "class_name": "Lukot Salad",
+    "class_idx": 36
+  },
+  {
+    "path": "./Train\\Lukot Salad\\Lukot Salad__ann459.png",
+    "class_name": "Lukot Salad",
+    "class_idx": 36
+  },
+  {
+    "path": "./Train\\Lukot Salad\\Lukot Salad__ann462.png",
+    "class_name": "Lukot Salad",
+    "class_idx": 36
+  },
+  {
+    "path": "./Train\\Lukot Salad\\Lukot Salad__ann466.png",
+    "class_name": "Lukot Salad",
+    "class_idx": 36
+  },
+  {
+    "path": "./Train\\Lukot Salad\\Lukot Salad__ann471.png",
+    "class_name": "Lukot Salad",
+    "class_idx": 36
+  },
+  {
+    "path": "./Train\\Lukot Salad\\Lukot Salad__ann472.png",
+    "class_name": "Lukot Salad",
+    "class_idx": 36
+  },
+  {
+    "path": "./Train\\Lukot Salad\\Lukot Salad__ann473.png",
+    "class_name": "Lukot Salad",
+    "class_idx": 36
+  },
+  {
+    "path": "./Train\\Lunchean Meat\\Lunchean Meat__ann211.png",
+    "class_name": "Lunchean Meat",
+    "class_idx": 37
+  },
+  {
+    "path": "./Train\\Lunchean Meat\\Lunchean Meat__ann216.png",
+    "class_name": "Lunchean Meat",
+    "class_idx": 37
+  },
+  {
+    "path": "./Train\\Nangka Salad\\Nangka Salad__ann461.png",
+    "class_name": "Nangka Salad",
+    "class_idx": 38
+  },
+  {
+    "path": "./Train\\Nangka Salad\\Nangka Salad__ann463.png",
+    "class_name": "Nangka Salad",
+    "class_idx": 38
+  },
+  {
+    "path": "./Train\\Nangka Salad\\Nangka Salad__ann467.png",
+    "class_name": "Nangka Salad",
+    "class_idx": 38
+  },
+  {
+    "path": "./Train\\Paliya with Egg\\Paliya with Egg__ann33.png",
+    "class_name": "Paliya with Egg",
+    "class_idx": 39
+  },
+  {
+    "path": "./Train\\Paliya with Egg\\Paliya with Egg__ann34.png",
+    "class_name": "Paliya with Egg",
+    "class_idx": 39
+  },
+  {
+    "path": "./Train\\Paliya with Egg\\Paliya with Egg__ann35.png",
+    "class_name": "Paliya with Egg",
+    "class_idx": 39
+  },
+  {
+    "path": "./Train\\Paliya with Egg\\Paliya with Egg__ann38.png",
+    "class_name": "Paliya with Egg",
+    "class_idx": 39
+  },
+  {
+    "path": "./Train\\Paliya with Egg\\Paliya with Egg__ann39.png",
+    "class_name": "Paliya with Egg",
+    "class_idx": 39
+  },
+  {
+    "path": "./Train\\Pancit\\Pancit__ann141.png",
+    "class_name": "Pancit",
+    "class_idx": 40
+  },
+  {
+    "path": "./Train\\Pancit\\Pancit__ann155.png",
+    "class_name": "Pancit",
+    "class_idx": 40
+  },
+  {
+    "path": "./Train\\Pancit\\Pancit__ann156.png",
+    "class_name": "Pancit",
+    "class_idx": 40
+  },
+  {
+    "path": "./Train\\Pancit\\Pancit__ann157.png",
+    "class_name": "Pancit",
+    "class_idx": 40
+  },
+  {
+    "path": "./Train\\Pancit\\Pancit__ann158.png",
+    "class_name": "Pancit",
+    "class_idx": 40
+  },
+  {
+    "path": "./Train\\Pancit\\Pancit__ann159.png",
+    "class_name": "Pancit",
+    "class_idx": 40
+  },
+  {
+    "path": "./Train\\Pancit\\Pancit__ann184.png",
+    "class_name": "Pancit",
+    "class_idx": 40
+  },
+  {
+    "path": "./Train\\Piniritong Isda\\Piniritong Isda__ann217.png",
+    "class_name": "Piniritong Isda",
+    "class_idx": 41
+  },
+  {
+    "path": "./Train\\Piniritong Isda\\Piniritong Isda__ann218.png",
+    "class_name": "Piniritong Isda",
+    "class_idx": 41
+  },
+  {
+    "path": "./Train\\Pipino Salad\\Pipino Salad__ann194.png",
+    "class_name": "Pipino Salad",
+    "class_idx": 42
+  },
+  {
+    "path": "./Train\\Pipino Salad\\Pipino Salad__ann197.png",
+    "class_name": "Pipino Salad",
+    "class_idx": 42
+  },
+  {
+    "path": "./Train\\Pipino Salad\\Pipino Salad__ann198.png",
+    "class_name": "Pipino Salad",
+    "class_idx": 42
+  },
+  {
+    "path": "./Train\\Pipino Salad\\Pipino Salad__ann199.png",
+    "class_name": "Pipino Salad",
+    "class_idx": 42
+  },
+  {
+    "path": "./Train\\Pipino Salad\\Pipino Salad__ann200.png",
+    "class_name": "Pipino Salad",
+    "class_idx": 42
+  },
+  {
+    "path": "./Train\\Pipino Salad\\Pipino Salad__ann347.png",
+    "class_name": "Pipino Salad",
+    "class_idx": 42
+  },
+  {
+    "path": "./Train\\Pipino Salad\\Pipino Salad__ann353.png",
+    "class_name": "Pipino Salad",
+    "class_idx": 42
+  },
+  {
+    "path": "./Train\\Pipino Salad\\Pipino Salad__ann357.png",
+    "class_name": "Pipino Salad",
+    "class_idx": 42
+  },
+  {
+    "path": "./Train\\Pipino Salad\\Pipino Salad__ann362.png",
+    "class_name": "Pipino Salad",
+    "class_idx": 42
+  },
+  {
+    "path": "./Train\\Pipino Salad\\Pipino Salad__ann363.png",
+    "class_name": "Pipino Salad",
+    "class_idx": 42
+  },
+  {
+    "path": "./Train\\Pipino Salad\\Pipino Salad__ann366.png",
+    "class_name": "Pipino Salad",
+    "class_idx": 42
+  },
+  {
+    "path": "./Train\\Pipino Salad\\Pipino Salad__ann369.png",
+    "class_name": "Pipino Salad",
+    "class_idx": 42
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann160.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann161.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann164.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann165.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann166.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann167.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann168.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann169.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann173.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann174.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann175.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann176.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann196.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann201.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann202.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann203.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann204.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann205.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann206.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Adobo\\Pork Belly Adobo__ann207.png",
+    "class_name": "Pork Belly Adobo",
+    "class_idx": 43
+  },
+  {
+    "path": "./Train\\Pork Belly Humba\\Pork Belly Humba__ann10.png",
+    "class_name": "Pork Belly Humba",
+    "class_idx": 44
+  },
+  {
+    "path": "./Train\\Pork Belly Humba\\Pork Belly Humba__ann11.png",
+    "class_name": "Pork Belly Humba",
+    "class_idx": 44
+  },
+  {
+    "path": "./Train\\Pork Belly Humba\\Pork Belly Humba__ann12.png",
+    "class_name": "Pork Belly Humba",
+    "class_idx": 44
+  },
+  {
+    "path": "./Train\\Pork Belly Humba\\Pork Belly Humba__ann13.png",
+    "class_name": "Pork Belly Humba",
+    "class_idx": 44
+  },
+  {
+    "path": "./Train\\Pork Belly Humba\\Pork Belly Humba__ann14.png",
+    "class_name": "Pork Belly Humba",
+    "class_idx": 44
+  },
+  {
+    "path": "./Train\\Pork Belly Humba\\Pork Belly Humba__ann15.png",
+    "class_name": "Pork Belly Humba",
+    "class_idx": 44
+  },
+  {
+    "path": "./Train\\Pork Belly Humba\\Pork Belly Humba__ann16.png",
+    "class_name": "Pork Belly Humba",
+    "class_idx": 44
+  },
+  {
+    "path": "./Train\\Pork Belly Humba\\Pork Belly Humba__ann17.png",
+    "class_name": "Pork Belly Humba",
+    "class_idx": 44
+  },
+  {
+    "path": "./Train\\Pork Belly Humba\\Pork Belly Humba__ann44.png",
+    "class_name": "Pork Belly Humba",
+    "class_idx": 44
+  },
+  {
+    "path": "./Train\\Pork Belly Humba\\Pork Belly Humba__ann48.png",
+    "class_name": "Pork Belly Humba",
+    "class_idx": 44
+  },
+  {
+    "path": "./Train\\Pork Belly Humba\\Pork Belly Humba__ann49.png",
+    "class_name": "Pork Belly Humba",
+    "class_idx": 44
+  },
+  {
+    "path": "./Train\\Pork Belly Humba\\Pork Belly Humba__ann50.png",
+    "class_name": "Pork Belly Humba",
+    "class_idx": 44
+  },
+  {
+    "path": "./Train\\Pork Belly Humba\\Pork Belly Humba__ann64.png",
+    "class_name": "Pork Belly Humba",
+    "class_idx": 44
+  },
+  {
+    "path": "./Train\\Pork Belly Humba\\Pork Belly Humba__ann65.png",
+    "class_name": "Pork Belly Humba",
+    "class_idx": 44
+  },
+  {
+    "path": "./Train\\Pork Belly Humba\\Pork Belly Humba__ann66.png",
+    "class_name": "Pork Belly Humba",
+    "class_idx": 44
+  },
+  {
+    "path": "./Train\\Pork Belly Humba\\Pork Belly Humba__ann67.png",
+    "class_name": "Pork Belly Humba",
+    "class_idx": 44
+  },
+  {
+    "path": "./Train\\Pork Belly Humba\\Pork Belly Humba__ann8.png",
+    "class_name": "Pork Belly Humba",
+    "class_idx": 44
+  },
+  {
+    "path": "./Train\\Pork Belly Nilat-an\\Pork Belly Nilat-an__ann271.png",
+    "class_name": "Pork Belly Nilat-an",
+    "class_idx": 45
+  },
+  {
+    "path": "./Train\\Pork Belly Nilat-an\\Pork Belly Nilat-an__ann272.png",
+    "class_name": "Pork Belly Nilat-an",
+    "class_idx": 45
+  },
+  {
+    "path": "./Train\\Pork Belly Nilat-an\\Pork Belly Nilat-an__ann273.png",
+    "class_name": "Pork Belly Nilat-an",
+    "class_idx": 45
+  },
+  {
+    "path": "./Train\\Pork Belly Nilat-an\\Pork Belly Nilat-an__ann274.png",
+    "class_name": "Pork Belly Nilat-an",
+    "class_idx": 45
+  },
+  {
+    "path": "./Train\\Pork Belly Nilat-an\\Pork Belly Nilat-an__ann275.png",
+    "class_name": "Pork Belly Nilat-an",
+    "class_idx": 45
+  },
+  {
+    "path": "./Train\\Pork Belly Nilat-an\\Pork Belly Nilat-an__ann276.png",
+    "class_name": "Pork Belly Nilat-an",
+    "class_idx": 45
+  },
+  {
+    "path": "./Train\\Pork Belly Nilat-an\\Pork Belly Nilat-an__ann277.png",
+    "class_name": "Pork Belly Nilat-an",
+    "class_idx": 45
+  },
+  {
+    "path": "./Train\\Pork Belly Nilat-an\\Pork Belly Nilat-an__ann278.png",
+    "class_name": "Pork Belly Nilat-an",
+    "class_idx": 45
+  },
+  {
+    "path": "./Train\\Pork Belly Sinigang\\Pork Belly Sinigang__ann395.png",
+    "class_name": "Pork Belly Sinigang",
+    "class_idx": 46
+  },
+  {
+    "path": "./Train\\Pork Belly Sinigang\\Pork Belly Sinigang__ann402.png",
+    "class_name": "Pork Belly Sinigang",
+    "class_idx": 46
+  },
+  {
+    "path": "./Train\\Pork Belly Sinigang\\Pork Belly Sinigang__ann409.png",
+    "class_name": "Pork Belly Sinigang",
+    "class_idx": 46
+  },
+  {
+    "path": "./Train\\Pork Belly Sinigang\\Pork Belly Sinigang__ann410.png",
+    "class_name": "Pork Belly Sinigang",
+    "class_idx": 46
+  },
+  {
+    "path": "./Train\\Pork Belly Sinigang\\Pork Belly Sinigang__ann416.png",
+    "class_name": "Pork Belly Sinigang",
+    "class_idx": 46
+  },
+  {
+    "path": "./Train\\Pork Dugo-Dugo\\Pork Dugo-Dugo__ann19.png",
+    "class_name": "Pork Dugo-Dugo",
+    "class_idx": 47
+  },
+  {
+    "path": "./Train\\Pork Dugo-Dugo\\Pork Dugo-Dugo__ann21.png",
+    "class_name": "Pork Dugo-Dugo",
+    "class_idx": 47
+  },
+  {
+    "path": "./Train\\Pork Dugo-Dugo\\Pork Dugo-Dugo__ann24.png",
+    "class_name": "Pork Dugo-Dugo",
+    "class_idx": 47
+  },
+  {
+    "path": "./Train\\Pork Dugo-Dugo\\Pork Dugo-Dugo__ann25.png",
+    "class_name": "Pork Dugo-Dugo",
+    "class_idx": 47
+  },
+  {
+    "path": "./Train\\Pork Dugo-Dugo\\Pork Dugo-Dugo__ann26.png",
+    "class_name": "Pork Dugo-Dugo",
+    "class_idx": 47
+  },
+  {
+    "path": "./Train\\Pork Dugo-Dugo\\Pork Dugo-Dugo__ann27.png",
+    "class_name": "Pork Dugo-Dugo",
+    "class_idx": 47
+  },
+  {
+    "path": "./Train\\Pork Dugo-Dugo\\Pork Dugo-Dugo__ann28.png",
+    "class_name": "Pork Dugo-Dugo",
+    "class_idx": 47
+  },
+  {
+    "path": "./Train\\Pork Dugo-Dugo\\Pork Dugo-Dugo__ann4.png",
+    "class_name": "Pork Dugo-Dugo",
+    "class_idx": 47
+  },
+  {
+    "path": "./Train\\Pork Dugo-Dugo\\Pork Dugo-Dugo__ann5.png",
+    "class_name": "Pork Dugo-Dugo",
+    "class_idx": 47
+  },
+  {
+    "path": "./Train\\Pork Dugo-Dugo\\Pork Dugo-Dugo__ann6.png",
+    "class_name": "Pork Dugo-Dugo",
+    "class_idx": 47
+  },
+  {
+    "path": "./Train\\Pork Dugo-Dugo\\Pork Dugo-Dugo__ann7.png",
+    "class_name": "Pork Dugo-Dugo",
+    "class_idx": 47
+  },
+  {
+    "path": "./Train\\Pork Dugo-Dugo\\Pork Dugo-Dugo__ann9.png",
+    "class_name": "Pork Dugo-Dugo",
+    "class_idx": 47
+  },
+  {
+    "path": "./Train\\Pork Head Sari Sari\\Pork Head Sari Sari__ann69.png",
+    "class_name": "Pork Head Sari Sari",
+    "class_idx": 48
+  },
+  {
+    "path": "./Train\\Pork Head Sari Sari\\Pork Head Sari Sari__ann70.png",
+    "class_name": "Pork Head Sari Sari",
+    "class_idx": 48
+  },
+  {
+    "path": "./Train\\Pork Head Sari Sari\\Pork Head Sari Sari__ann71.png",
+    "class_name": "Pork Head Sari Sari",
+    "class_idx": 48
+  },
+  {
+    "path": "./Train\\Pork Head Sari Sari\\Pork Head Sari Sari__ann72.png",
+    "class_name": "Pork Head Sari Sari",
+    "class_idx": 48
+  },
+  {
+    "path": "./Train\\Pork Head Sari Sari\\Pork Head Sari Sari__ann73.png",
+    "class_name": "Pork Head Sari Sari",
+    "class_idx": 48
+  },
+  {
+    "path": "./Train\\Pork Head Sari Sari\\Pork Head Sari Sari__ann74.png",
+    "class_name": "Pork Head Sari Sari",
+    "class_idx": 48
+  },
+  {
+    "path": "./Train\\Pork Head Sari Sari\\Pork Head Sari Sari__ann75.png",
+    "class_name": "Pork Head Sari Sari",
+    "class_idx": 48
+  },
+  {
+    "path": "./Train\\Pork Head Sari Sari\\Pork Head Sari Sari__ann76.png",
+    "class_name": "Pork Head Sari Sari",
+    "class_idx": 48
+  },
+  {
+    "path": "./Train\\Pork Longganisa\\Pork Longganisa__ann334.png",
+    "class_name": "Pork Longganisa",
+    "class_idx": 49
+  },
+  {
+    "path": "./Train\\Pork Longganisa\\Pork Longganisa__ann335.png",
+    "class_name": "Pork Longganisa",
+    "class_idx": 49
+  },
+  {
+    "path": "./Train\\Pork Longganisa\\Pork Longganisa__ann336.png",
+    "class_name": "Pork Longganisa",
+    "class_idx": 49
+  },
+  {
+    "path": "./Train\\Pork Longganisa\\Pork Longganisa__ann337.png",
+    "class_name": "Pork Longganisa",
+    "class_idx": 49
+  },
+  {
+    "path": "./Train\\Pork Longganisa\\Pork Longganisa__ann338.png",
+    "class_name": "Pork Longganisa",
+    "class_idx": 49
+  },
+  {
+    "path": "./Train\\Pork Longganisa\\Pork Longganisa__ann339.png",
+    "class_name": "Pork Longganisa",
+    "class_idx": 49
+  },
+  {
+    "path": "./Train\\Pork Longganisa\\Pork Longganisa__ann340.png",
+    "class_name": "Pork Longganisa",
+    "class_idx": 49
+  },
+  {
+    "path": "./Train\\Samse Vegetable Guisado\\Samse Vegetable Guisado__ann127.png",
+    "class_name": "Samse Vegetable Guisado",
+    "class_idx": 50
+  },
+  {
+    "path": "./Train\\Samse Vegetable Guisado\\Samse Vegetable Guisado__ann128.png",
+    "class_name": "Samse Vegetable Guisado",
+    "class_idx": 50
+  },
+  {
+    "path": "./Train\\Samse Vegetable Guisado\\Samse Vegetable Guisado__ann135.png",
+    "class_name": "Samse Vegetable Guisado",
+    "class_idx": 50
+  },
+  {
+    "path": "./Train\\Samse Vegetable Guisado\\Samse Vegetable Guisado__ann139.png",
+    "class_name": "Samse Vegetable Guisado",
+    "class_idx": 50
+  },
+  {
+    "path": "./Train\\Samse Vegetable Guisado\\Samse Vegetable Guisado__ann140.png",
+    "class_name": "Samse Vegetable Guisado",
+    "class_idx": 50
+  },
+  {
+    "path": "./Train\\Spaghetti\\Spaghetti__ann421.png",
+    "class_name": "Spaghetti",
+    "class_idx": 51
+  },
+  {
+    "path": "./Train\\Spaghetti\\Spaghetti__ann422.png",
+    "class_name": "Spaghetti",
+    "class_idx": 51
+  },
+  {
+    "path": "./Train\\Spaghetti\\Spaghetti__ann424.png",
+    "class_name": "Spaghetti",
+    "class_idx": 51
+  },
+  {
+    "path": "./Train\\Spaghetti\\Spaghetti__ann425.png",
+    "class_name": "Spaghetti",
+    "class_idx": 51
+  },
+  {
+    "path": "./Train\\Spaghetti\\Spaghetti__ann428.png",
+    "class_name": "Spaghetti",
+    "class_idx": 51
+  },
+  {
+    "path": "./Train\\Spaghetti\\Spaghetti__ann429.png",
+    "class_name": "Spaghetti",
+    "class_idx": 51
+  },
+  {
+    "path": "./Train\\Spaghetti\\Spaghetti__ann430.png",
+    "class_name": "Spaghetti",
+    "class_idx": 51
+  },
+  {
+    "path": "./Train\\Spaghetti\\Spaghetti__ann431.png",
+    "class_name": "Spaghetti",
+    "class_idx": 51
+  },
+  {
+    "path": "./Train\\Spaghetti\\Spaghetti__ann444.png",
+    "class_name": "Spaghetti",
+    "class_idx": 51
+  },
+  {
+    "path": "./Train\\Spaghetti\\Spaghetti__ann454.png",
+    "class_name": "Spaghetti",
+    "class_idx": 51
+  },
+  {
+    "path": "./Train\\Spaghetti\\Spaghetti__ann478.png",
+    "class_name": "Spaghetti",
+    "class_idx": 51
+  },
+  {
+    "path": "./Train\\Spaghetti\\Spaghetti__ann479.png",
+    "class_name": "Spaghetti",
+    "class_idx": 51
+  },
+  {
+    "path": "./Train\\Sweet and Sour Lean Pork\\Sweet and Sour Lean Pork__ann398.png",
+    "class_name": "Sweet and Sour Lean Pork",
+    "class_idx": 52
+  },
+  {
+    "path": "./Train\\Sweet and Sour Lean Pork\\Sweet and Sour Lean Pork__ann399.png",
+    "class_name": "Sweet and Sour Lean Pork",
+    "class_idx": 52
+  },
+  {
+    "path": "./Train\\Sweet and Sour Lean Pork\\Sweet and Sour Lean Pork__ann400.png",
+    "class_name": "Sweet and Sour Lean Pork",
+    "class_idx": 52
+  },
+  {
+    "path": "./Train\\Sweet and Sour Lean Pork\\Sweet and Sour Lean Pork__ann406.png",
+    "class_name": "Sweet and Sour Lean Pork",
+    "class_idx": 52
+  },
+  {
+    "path": "./Train\\Sweet and Sour Lean Pork\\Sweet and Sour Lean Pork__ann417.png",
+    "class_name": "Sweet and Sour Lean Pork",
+    "class_idx": 52
+  },
+  {
+    "path": "./Train\\Sweet and Sour Lean Pork\\Sweet and Sour Lean Pork__ann419.png",
+    "class_name": "Sweet and Sour Lean Pork",
+    "class_idx": 52
+  },
+  {
+    "path": "./Train\\Sweet and Sour Lean Pork\\Sweet and Sour Lean Pork__ann420.png",
+    "class_name": "Sweet and Sour Lean Pork",
+    "class_idx": 52
+  },
+  {
+    "path": "./Train\\Talong Salad\\Talong Salad__ann354.png",
+    "class_name": "Talong Salad",
+    "class_idx": 53
+  },
+  {
+    "path": "./Train\\Talong Salad\\Talong Salad__ann358.png",
+    "class_name": "Talong Salad",
+    "class_idx": 53
+  },
+  {
+    "path": "./Train\\Talong Salad\\Talong Salad__ann359.png",
+    "class_name": "Talong Salad",
+    "class_idx": 53
+  },
+  {
+    "path": "./Train\\Talong Salad\\Talong Salad__ann360.png",
+    "class_name": "Talong Salad",
+    "class_idx": 53
+  },
+  {
+    "path": "./Train\\Talong Salad\\Talong Salad__ann361.png",
+    "class_name": "Talong Salad",
+    "class_idx": 53
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann219.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann220.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann221.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann222.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann223.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann224.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann225.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann229.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann230.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann231.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann317.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann318.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann319.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann320.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann321.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann322.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann323.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann324.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann325.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann326.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Taogi Guisado\\Taogi Guisado__ann327.png",
+    "class_name": "Taogi Guisado",
+    "class_idx": 54
+  },
+  {
+    "path": "./Train\\Vegetable Guinamay\\Vegetable Guinamay__ann348.png",
+    "class_name": "Vegetable Guinamay",
+    "class_idx": 55
+  },
+  {
+    "path": "./Train\\Vegetable Guinamay\\Vegetable Guinamay__ann349.png",
+    "class_name": "Vegetable Guinamay",
+    "class_idx": 55
+  },
+  {
+    "path": "./Train\\Vegetable Guinamay\\Vegetable Guinamay__ann350.png",
+    "class_name": "Vegetable Guinamay",
+    "class_idx": 55
+  },
+  {
+    "path": "./Train\\Vegetable Guinamay\\Vegetable Guinamay__ann351.png",
+    "class_name": "Vegetable Guinamay",
+    "class_idx": 55
+  },
+  {
+    "path": "./Train\\Vegetable Guinamay\\Vegetable Guinamay__ann352.png",
+    "class_name": "Vegetable Guinamay",
+    "class_idx": 55
+  },
+  {
+    "path": "./Train\\Vegetable Guinamay\\Vegetable Guinamay__ann568.png",
+    "class_name": "Vegetable Guinamay",
+    "class_idx": 55
+  },
+  {
+    "path": "./Train\\Vegetable Guinamay\\Vegetable Guinamay__ann569.png",
+    "class_name": "Vegetable Guinamay",
+    "class_idx": 55
+  },
+  {
+    "path": "./Train\\Vegetable Guinamay\\Vegetable Guinamay__ann570.png",
+    "class_name": "Vegetable Guinamay",
+    "class_idx": 55
+  },
+  {
+    "path": "./Train\\Vegetable Guinamay\\Vegetable Guinamay__ann571.png",
+    "class_name": "Vegetable Guinamay",
+    "class_idx": 55
+  },
+  {
+    "path": "./Train\\Vegetable Guinamay\\Vegetable Guinamay__ann572.png",
+    "class_name": "Vegetable Guinamay",
+    "class_idx": 55
+  },
+  {
+    "path": "./Train\\Vegetable Guinamay\\Vegetable Guinamay__ann573.png",
+    "class_name": "Vegetable Guinamay",
+    "class_idx": 55
+  },
+  {
+    "path": "./Train\\Vegetable Guinamay\\Vegetable Guinamay__ann574.png",
+    "class_name": "Vegetable Guinamay",
+    "class_idx": 55
+  }
+]
