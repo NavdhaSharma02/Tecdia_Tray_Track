@@ -41,6 +41,9 @@ export const SOUP_CATEGORY = "Soup";
 export const SEBAW_MENU_CODE = "SEBAW";
 export const SEBAW_MENU_NAME = "Sebaw";
 
+/** YOLO dish-localization class for free meatless soup (maps to Sebaw when on today's menu). */
+export const YOLO_MEATLESS_SOUP_CLASS = "meatless soup";
+
 export const RICE_BIG_CATEGORY = "rice_big";
 export const RICE_SMALL_CATEGORY = "rice_small";
 export const RICE_BIG_CODE = "RICE_BIG";

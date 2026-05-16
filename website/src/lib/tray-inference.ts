@@ -5,12 +5,17 @@ import {
   l2Normalize,
 } from "@/lib/clip-embedder";
 import {
+  isSebawMenuItem,
   RICE_BIG_CATEGORY,
   RICE_SMALL_CATEGORY,
 } from "@/lib/constants";
 import { buildTrayCropsFromBoxes } from "@/lib/tray-image-crops";
-import { detectTrayRegions } from "@/lib/yolo-detector";
+import { detectTrayRegions, type YoloDetectionBox } from "@/lib/yolo-detector";
 import { isRiceYoloClass, scannedItemsFromRiceDetections } from "@/lib/yolo-rice-scan";
+import {
+  isMeatlessSoupYoloClass,
+  scannedItemsFromMeatlessSoupDetections,
+} from "@/lib/yolo-sebaw-scan";
 import {
   embeddingRowToScannedItem,
   type EmbeddingPrototypeRow,
@@ -43,15 +48,23 @@ function bestClipMatchForCrop(
   return best;
 }
 
-/** CLIP bank for food/soup/drink regions — rice is billed from YOLO class only. */
-function clipBankExcludingRice(
-  bank: EmbeddingPrototypeRow[]
-): EmbeddingPrototypeRow[] {
+/** CLIP bank — rice and Sebaw are resolved from YOLO classes, not embeddings. */
+function clipBankForYoloCrops(bank: EmbeddingPrototypeRow[]): EmbeddingPrototypeRow[] {
   return bank.filter(
     (row) =>
       row.category !== RICE_BIG_CATEGORY &&
-      row.category !== RICE_SMALL_CATEGORY
+      row.category !== RICE_SMALL_CATEGORY &&
+      !isSebawMenuItem(row)
   );
+}
+
+/** Regions that skip CLIP (rice always; meatless soup only when Sebaw is on today's menu). */
+function boxesForClip(boxes: YoloDetectionBox[], sebawOnMenu: boolean) {
+  return boxes.filter((b) => {
+    if (isRiceYoloClass(b.class)) return false;
+    if (isMeatlessSoupYoloClass(b.class)) return !sebawOnMenu;
+    return true;
+  });
 }
 
 function mergeScannedItems(items: ScannedItem[]): ScannedItem[] {
@@ -88,8 +101,8 @@ export interface TrayInferenceResult {
 }
 
 /**
- * Tray scan: YOLO localizes regions → rice_big/rice_small go straight on the bill;
- * every other region is assigned the best CLIP match (no confidence threshold).
+ * Tray scan: YOLO localizes regions → rice and (when enabled) meatless soup→Sebaw go
+ * direct on the bill; other regions use best CLIP match (meatless soup→priced soup if Sebaw off).
  */
 export async function inferTrayFromImage(
   imageBuffer: Buffer
@@ -116,10 +129,14 @@ export async function inferTrayFromImage(
     };
   }
 
+  const sebawOnMenu = menu.some((m) => isSebawMenuItem(m));
   const riceItems = scannedItemsFromRiceDetections(yoloBoxes, menu);
-  const clipBoxes = yoloBoxes.filter((b) => !isRiceYoloClass(b.class));
+  const sebawItems = sebawOnMenu
+    ? scannedItemsFromMeatlessSoupDetections(yoloBoxes, menu)
+    : [];
+  const clipBoxes = boxesForClip(yoloBoxes, sebawOnMenu);
 
-  const bank = clipBankExcludingRice(await getScanEmbeddingBank());
+  const bank = clipBankForYoloCrops(await getScanEmbeddingBank());
   const cropBuffers =
     clipBoxes.length > 0
       ? await buildTrayCropsFromBoxes(imageBuffer, clipBoxes)
@@ -129,7 +146,7 @@ export async function inferTrayFromImage(
 
   if (cropBuffers.length > 0) {
     if (bank.length === 0) {
-      if (riceItems.length === 0) {
+      if (riceItems.length === 0 && sebawItems.length === 0) {
         return {
           items: [],
           mode: "clip",
@@ -138,10 +155,10 @@ export async function inferTrayFromImage(
         };
       }
       return {
-        items: mergeScannedItems(riceItems),
+        items: mergeScannedItems([...riceItems, ...sebawItems]),
         mode: "clip",
         message:
-          "Rice added from localization. Other regions could not be classified — add reference photos for today's dishes.",
+          "Rice/Sebaw added from localization. Other regions could not be classified — add reference photos for today's dishes.",
       };
     }
 
@@ -155,7 +172,7 @@ export async function inferTrayFromImage(
     }
   }
 
-  const items = mergeScannedItems([...riceItems, ...clipItems]);
+  const items = mergeScannedItems([...riceItems, ...sebawItems, ...clipItems]);
 
   if (items.length === 0) {
     return {
@@ -167,6 +184,7 @@ export async function inferTrayFromImage(
   }
 
   const riceCount = riceItems.reduce((n, i) => n + i.quantity, 0);
+  const sebawCount = sebawItems.reduce((n, i) => n + i.quantity, 0);
   const clipLineCount = clipItems.length;
 
   return {
@@ -175,6 +193,7 @@ export async function inferTrayFromImage(
     message:
       `YOLO: ${yoloBoxes.length} region(s).` +
       (riceCount > 0 ? ` Rice: ${riceCount} portion(s) (direct).` : "") +
+      (sebawCount > 0 ? ` Sebaw: ${sebawCount} (free, from meatless soup).` : "") +
       (clipLineCount > 0
         ? ` Dishes: ${clipLineCount} region(s) → best CLIP match each.`
         : ""),
