@@ -23,6 +23,14 @@ export default function InstructionImageViewer({
 }: InstructionImageViewerProps) {
   const [zoom, setZoom] = useState(MIN_ZOOM);
   const viewportRef = useRef<HTMLDivElement>(null);
+  const isPanningRef = useRef(false);
+  const [isPanning, setIsPanning] = useState(false);
+  const startXRef = useRef(0);
+  const startYRef = useRef(0);
+  const startPanXRef = useRef(0);
+  const startPanYRef = useRef(0);
+  const [panX, setPanX] = useState(0);
+  const [panY, setPanY] = useState(0);
 
   const clampZoom = useCallback(
     (value: number) => Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, value)),
@@ -42,10 +50,56 @@ export default function InstructionImageViewer({
   }, [onClose]);
 
   useEffect(() => {
-    if (zoom <= MIN_ZOOM && viewportRef.current) {
-      viewportRef.current.scrollLeft = 0;
-      viewportRef.current.scrollTop = 0;
+    if (zoom <= MIN_ZOOM) {
+      setPanX(0);
+      setPanY(0);
     }
+  }, [zoom]);
+
+  // Pointer-based drag to pan when zoomed in
+  useEffect(() => {
+    const vp = viewportRef.current;
+    if (!vp) return;
+    const el = vp as HTMLDivElement;
+
+    function onPointerDown(e: PointerEvent) {
+      if (zoom <= MIN_ZOOM) return;
+      (e.target as Element).setPointerCapture(e.pointerId);
+      isPanningRef.current = true;
+      setIsPanning(true);
+      startXRef.current = e.clientX;
+      startYRef.current = e.clientY;
+      startPanXRef.current = panX;
+      startPanYRef.current = panY;
+      e.preventDefault();
+    }
+
+    function onPointerMove(e: PointerEvent) {
+      if (!isPanningRef.current) return;
+      const dx = e.clientX - startXRef.current;
+      const dy = e.clientY - startYRef.current;
+      setPanX(Math.round(startPanXRef.current + dx));
+      setPanY(Math.round(startPanYRef.current + dy));
+      e.preventDefault();
+    }
+
+    function endPan(e: PointerEvent) {
+      if (!isPanningRef.current) return;
+      try { (e.target as Element).releasePointerCapture(e.pointerId); } catch {}
+      isPanningRef.current = false;
+      setIsPanning(false);
+    }
+    el.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", endPan);
+    window.addEventListener("pointercancel", endPan);
+
+    return () => {
+      el.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", endPan);
+      window.removeEventListener("pointercancel", endPan);
+    };
   }, [zoom]);
 
   return (
@@ -94,14 +148,18 @@ export default function InstructionImageViewer({
             </button>
           </div>
 
-          <div ref={viewportRef} className="instruction-viewer__viewport">
+          <div
+            ref={viewportRef}
+            className="instruction-viewer__viewport"
+            style={{ cursor: zoom > MIN_ZOOM ? (isPanning ? "grabbing" : "grab") : undefined }}
+          >
             <img
               src={src}
               alt={alt}
               draggable={false}
               className="instruction-viewer__image"
               style={{
-                transform: `scale(${zoom})`,
+                transform: `translate(${panX}px, ${panY}px) scale(${zoom})`,
                 transformOrigin: "center center",
               }}
             />
