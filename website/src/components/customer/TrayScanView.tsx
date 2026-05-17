@@ -6,6 +6,7 @@ import { useCamera } from "@/hooks/useCamera";
 import ScanOverlay from "@/components/camera/ScanOverlay";
 import Button from "@/components/ui/Button";
 import PinPadModal from "@/components/ui/PinPadModal";
+import InstructionImageViewer from "@/components/ui/InstructionImageViewer";
 import Spinner from "@/components/ui/Spinner";
 import { formatCurrency } from "@/lib/utils";
 import * as api from "@/services/api";
@@ -193,54 +194,11 @@ export default function TrayScanView() {
         </button>
       </div>
       {showInstructions && (
-        <div
-          style={{
-            position: "fixed",
-            top: "var(--header-clearance)",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 15,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "20px",
-            background: "rgba(0, 0, 0, 0.12)",
-          }}
-        >
-          <button
-            onClick={() => setShowInstructions(false)}
-            style={{
-              position: "absolute",
-              top: "20px",
-              right: "20px",
-              width: "32px",
-              height: "32px",
-              borderRadius: "999px",
-              border: "none",
-              background: "#ff4d4f",
-              color: "#ffffff",
-              fontWeight: 700,
-              fontSize: "18px",
-              cursor: "pointer",
-              zIndex: 20,
-            }}
-            aria-label="Close instructions"
-          >
-            ×
-          </button>
-          <img
-            src="/ins_man.png"
-            alt="Instructions"
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "contain",
-              borderRadius: "20px",
-              display: "block",
-            }}
-          />
-        </div>
+        <InstructionImageViewer
+          src="/ins_man.png"
+          alt="Tray scanning instructions"
+          onClose={() => setShowInstructions(false)}
+        />
       )}
 
       <div

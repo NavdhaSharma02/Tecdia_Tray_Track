@@ -58,14 +58,13 @@ export default function DoneScreen() {
 
   return (
     <div
-      className="animate-fade-in"
+      className="animate-fade-in kiosk-readable-panel"
       style={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        padding: "16px 28px 22px",
-        minHeight: "100%",
+        minHeight: "min(100%, auto)",
       }}
     >
       {/* Success animation */}
@@ -118,8 +117,9 @@ export default function DoneScreen() {
       <p
         style={{
           fontSize: "17px",
-          color: "var(--text-secondary)",
+          color: "var(--text-primary)",
           marginBottom: "36px",
+          fontWeight: 600,
         }}
       >
         Thank you for your meal. Enjoy!
@@ -217,8 +217,9 @@ export default function DoneScreen() {
       <p
         style={{
           fontSize: "15px",
-          color: "var(--text-muted)",
+          color: "var(--text-secondary)",
           marginBottom: "16px",
+          fontWeight: 600,
         }}
       >
         {isPrinting ? (
@@ -226,7 +227,7 @@ export default function DoneScreen() {
         ) : (
           <>
             Returning to home in{" "}
-            <span style={{ color: "var(--accent-light)", fontWeight: 600 }}>
+            <span style={{ color: "var(--accent-deep)", fontWeight: 700 }}>
               {countdown}s
             </span>
           </>

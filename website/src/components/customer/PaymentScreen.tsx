@@ -44,17 +44,13 @@ export default function PaymentScreen() {
 
   return (
     <div
-      className="animate-slide-up"
+      className="animate-slide-up kiosk-readable-panel"
       style={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        minHeight: "100%",
-        padding: "16px 28px 22px",
-        maxWidth: "680px",
-        margin: "0 auto",
-        width: "100%",
+        minHeight: "min(100%, auto)",
       }}
     >
       <span className="app-shell-eyebrow" style={{ marginBottom: "16px" }}>
@@ -64,9 +60,8 @@ export default function PaymentScreen() {
         style={{
           fontSize: "clamp(2.35rem, 4.4vw, 3.2rem)",
           fontWeight: 700,
-          color: "#ffffff",
+          color: "var(--text-primary)",
           marginBottom: "8px",
-          textShadow: "0 10px 26px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.28)",
         }}
       >
         Payment
@@ -74,16 +69,15 @@ export default function PaymentScreen() {
       <p
         style={{
           fontSize: "17px",
-          color: "#ffffff",
+          color: "var(--text-secondary)",
           marginBottom: "22px",
-          fontWeight: 700,
-          textShadow: "0 10px 26px rgba(0,0,0,0.36), 0 2px 8px rgba(0,0,0,0.22)",
+          fontWeight: 600,
         }}
       >
         Total:{" "}
         <strong
           style={{
-            color: "#ffffff",
+            color: "var(--accent-deep)",
             fontFamily: "var(--font-mono)",
             fontSize: "22px",
           }}
@@ -99,15 +93,13 @@ export default function PaymentScreen() {
           return (
             <button
               key={opt.method}
+              type="button"
               onClick={() => selectPayment(opt.method)}
+              className={`kiosk-choice-card${isSelected ? " is-selected" : ""}`}
               style={{
                 flex: "1 1 220px",
                 padding: "32px 28px",
                 borderRadius: "28px",
-                background: isSelected
-                  ? "linear-gradient(180deg, rgba(95, 126, 84, 0.1), rgba(255, 251, 247, 0.92))"
-                  : "linear-gradient(180deg, rgba(255, 251, 247, 0.92), rgba(248, 238, 231, 0.84))",
-                border: `2px solid ${isSelected ? "var(--accent)" : "var(--border)"}`,
                 cursor: "pointer",
                 transition: "all 0.25s ease",
                 display: "flex",
@@ -115,7 +107,6 @@ export default function PaymentScreen() {
                 alignItems: "center",
                 gap: "14px",
                 textAlign: "center",
-                boxShadow: isSelected ? "var(--shadow-glow)" : "var(--shadow-md)",
                 transform: isSelected ? "scale(1.02)" : "scale(1)",
                 outline: "none",
               }}
@@ -188,15 +179,12 @@ export default function PaymentScreen() {
       {/* Account balance info */}
       {paymentMethod === "account" && employee && (
         <div
-          className="animate-fade-in"
+          className="animate-fade-in kiosk-choice-card is-selected"
           style={{
             width: "100%",
-            background: "linear-gradient(180deg, rgba(255, 251, 247, 0.92), rgba(242, 247, 238, 0.9))",
             borderRadius: "28px",
             padding: "24px 28px",
-            border: "1px solid rgba(95, 126, 84, 0.15)",
             marginBottom: "24px",
-            boxShadow: "var(--shadow-sm)",
           }}
         >
           <div className="flex items-center justify-between">
