@@ -24,8 +24,6 @@ import { getScanEmbeddingBank } from "@/lib/embedding-bank";
 import { simulateScanFromMenu } from "@/lib/tray-scan-sim";
 import type { ScannedItem } from "@/types";
 
-const YOLO_REQUIRED_MESSAGE =
-  "Dish localization is required. Start python scripts/yolo-detect-server.py and set ML_YOLO_SERVICE_URL in .env (e.g. http://127.0.0.1:5001/detect).";
 
 /**
  * Best CLIP match for one crop — always the highest-scoring menu prototype (no score cutoff).
@@ -119,15 +117,17 @@ export async function inferTrayFromImage(
   }
 
   const menu = await listTodayMenuAvailableForScan();
-  const yoloBoxes = await detectTrayRegions(imageBuffer);
+  const yoloOutcome = await detectTrayRegions(imageBuffer);
 
-  if (!yoloBoxes || yoloBoxes.length === 0) {
+  if (yoloOutcome.status !== "ok") {
     return {
       items: [],
       mode: "clip",
-      message: YOLO_REQUIRED_MESSAGE,
+      message: yoloOutcome.message,
     };
   }
+
+  const yoloBoxes = yoloOutcome.boxes;
 
   const sebawOnMenu = menu.some((m) => isSebawMenuItem(m));
   const riceItems = scannedItemsFromRiceDetections(yoloBoxes, menu);

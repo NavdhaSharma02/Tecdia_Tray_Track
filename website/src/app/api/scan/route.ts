@@ -49,11 +49,16 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("POST /api/scan failed:", error);
+    const detail =
+      error instanceof Error ? error.message : "Unknown scan error";
+    const hint = detail.toLowerCase().includes("yolo") ||
+      detail.toLowerCase().includes("localization")
+      ? detail
+      : `Scan processing failed: ${detail}. For CLIP, run npm run ml:setup. For dish boxes, run python scripts/yolo-detect-server.py (or npm run dev:ml).`;
     return NextResponse.json(
       {
         ok: false,
-        error:
-          "Scan processing failed. Ensure the ML model was downloaded (npm run ml:setup).",
+        error: hint,
       },
       { status: 500 }
     );

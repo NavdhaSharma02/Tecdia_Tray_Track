@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --webpack",
+    "dev:ml": "node scripts/dev-with-ml.mjs",
     "dev:turbo": "next dev",
+    "yolo": "python scripts/yolo-detect-server.py",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
