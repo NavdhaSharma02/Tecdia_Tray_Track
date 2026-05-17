@@ -63,7 +63,6 @@ export async function signUpCustomer(input: {
   email: string;
   fullName: string;
   department: string;
-  password: string;
 }): Promise<ApiResponse<AuthResponse>> {
   try {
     const res = await fetch(`${API_BASE}/auth/signup`, {

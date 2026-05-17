@@ -132,7 +132,6 @@ interface CustomerFlowContextValue extends CustomerFlowState {
     fullName: string;
     department: string;
     email: string;
-    password: string;
   }) => Promise<boolean>;
   loginWithEmail: (input: { email: string; password: string }) => Promise<boolean>;
   identifyEmployee: (id: string) => Promise<void>;
@@ -260,7 +259,6 @@ export function CustomerFlowProvider({ children }: { children: ReactNode }) {
       fullName: string;
       department: string;
       email: string;
-      password: string;
     }) => {
       dispatch({ type: "SET_LOADING", payload: true });
       const result = await api.signUpCustomer(input);

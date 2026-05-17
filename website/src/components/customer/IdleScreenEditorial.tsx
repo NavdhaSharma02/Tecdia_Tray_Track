@@ -463,7 +463,7 @@ export default function IdleScreenEditorial() {
               minHeight: "54px",
             }}
           >
-            Use Email
+            Sign Up
           </Button>
         </div>
       </section>

@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import { NextResponse } from "next/server";
 import {
   createCustomer,
@@ -34,24 +35,20 @@ export async function POST(request: Request) {
     const email = normalizeEmail(body.email || "");
     const fullName = (body.fullName || "").trim();
     const department = (body.department || "").trim();
-    const password = body.password || "";
-
-    if (!employeeCode || !email || !fullName || !department || !password) {
+    if (!employeeCode || !email || !fullName || !department) {
       return NextResponse.json(
         {
           ok: false,
-          error:
-            "Employee ID, email, full name, department, and password are required.",
+          error: "Employee ID, email, full name, and department are required.",
         },
         { status: 400 }
       );
     }
-    if (password.length < 8) {
-      return NextResponse.json(
-        { ok: false, error: "Password must be at least 8 characters long." },
-        { status: 400 }
-      );
-    }
+
+    const password =
+      body.password && body.password.length >= 8
+        ? body.password
+        : crypto.randomBytes(24).toString("base64url");
 
     const existing = await findCustomerByEmail(email);
     if (existing) {

@@ -38,7 +38,7 @@ const IDLE_ACTION_GAP_MS = 7000;
 
 const STEP_MESSAGES: Record<FlowStepName, string> = {
   IDLE: "Hi there! Ready to build your tray?",
-  EMAIL_AUTH: "Need help signing in? Halo-halo buddy is here.",
+  EMAIL_AUTH: "New here? Scan your ID and fill in your details to sign up.",
   SCANNING: "Hold steady. I am watching the tray with you.",
   BILL: "Looks tasty. Double-check before paying!",
   PAYMENT: "Almost done. Pick the payment option you like.",
