@@ -34,7 +34,13 @@ function rowToMenuItem(row: TodayMenuRow): MenuItem {
   };
 }
 
-export async function getOrCreateTodayServiceDayId(): Promise<string> {
+export interface TodayServiceDay {
+  id: string;
+  /** True when the row for CURRENT_DATE was just created (first touch of the day). */
+  created: boolean;
+}
+
+export async function getOrCreateTodayServiceDay(): Promise<TodayServiceDay> {
   const pool = getDbPool();
   let { rows } = await pool.query<{ id: string }>(
     `
@@ -44,15 +50,22 @@ export async function getOrCreateTodayServiceDayId(): Promise<string> {
     RETURNING id;
     `
   );
-  if (!rows[0]) {
-    ({ rows } = await pool.query<{ id: string }>(
-      `SELECT id FROM service_days WHERE service_date = CURRENT_DATE LIMIT 1;`
-    ));
+  if (rows[0]) {
+    return { id: rows[0].id, created: true };
   }
+
+  ({ rows } = await pool.query<{ id: string }>(
+    `SELECT id FROM service_days WHERE service_date = CURRENT_DATE LIMIT 1;`
+  ));
   if (!rows[0]) {
     throw new Error("Could not resolve service day for CURRENT_DATE");
   }
-  return rows[0].id;
+  return { id: rows[0].id, created: false };
+}
+
+export async function getOrCreateTodayServiceDayId(): Promise<string> {
+  const day = await getOrCreateTodayServiceDay();
+  return day.id;
 }
 
 /**
@@ -83,8 +96,10 @@ export async function syncTodayMenuItemsFromYesterday(): Promise<void> {
 
 /** Ensure today's service_day row exists and menu links are seeded from yesterday. */
 export async function ensureTodayMenuReady(): Promise<void> {
-  await getOrCreateTodayServiceDayId();
-  await syncTodayMenuItemsFromYesterday();
+  const today = await getOrCreateTodayServiceDay();
+  if (today.created) {
+    await syncTodayMenuItemsFromYesterday();
+  }
   await ensurePermanentRiceForToday();
 }
 

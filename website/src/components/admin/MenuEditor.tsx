@@ -135,6 +135,20 @@ export default function MenuEditor() {
     await loadItems();
   };
 
+  /** Hide dish from today's tray flow without dropping the catalog link. */
+  const handleRemoveFromToday = async (id: string) => {
+    const item = items.find((row) => row.id === id);
+    if (!item) return;
+
+    setListError(null);
+    const res = await api.updateMenuItem(id, { ...item, available: false });
+    if (!res.ok) {
+      setListError(res.error || "Could not remove dish from today's menu.");
+      return;
+    }
+    await loadItems();
+  };
+
   const handleAddExistingToToday = async (item: MenuItem) => {
     setListError(null);
     setAddingTodayId(item.id);
@@ -291,7 +305,7 @@ export default function MenuEditor() {
           onAdd={openAddToday}
           onAddExisting={handleAddExistingToToday}
           onEdit={setEditItem}
-          onDelete={handleDelete}
+          onDelete={handleRemoveFromToday}
           addingTodayId={addingTodayId}
         />
       )}
