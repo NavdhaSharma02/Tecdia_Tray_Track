@@ -28,7 +28,7 @@ Single reference for deploying the kiosk on **one Windows tablet** (USB camera, 
 ## Step 1 — Database
 
 ```powershell
-cd c:\githubForks\Tecida_Tray_Track\tecdia-tray-track-temp
+cd c:\githubForks\Tecida_Tray_Track\website
 
 psql -U postgres -h localhost -p 5432 -c "CREATE DATABASE tecdia_tray_track;"
 
@@ -39,6 +39,8 @@ psql -U postgres -h localhost -d tecdia_tray_track -f db/migrations/004_customer
 psql -U postgres -h localhost -d tecdia_tray_track -f db/migrations/005_transactions_analytics_indexes.sql
 psql -U postgres -h localhost -d tecdia_tray_track -f db/migrations/006_staff_users.sql
 psql -U postgres -h localhost -d tecdia_tray_track -f db/migrations/007_menu_item_day_embeddings.sql
+psql -U postgres -h localhost -d tecdia_tray_track -f db/migrations/008_menu_item_reference_embedding.sql
+psql -U postgres -h localhost -d tecdia_tray_track -f db/migrations/009_menu_item_embedding_bank.sql
 ```
 
 Optional seed for first test:
