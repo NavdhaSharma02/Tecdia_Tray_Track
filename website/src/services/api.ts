@@ -97,6 +97,23 @@ export async function loginCustomer(input: {
   }
 }
 
+export async function loginCustomerByEmployeeCode(input: {
+  employeeCode: string;
+}): Promise<ApiResponse<AuthResponse>> {
+  try {
+    const res = await fetch(`${API_BASE}/auth/login-by-employee-code`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    });
+    const data = (await res.json()) as ApiResponse<AuthResponse>;
+    if (!res.ok) return { ok: false, error: data.error || "Login failed" };
+    return data;
+  } catch {
+    return { ok: false, error: "Unable to reach login service." };
+  }
+}
+
 export async function resetCustomerPassword(input: {
   email: string;
   adminPin: string;

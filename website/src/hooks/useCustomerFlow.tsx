@@ -167,58 +167,6 @@ export function CustomerFlowProvider({ children }: { children: ReactNode }) {
   /**
    * Look up employee by ID, fetch their transactions, and move to PROFILE step.
    */
-  const identifyEmployee = useCallback(async (id: string) => {
-    const scannedCode = id.trim().toUpperCase();
-    dispatch({ type: "SET_LAST_SCANNED_EMPLOYEE_CODE", payload: scannedCode });
-    dispatch({ type: "SET_LOADING", payload: true });
-
-    try {
-      const empResult = await api.getEmployee(scannedCode);
-      if (!empResult.ok || !empResult.data) {
-        dispatch({
-          type: "SET_ERROR",
-          payload:
-            empResult.error
-              ? `${empResult.error} (scanned code: ${scannedCode})`
-              : `Employee not found for "${scannedCode}". Please try again or use email login.`,
-        });
-        return;
-      }
-
-      const txnResult = await api.getEmployeeTransactions(scannedCode);
-      dispatch({
-        type: "SET_EMPLOYEE",
-        payload: {
-          employee: empResult.data,
-          transactions: txnResult.data || [],
-        },
-      });
-    } catch {
-      dispatch({
-        type: "SET_ERROR",
-        payload: `Failed to fetch employee details for "${scannedCode}". Please try again.`,
-      });
-    }
-  }, []);
-
-  const openEmailAuth = useCallback(async () => {
-    try {
-      await api.logoutCustomer();
-    } finally {
-      setCustomerAuth(null);
-      dispatch({ type: "RESET_TO_EMAIL_AUTH" });
-    }
-  }, []);
-
-  const backToIdScan = useCallback(async () => {
-    try {
-      await api.logoutCustomer();
-    } finally {
-      setCustomerAuth(null);
-      dispatch({ type: "RESET" });
-    }
-  }, []);
-
   const hydrateCustomer = useCallback(
     async (customer: AuthCustomer): Promise<boolean> => {
       setCustomerAuth(customer);
@@ -252,6 +200,59 @@ export function CustomerFlowProvider({ children }: { children: ReactNode }) {
     },
     []
   );
+
+  const identifyEmployee = useCallback(async (id: string) => {
+    const scannedCode = id.trim().toUpperCase();
+    dispatch({ type: "SET_LAST_SCANNED_EMPLOYEE_CODE", payload: scannedCode });
+    dispatch({ type: "SET_LOADING", payload: true });
+
+    try {
+      const authResult = await api.loginCustomerByEmployeeCode({
+        employeeCode: scannedCode,
+      });
+      if (!authResult.ok || !authResult.data?.customer) {
+        dispatch({
+          type: "SET_ERROR",
+          payload:
+            authResult.error
+              ? `${authResult.error} (scanned code: ${scannedCode})`
+              : `Employee not found for "${scannedCode}". Please try again or use email login.`,
+        });
+        return;
+      }
+
+      const hydrated = await hydrateCustomer(authResult.data.customer);
+      if (!hydrated) {
+        dispatch({
+          type: "SET_ERROR",
+          payload: `Failed to initialize customer session for "${scannedCode}". Please try email login.`,
+        });
+      }
+    } catch {
+      dispatch({
+        type: "SET_ERROR",
+        payload: `Failed to fetch employee details for "${scannedCode}". Please try again.`,
+      });
+    }
+  }, [hydrateCustomer]);
+
+  const openEmailAuth = useCallback(async () => {
+    try {
+      await api.logoutCustomer();
+    } finally {
+      setCustomerAuth(null);
+      dispatch({ type: "RESET_TO_EMAIL_AUTH" });
+    }
+  }, []);
+
+  const backToIdScan = useCallback(async () => {
+    try {
+      await api.logoutCustomer();
+    } finally {
+      setCustomerAuth(null);
+      dispatch({ type: "RESET" });
+    }
+  }, []);
 
   const signUpWithEmail = useCallback(
     async (input: {
