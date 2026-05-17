@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Button from "@/components/ui/Button";
 import TecdiaLogo from "@/components/layout/TecdiaLogo";
 import { API_BASE } from "@/lib/constants";
@@ -163,16 +164,21 @@ export default function AdminLoginPage() {
             )}
           </div>
 
-          <Button
-            type="submit"
-            variant="primary"
-            size="lg"
-            className="w-full"
-            disabled={pin.length < 6}
-            isLoading={submitting}
-          >
-            Unlock
-          </Button>
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              className="w-full"
+              disabled={pin.length < 6}
+              isLoading={submitting}
+            >
+              Unlock
+            </Button>
+            <Link href="/" className="btn btn-outline btn-lg w-full pin-modal-back" style={{ textDecoration: "none" }}>
+              Back
+            </Link>
+          </div>
         </form>
       </div>
     </div>

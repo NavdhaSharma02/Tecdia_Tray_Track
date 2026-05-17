@@ -11,6 +11,7 @@ interface PinPadModalProps {
   description?: string;
   onSubmit: (pin: string) => Promise<{ ok: boolean; error?: string }>;
   submitLabel?: string;
+  cancelLabel?: string;
 }
 
 /**
@@ -23,6 +24,7 @@ export default function PinPadModal({
   description,
   onSubmit,
   submitLabel = "Confirm",
+  cancelLabel = "Back",
 }: PinPadModalProps) {
   const [pin, setPin] = useState("");
   const [error, setError] = useState("");
@@ -147,8 +149,8 @@ export default function PinPadModal({
           )}
         </div>
         <div className="flex gap-2">
-          <Button type="button" variant="outline" size="md" className="flex-1" onClick={handleClose}>
-            Cancel
+          <Button type="button" variant="outline" size="md" className="flex-1 pin-modal-back" onClick={handleClose}>
+            {cancelLabel}
           </Button>
           <Button
             type="submit"
