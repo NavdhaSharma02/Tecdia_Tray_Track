@@ -81,15 +81,6 @@ export default function PinPadModal({
         </p>
       )}
       <form onSubmit={handleSubmit} style={{ direction: "ltr" }}>
-        <Button
-          type="button"
-          variant="outline"
-          size="md"
-          className="pin-modal-back"
-          onClick={handleClose}
-        >
-          {cancelLabel}
-        </Button>
         <div
           className={shake ? "animate-shake" : ""}
           style={{
