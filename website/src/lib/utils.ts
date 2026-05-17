@@ -45,7 +45,7 @@ export function formatDateTime(date: string | Date): string {
  * Format a number as currency with the app's configured symbol.
  */
 export function formatCurrency(amount: number): string {
-  return `${CURRENCY}${amount.toLocaleString("en-IN")}`;
+  return `${CURRENCY}${amount.toLocaleString("en-PH")}`;
 }
 
 /**

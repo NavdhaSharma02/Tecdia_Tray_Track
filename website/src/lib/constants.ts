@@ -8,7 +8,7 @@ export const APP_VERSION = "0.1.0";
 export const API_BASE: string =
   process.env.NEXT_PUBLIC_API_URL || "/api";
 
-export const CURRENCY = "₹";
+export const CURRENCY = "₱";
 
 /** Flow step labels for the stepper UI — no PROFILE step */
 export const FLOW_STEP_LABELS: Record<string, { label: string; icon: string }> = {
