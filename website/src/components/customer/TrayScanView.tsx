@@ -26,6 +26,7 @@ export default function TrayScanView() {
   const [uploadedTrayImage, setUploadedTrayImage] = useState<File | null>(null);
   const [uploadedPreviewUrl, setUploadedPreviewUrl] = useState<string | null>(null);
   const [manualPinOpen, setManualPinOpen] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(false);
 
   const progressRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const uploadInputRef = useRef<HTMLInputElement | null>(null);
@@ -142,24 +143,105 @@ export default function TrayScanView() {
         width: "100%",
       }}
     >
-      <h2
+      <div
         style={{
-          fontSize: "clamp(2.35rem, 4.4vw, 3.2rem)",
-          fontWeight: 700,
-          color: "#ffffff",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "10px",
+          flexWrap: "wrap",
+          width: "100%",
           marginBottom: "14px",
-          textAlign: "center",
-          textShadow: "0 10px 26px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.28)",
         }}
       >
-        {isScanning
-          ? detectedItems.length
-            ? "Detected and Scanned"
-            : "Scanning Your Tray..."
-          : uploadedTrayImage
-            ? "Uploaded Tray Ready"
-            : "Position Your Tray"}
-      </h2>
+        <h2
+          style={{
+            fontSize: "clamp(2.35rem, 4.4vw, 3.2rem)",
+            fontWeight: 700,
+            color: "#ffffff",
+            margin: 0,
+            textAlign: "center",
+            textShadow: "0 10px 26px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.28)",
+          }}
+        >
+          {isScanning
+            ? detectedItems.length
+              ? "Detected and Scanned"
+              : "Scanning Your Tray..."
+            : uploadedTrayImage
+              ? "Uploaded Tray Ready"
+              : "Position Your Tray"}
+        </h2>
+        <button
+          onClick={() => setShowInstructions((prev) => !prev)}
+          style={{
+            width: "36px",
+            height: "36px",
+            borderRadius: "999px",
+            border: "none",
+            background: "rgba(255,255,255,0.85)",
+            color: "#000",
+            fontWeight: 700,
+            fontSize: "18px",
+            cursor: "pointer",
+            flexShrink: 0,
+          }}
+          aria-expanded={showInstructions}
+          aria-label="Toggle instructions"
+        >
+          i
+        </button>
+      </div>
+      {showInstructions && (
+        <div
+          style={{
+            position: "fixed",
+            top: "var(--header-clearance)",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 15,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px",
+            background: "rgba(0, 0, 0, 0.12)",
+          }}
+        >
+          <button
+            onClick={() => setShowInstructions(false)}
+            style={{
+              position: "absolute",
+              top: "20px",
+              right: "20px",
+              width: "32px",
+              height: "32px",
+              borderRadius: "999px",
+              border: "none",
+              background: "#ff4d4f",
+              color: "#ffffff",
+              fontWeight: 700,
+              fontSize: "18px",
+              cursor: "pointer",
+              zIndex: 20,
+            }}
+            aria-label="Close instructions"
+          >
+            ×
+          </button>
+          <img
+            src="/ins_man.png"
+            alt="Instructions"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+              borderRadius: "20px",
+              display: "block",
+            }}
+          />
+        </div>
+      )}
 
       <div
         style={{
