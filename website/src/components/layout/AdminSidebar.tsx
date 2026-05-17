@@ -1,7 +1,8 @@
 "use client";
 
+import type { MouseEvent } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { APP_NAME } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import TecdiaLogo from "@/components/layout/TecdiaLogo";
@@ -21,6 +22,21 @@ const navItems = [
  */
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleCustomerView = async (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    try {
+      await fetch("/api/admin/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch {
+      // Ignore network errors and still redirect
+    }
+    sessionStorage.removeItem("admin_auth");
+    router.push("/customer");
+  };
 
   return (
     <aside className="sidebar" style={{ display: "flex", flexDirection: "column", margin: "18px 0 18px 18px", borderRadius: "34px", boxShadow: "var(--shadow-lg)", overflow: "hidden" }}>
@@ -85,13 +101,14 @@ export default function AdminSidebar() {
           borderTop: "1px solid var(--border)",
         }}
       >
-        <Link
-          href="/customer"
+        <button
+          type="button"
+          onClick={handleCustomerView}
           className="btn btn-outline btn-sm w-full"
-          style={{ fontSize: "13px", textDecoration: "none" }}
+          style={{ fontSize: "13px", cursor: "pointer" }}
         >
           Customer View
-        </Link>
+        </button>
       </div>
     </aside>
   );

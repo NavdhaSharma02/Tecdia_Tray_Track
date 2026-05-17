@@ -1,17 +1,19 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useCustomerFlow } from "@/hooks/useCustomerFlow";
 import { useCamera } from "@/hooks/useCamera";
 import Button from "@/components/ui/Button";
 import Spinner from "@/components/ui/Spinner";
 
-const DEMO_EMPLOYEE_IDS = ["EMP-001", "EMP-002", "EMP-003", "EMP-004", "EMP-005"];
-
 export default function IdleScreenEditorial() {
   const { identifyEmployee, openEmailAuth, isLoading, error, clearError } = useCustomerFlow();
   const { videoRef, isReady, error: camError, start, stop, captureFrame } = useCamera();
   const [isScanning, setIsScanning] = useState(false);
+  const [barcodeBuffer, setBarcodeBuffer] = useState("");
+  const barcodeBufferRef = useRef("");
+  const codeReaderRef = useRef<any>(null);
+  const selectedDeviceIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     start();
@@ -19,27 +21,132 @@ export default function IdleScreenEditorial() {
   }, [start, stop]);
 
   const handleScan = useCallback(async () => {
+    // Prepare for scanning: clear buffers and enable scanner
+    barcodeBufferRef.current = "";
+    setBarcodeBuffer("");
     setIsScanning(true);
     if (error) clearError();
 
     try {
       try {
+        // warm the camera (capture a frame) so video element has data
         await captureFrame();
       } catch {
-        // Keep the demo scan flow resilient when frame capture fails.
+        // ignore capture errors; scanner will rely on live video
+      }
+    } catch {
+      // ignore
+    }
+  }, [captureFrame, error, clearError]);
+
+  // Keyboard buffer handler (for keyboard-emulating scanners)
+  useEffect(() => {
+    if (!isScanning) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        const code = barcodeBufferRef.current.trim();
+        if (!code) return;
+        event.preventDefault();
+        const scannedId = code.toUpperCase();
+        barcodeBufferRef.current = "";
+        setBarcodeBuffer("");
+        setIsScanning(false);
+        void identifyEmployee(scannedId);
+        return;
       }
 
-      await new Promise((r) => setTimeout(r, 1800));
-      const scannedId =
-        DEMO_EMPLOYEE_IDS[Math.floor(Math.random() * DEMO_EMPLOYEE_IDS.length)];
+      if (event.key === "Escape") {
+        barcodeBufferRef.current = "";
+        setBarcodeBuffer("");
+        return;
+      }
 
-      await identifyEmployee(scannedId);
-    } catch {
-      // Shared flow state surfaces the user-facing error.
-    } finally {
-      setIsScanning(false);
+      if (/^[a-zA-Z0-9_-]$/.test(event.key)) {
+        barcodeBufferRef.current += event.key;
+        setBarcodeBuffer(barcodeBufferRef.current);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [identifyEmployee, isScanning]);
+
+  useEffect(() => {
+    let mounted = true;
+    let stopped = false;
+
+    async function loadAndStartDecoder() {
+      const video = videoRef.current || (document.querySelector('video') as HTMLVideoElement);
+      if (!video) return;
+
+      // Load ZXing from CDN if global not present
+      if (!(window as any).ZXing) {
+        await new Promise<void>((resolve, reject) => {
+          const s = document.createElement('script');
+          s.src = 'https://unpkg.com/@zxing/library@latest';
+          s.async = true;
+          s.onload = () => resolve();
+          s.onerror = (e) => reject(e);
+          document.head.appendChild(s);
+        }).catch(() => {
+          return;
+        });
+      }
+
+      if (!(window as any).ZXing) return;
+
+      try {
+        const ZX = (window as any).ZXing;
+        console.debug("ZXing loaded", ZX ? "yes" : "no");
+        if (!codeReaderRef.current) codeReaderRef.current = new ZX.BrowserMultiFormatReader();
+        const codeReader = codeReaderRef.current;
+
+        if (!selectedDeviceIdRef.current) {
+          const devices = await codeReader.listVideoInputDevices();
+          console.debug("ZXing devices found", devices?.length, devices);
+          selectedDeviceIdRef.current = devices?.[0]?.deviceId ?? null;
+        }
+
+        const deviceId = selectedDeviceIdRef.current;
+        if (!deviceId) {
+          console.debug("ZXing no video device found");
+          return;
+        }
+
+        console.debug("ZXing decodeFromVideoDevice using", deviceId);
+        codeReader.decodeFromVideoDevice(deviceId, 'barcode-scan-video', (result: any, err: any) => {
+          if (stopped || !mounted) return;
+          if (result && result.text) {
+            console.debug("ZXing result", result.text);
+            try {
+              codeReader.reset();
+            } catch {}
+            stopped = true;
+            setIsScanning(false);
+            void identifyEmployee(String(result.text).trim().toUpperCase());
+          }
+          if (err) {
+            console.debug("ZXing decode error", err);
+          }
+        });
+      } catch (e) {
+        console.debug("ZXing start failed", e);
+      }
     }
-  }, [captureFrame, identifyEmployee, error, clearError]);
+
+    if (isScanning && isReady) {
+      void loadAndStartDecoder();
+    }
+
+    return () => {
+      mounted = false;
+      stopped = true;
+      try {
+        if (codeReaderRef.current) codeReaderRef.current.reset();
+      } catch {}
+    };
+  }, [isScanning, isReady, identifyEmployee, videoRef]);
 
   return (
     <div
@@ -191,6 +298,7 @@ export default function IdleScreenEditorial() {
               )}
 
               <video
+                id="barcode-scan-video"
                 ref={videoRef}
                 playsInline
                 muted

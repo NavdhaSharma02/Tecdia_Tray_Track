@@ -119,8 +119,25 @@ export function useCamera(): UseCameraReturn {
         streamRef.current = null;
       }
 
+      if (!window.isSecureContext) {
+        throw new Error(
+          "Camera access requires a secure context. Please run the app over HTTPS or on localhost."
+        );
+      }
+
+      const getUserMedia =
+        navigator.mediaDevices?.getUserMedia?.bind(navigator.mediaDevices) ||
+        (navigator as any).webkitGetUserMedia?.bind(navigator) ||
+        (navigator as any).mozGetUserMedia?.bind(navigator);
+
+      if (!getUserMedia) {
+        throw new Error(
+          "Camera not available. Your browser does not support camera access."
+        );
+      }
+
       const stream = await withTimeout(
-        navigator.mediaDevices.getUserMedia({
+        getUserMedia({
           video: {
             facingMode: "environment",
             width: { ideal: 1280 },

@@ -82,9 +82,9 @@ export async function POST(request: Request, { params }: RouteParams) {
     const files = [...form.getAll("images"), ...form.getAll("image")].filter(
       (file): file is File => file instanceof File
     );
-    if (files.length < 4) {
+    if (files.length < 1) {
       return NextResponse.json(
-        { ok: false, error: "Upload at least 4 reference photos." },
+        { ok: false, error: "Upload at least 1 reference photo." },
         { status: 400 }
       );
     }

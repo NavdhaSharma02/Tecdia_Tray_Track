@@ -33,6 +33,7 @@ const initialState: CustomerFlowState = {
   paymentMethod: null,
   receipt: null,
   error: null,
+  lastScannedEmployeeCode: null,
   isLoading: false,
 };
 
@@ -109,6 +110,8 @@ function flowReducer(
       return { ...state, error: action.payload, isLoading: false };
     case "CLEAR_ERROR":
       return { ...state, error: null };
+    case "SET_LAST_SCANNED_EMPLOYEE_CODE":
+      return { ...state, lastScannedEmployeeCode: action.payload };
     case "RESET":
       return { ...initialState };
     case "RESET_TO_EMAIL_AUTH":
@@ -165,19 +168,24 @@ export function CustomerFlowProvider({ children }: { children: ReactNode }) {
    * Look up employee by ID, fetch their transactions, and move to PROFILE step.
    */
   const identifyEmployee = useCallback(async (id: string) => {
+    const scannedCode = id.trim().toUpperCase();
+    dispatch({ type: "SET_LAST_SCANNED_EMPLOYEE_CODE", payload: scannedCode });
     dispatch({ type: "SET_LOADING", payload: true });
 
     try {
-      const empResult = await api.getEmployee(id);
+      const empResult = await api.getEmployee(scannedCode);
       if (!empResult.ok || !empResult.data) {
         dispatch({
           type: "SET_ERROR",
-          payload: empResult.error || "Employee not found",
+          payload:
+            empResult.error
+              ? `${empResult.error} (scanned code: ${scannedCode})`
+              : `Employee not found for "${scannedCode}". Please try again or use email login.`,
         });
         return;
       }
 
-      const txnResult = await api.getEmployeeTransactions(id);
+      const txnResult = await api.getEmployeeTransactions(scannedCode);
       dispatch({
         type: "SET_EMPLOYEE",
         payload: {
@@ -188,7 +196,7 @@ export function CustomerFlowProvider({ children }: { children: ReactNode }) {
     } catch {
       dispatch({
         type: "SET_ERROR",
-        payload: "Failed to fetch employee details. Please try again.",
+        payload: `Failed to fetch employee details for "${scannedCode}". Please try again.`,
       });
     }
   }, []);

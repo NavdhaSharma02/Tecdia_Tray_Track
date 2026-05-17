@@ -493,41 +493,51 @@ export async function listEmbeddingPrototypesForScan(): Promise<
 /** Fallback when migration 009 has not been applied yet. */
 async function listLegacyEmbeddingsForScan(): Promise<EmbeddingPrototypeRow[]> {
   const pool = getDbPool();
-  const { rows } = await pool.query<{
-    menu_item_id: string;
-    name: string;
-    category: string;
-    price: string;
-    calories: number | null;
-    embedding: number[] | string;
-  }>(
-    `
-    SELECT
-      mi.id::text AS menu_item_id,
-      mi.name,
-      mi.category,
-      mi.base_price::text AS price,
-      mi.calories,
-      mi.reference_embedding AS embedding
-    FROM menu_items mi
-    JOIN service_day_menu_items sdmi ON sdmi.menu_item_id = mi.id
-    JOIN service_days sd ON sd.id = sdmi.service_day_id
-    WHERE sd.service_date = CURRENT_DATE
-      AND sdmi.available = TRUE
-      AND mi.is_active = TRUE
-      AND mi.reference_embedding IS NOT NULL
-    ORDER BY mi.name ASC;
-    `
-  );
+  try {
+    const { rows } = await pool.query<{
+      menu_item_id: string;
+      name: string;
+      category: string;
+      price: string;
+      calories: number | null;
+      embedding: number[] | string;
+    }>(
+      `
+      SELECT
+        mi.id::text AS menu_item_id,
+        mi.name,
+        mi.category,
+        mi.base_price::text AS price,
+        mi.calories,
+        mi.reference_embedding AS embedding
+      FROM menu_items mi
+      JOIN service_day_menu_items sdmi ON sdmi.menu_item_id = mi.id
+      JOIN service_days sd ON sd.id = sdmi.service_day_id
+      WHERE sd.service_date = CURRENT_DATE
+        AND sdmi.available = TRUE
+        AND mi.is_active = TRUE
+        AND mi.reference_embedding IS NOT NULL
+      ORDER BY mi.name ASC;
+      `
+    );
 
-  return rows.map((row) => ({
-    menu_item_id: row.menu_item_id,
-    name: row.name,
-    category: row.category,
-    price: row.price,
-    calories: row.calories,
-    embedding: normalizeEmbeddingJson(row.embedding),
-  }));
+    return rows.map((row) => ({
+      menu_item_id: row.menu_item_id,
+      name: row.name,
+      category: row.category,
+      price: row.price,
+      calories: row.calories,
+      embedding: normalizeEmbeddingJson(row.embedding),
+    }));
+  } catch (error) {
+    const maybePgError = error as { code?: string };
+    if (maybePgError.code === "42703") {
+      // Legacy reference_embedding column is missing, so treat it as no legacy data.
+      return [];
+    }
+    throw error;
+  }
+
 }
 
 /** @deprecated Use listEmbeddingPrototypesForScan via embedding-bank.getScanEmbeddingBank */

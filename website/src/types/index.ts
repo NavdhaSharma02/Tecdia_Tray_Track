@@ -165,6 +165,7 @@ export interface CustomerFlowState {
   paymentMethod: PaymentMethod | null;
   receipt: Receipt | null;
   error: string | null;
+  lastScannedEmployeeCode: string | null;
   isLoading: boolean;
 }
 
@@ -184,5 +185,6 @@ export type CustomerFlowAction =
   | { type: 'SELECT_PAYMENT'; payload: PaymentMethod }
   | { type: 'PAYMENT_COMPLETE'; payload: Receipt }
   | { type: 'SET_ERROR'; payload: string }
+  | { type: 'SET_LAST_SCANNED_EMPLOYEE_CODE'; payload: string | null }
   | { type: 'CLEAR_ERROR' }
   | { type: 'RESET' };
