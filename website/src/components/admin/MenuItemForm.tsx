@@ -90,8 +90,12 @@ export default function MenuItemForm({
     setNameError(undefined);
 
     const hasExistingReference = Boolean(item?.hasReferencePhoto || item?.image);
-    if (!isSoupItem && !hasExistingReference && referenceFiles.length < 1) {
-      setReferenceError("Upload at least 1 reference photo.");
+    if (!isSoupItem && !hasExistingReference && referenceFiles.length < 4) {
+      setReferenceError("Upload at least 4 reference photos.");
+      return;
+    }
+    if (referenceFiles.length > 0 && referenceFiles.length < 4) {
+      setReferenceError("Upload at least 4 reference photos.");
       return;
     }
     setReferenceError(undefined);
@@ -258,12 +262,12 @@ function ReferencePhotoSection({
   return (
     <div className="flex flex-col gap-2">
       <label style={{ fontSize: "13px", fontWeight: 500, color: "var(--text-secondary)" }}>
-        Reference photos{optional ? " (optional)" : ""} - minimum 1
+        Reference photos{optional ? " (optional)" : ""} - minimum 4
       </label>
       <p style={{ fontSize: "12px", color: "var(--text-muted)", margin: 0, lineHeight: 1.45 }}>
         {optional
-          ? "Upload at least 1 photo if this soup should be detected on the tray scanner."
-          : "Upload at least 1 photo of the dish as it is usually served. The first photo is used as the preview; more photos can improve the vision reference."}
+          ? "Upload at least 4 photos if this soup should be detected on the tray scanner."
+          : "Upload at least 4 photos of the dish as it is usually served. The first photo is used as the preview; all photos improve the vision reference."}
       </p>
       {previewUrls.length > 0 && (
         <div
@@ -296,7 +300,7 @@ function ReferencePhotoSection({
         </div>
       )}
       {fileCount > 0 && (
-        <span style={{ fontSize: "12px", color: fileCount >= 1 ? "var(--success)" : "var(--danger)" }}>
+        <span style={{ fontSize: "12px", color: fileCount >= 4 ? "var(--success)" : "var(--danger)" }}>
           {fileCount} photo{fileCount === 1 ? "" : "s"} selected
         </span>
       )}
