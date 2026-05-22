@@ -13,6 +13,19 @@ export function cn(...classes: (string | false | null | undefined)[]): string {
   return classes.filter(Boolean).join(" ");
 }
 
+/** Menu/scan calories: null or unknown counts as 0 kcal. */
+export function effectiveCalories(calories: number | null | undefined): number {
+  return typeof calories === "number" && Number.isFinite(calories) ? calories : 0;
+}
+
+/** Line-item kcal (per-unit calories × quantity). */
+export function lineItemCalories(
+  calories: number | null | undefined,
+  quantity: number
+): number {
+  return effectiveCalories(calories) * Math.max(0, quantity);
+}
+
 /**
  * Format a date string or Date object into a human-readable format.
  */

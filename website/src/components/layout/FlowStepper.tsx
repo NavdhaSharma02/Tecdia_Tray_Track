@@ -3,8 +3,15 @@
 import { FLOW_STEP_LABELS } from "@/lib/constants";
 import type { FlowStep } from "@/types";
 
-/** Steps in display order — PROFILE removed */
-const STEPS_ORDER: FlowStep[] = ["IDLE", "EMAIL_AUTH", "SCANNING", "BILL", "PAYMENT"];
+/** Steps shown in the header (identify covers IDLE + EMAIL_AUTH) */
+const STEPS_ORDER: FlowStep[] = ["IDLE", "SCANNING", "BILL", "PAYMENT"];
+
+function displayStepIndex(step: FlowStep): number {
+  if (step === "EMAIL_AUTH" || step === "PROFILE") {
+    return STEPS_ORDER.indexOf("IDLE");
+  }
+  return STEPS_ORDER.indexOf(step);
+}
 
 interface FlowStepperProps {
   currentStep: FlowStep;
@@ -20,7 +27,7 @@ export default function FlowStepper({
   compact = false,
   embedded = false,
 }: FlowStepperProps) {
-  const currentIdx = STEPS_ORDER.indexOf(currentStep);
+  const currentIdx = displayStepIndex(currentStep);
   if (currentStep === "DONE") return null;
 
   return (

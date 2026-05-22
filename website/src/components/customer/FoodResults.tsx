@@ -7,7 +7,7 @@ import Badge from "@/components/ui/Badge";
 import PinPadModal from "@/components/ui/PinPadModal";
 import StaffMenuAddPanel from "@/components/customer/StaffMenuAddPanel";
 import { addMenuItemToBill } from "@/lib/manual-bill";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, lineItemCalories } from "@/lib/utils";
 import * as api from "@/services/api";
 import type { MenuItem, ScannedItem } from "@/types";
 
@@ -31,16 +31,12 @@ export default function FoodResults() {
     [items]
   );
 
-  const totalCaloriesKnown = useMemo(
+  const totalCalories = useMemo(
     () =>
-      items.reduce((sum, item) => {
-        if (item.calories == null) return sum;
-        return sum + item.calories * item.quantity;
-      }, 0),
-    [items]
-  );
-  const anyUnknownCalories = useMemo(
-    () => items.some((item) => item.calories == null),
+      items.reduce(
+        (sum, item) => sum + lineItemCalories(item.calories, item.quantity),
+        0
+      ),
     [items]
   );
 
@@ -314,7 +310,10 @@ export default function FoodResults() {
 
             <div className="flex items-center gap-2 mb-3">
               <span style={{ fontSize: "13px", color: "var(--text-muted)" }}>
-                {item.calories} cal
+                {lineItemCalories(item.calories, item.quantity)} cal
+                {item.quantity > 1
+                  ? ` (${lineItemCalories(item.calories, 1)} each)`
+                  : ""}
               </span>
               <Badge variant="success">
                 {Math.round(item.confidence * 100)}%
@@ -436,10 +435,8 @@ export default function FoodResults() {
           }}
         >
           <div>
-              <p style={{ fontSize: "14px", color: "var(--text-muted)", marginBottom: "4px" }}>
+            <p style={{ fontSize: "14px", color: "var(--text-muted)", marginBottom: "4px" }}>
               Total — {items.length} item{items.length === 1 ? "" : "s"}
-              {!anyUnknownCalories ? ` · ${totalCaloriesKnown} cal` : ""}
-              {anyUnknownCalories ? " · calorie total N/A" : ""}
             </p>
             <p
               style={{
@@ -452,6 +449,20 @@ export default function FoodResults() {
               }}
             >
               {formatCurrency(total)}
+            </p>
+            <p
+              style={{
+                fontSize: "15px",
+                fontWeight: 600,
+                color: "var(--text-secondary)",
+                marginTop: "8px",
+                lineHeight: 1.5,
+              }}
+            >
+              Your total calories in this meal are:{" "}
+              <span style={{ fontWeight: 700, color: "var(--text-primary)" }}>
+                {totalCalories}
+              </span>
             </p>
           </div>
 

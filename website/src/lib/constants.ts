@@ -10,13 +10,12 @@ export const API_BASE: string =
 
 export const CURRENCY = "₱";
 
-/** Flow step labels for the stepper UI — no PROFILE step */
+/** Flow step labels for the stepper UI (identify includes email sign-up) */
 export const FLOW_STEP_LABELS: Record<string, { label: string; icon: string }> = {
   IDLE: { label: "Identify", icon: "1" },
-  EMAIL_AUTH: { label: "Sign Up", icon: "2" },
-  SCANNING: { label: "Scan Tray", icon: "3" },
-  BILL: { label: "Bill", icon: "4" },
-  PAYMENT: { label: "Payment", icon: "5" },
+  SCANNING: { label: "Scan Tray", icon: "2" },
+  BILL: { label: "Bill", icon: "3" },
+  PAYMENT: { label: "Payment", icon: "4" },
   DONE: { label: "Done", icon: "✓" },
 };
 
