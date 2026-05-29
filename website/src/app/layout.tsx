@@ -31,9 +31,9 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Tecida Tray Track — Smart Cafeteria",
+  title: "Tecdia Tray Track — Smart Cafeteria",
   description:
-    "AI-powered cafeteria tray scanning and billing system by Tecida.",
+    "AI-powered cafeteria tray scanning and billing system by Tecdia.",
 };
 
 export default function RootLayout({

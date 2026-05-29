@@ -1,19 +1,38 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Badge from "@/components/ui/Badge";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Modal from "@/components/ui/Modal";
 import { formatCurrency, formatDateTime, getInitials } from "@/lib/utils";
 import * as api from "@/services/api";
-import type { Employee } from "@/types";
+import type { Employee, Transaction } from "@/types";
+
+const monthOptions = [
+  { value: 0, label: "January" },
+  { value: 1, label: "February" },
+  { value: 2, label: "March" },
+  { value: 3, label: "April" },
+  { value: 4, label: "May" },
+  { value: 5, label: "June" },
+  { value: 6, label: "July" },
+  { value: 7, label: "August" },
+  { value: 8, label: "September" },
+  { value: 9, label: "October" },
+  { value: 10, label: "November" },
+  { value: 11, label: "December" },
+];
 
 export default function EmployeeManagementTable() {
+  const currentDate = useMemo(() => new Date(), []);
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "active" | "on_leave" | "inactive">("all");
+  const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth());
+  const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
   const [editEmployee, setEditEmployee] = useState<Employee | null>(null);
   const [editEmployeeCode, setEditEmployeeCode] = useState("");
   const [editName, setEditName] = useState("");
@@ -22,11 +41,36 @@ export default function EmployeeManagementTable() {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    api.getAllEmployees().then((res) => {
-      if (res.ok && res.data) setEmployees(res.data);
+    Promise.all([api.getAllEmployees(), api.getAllTransactions()]).then(([employeesRes, transactionsRes]) => {
+      if (employeesRes.ok && employeesRes.data) setEmployees(employeesRes.data);
+      if (transactionsRes.ok && transactionsRes.data) setTransactions(transactionsRes.data);
       setLoading(false);
     });
   }, []);
+
+  const yearOptions = useMemo(() => {
+    const years = new Set<number>([currentDate.getFullYear()]);
+    transactions.forEach((txn) => {
+      const date = new Date(txn.date);
+      if (!Number.isNaN(date.getTime())) years.add(date.getFullYear());
+    });
+    return [...years].sort((a, b) => b - a);
+  }, [transactions, currentDate]);
+
+  const monthlySpendByEmployee = useMemo(() => {
+    const totals = new Map<string, number>();
+    transactions.forEach((txn) => {
+      const date = new Date(txn.date);
+      if (
+        txn.status === "completed" &&
+        date.getFullYear() === selectedYear &&
+        date.getMonth() === selectedMonth
+      ) {
+        totals.set(txn.employeeId, (totals.get(txn.employeeId) || 0) + txn.total);
+      }
+    });
+    return totals;
+  }, [transactions, selectedMonth, selectedYear]);
 
   const filtered = employees.filter((emp) => {
     const matchesFilter = filter === "all" || emp.status === filter;
@@ -101,7 +145,33 @@ export default function EmployeeManagementTable() {
           className="input"
           style={{ maxWidth: "420px" }}
         />
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2" style={{ flexWrap: "wrap" }}>
+          <select
+            className="input"
+            value={selectedMonth}
+            onChange={(event) => setSelectedMonth(Number(event.target.value))}
+            style={{ width: "150px" }}
+            aria-label="Month filter"
+          >
+            {monthOptions.map((month) => (
+              <option key={month.value} value={month.value}>
+                {month.label}
+              </option>
+            ))}
+          </select>
+          <select
+            className="input"
+            value={selectedYear}
+            onChange={(event) => setSelectedYear(Number(event.target.value))}
+            style={{ width: "110px" }}
+            aria-label="Year filter"
+          >
+            {yearOptions.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
           {(["all", "active", "on_leave", "inactive"] as const).map((status) => (
             <button
               key={status}
@@ -124,6 +194,7 @@ export default function EmployeeManagementTable() {
               <th>Balance</th>
               <th>Transactions</th>
               <th>Total Spent</th>
+              <th>{monthOptions[selectedMonth].label} Spend</th>
               <th>Primary Payment</th>
               <th>Last Transaction</th>
               <th>Status</th>
@@ -134,14 +205,14 @@ export default function EmployeeManagementTable() {
             {loading ? (
               Array.from({ length: 3 }).map((_, i) => (
                 <tr key={i}>
-                  <td colSpan={10}>
+                  <td colSpan={11}>
                     <div className="animate-shimmer" style={{ height: "20px", borderRadius: "4px" }} />
                   </td>
                 </tr>
               ))
             ) : filtered.length === 0 ? (
               <tr>
-                <td colSpan={10} style={{ textAlign: "center", color: "var(--text-muted)", padding: "32px" }}>
+                <td colSpan={11} style={{ textAlign: "center", color: "var(--text-muted)", padding: "32px" }}>
                   No employees found
                 </td>
               </tr>
@@ -178,6 +249,9 @@ export default function EmployeeManagementTable() {
                   <td style={{ fontFamily: "var(--font-mono)", fontWeight: 600 }}>{formatCurrency(emp.accountBalance)}</td>
                   <td>{emp.totalTransactions ?? 0}</td>
                   <td style={{ fontFamily: "var(--font-mono)", fontWeight: 600 }}>{formatCurrency(emp.totalSpent ?? 0)}</td>
+                  <td style={{ fontFamily: "var(--font-mono)", fontWeight: 700, color: "var(--text-primary)" }}>
+                    {formatCurrency(monthlySpendByEmployee.get(emp.id) ?? 0)}
+                  </td>
                   <td>
                     <Badge variant={emp.primaryPaymentMethod === "account" ? "warning" : "success"}>
                       {emp.primaryPaymentMethod === "account"

@@ -27,7 +27,7 @@ const highlights = [
 ];
 
 const steps = [
-  "Employee identifies at the kiosk",
+  "Employee authorization",
   "Tray is scanned against today's menu",
   "Items and pricing are reviewed instantly",
   "Payment or account charging completes the visit",
@@ -56,7 +56,7 @@ export default function RootPage() {
           <div className="marketing-copy">
             <span className="marketing-eyebrow">Smart cafeteria automation</span>
             <h1>
-              Premium self-service dining flow for modern employee cafeterias.
+              Premium self service dining flow for modern employee cafeterias
             </h1>
             <p>
               Inspired by hospitality-grade digital ordering experiences, Tecdia
@@ -111,10 +111,6 @@ export default function RootPage() {
               <span>Today&apos;s menu synced</span>
               <strong>12 active dishes</strong>
             </div>
-            <div className="marketing-floating-card marketing-floating-card--b">
-              <span>Checkout ready</span>
-              <strong>UPI, card, payroll</strong>
-            </div>
           </div>
         </div>
       </section>
@@ -122,11 +118,11 @@ export default function RootPage() {
       <section className="marketing-section marketing-section--split">
         <div className="marketing-section__intro">
           <span className="marketing-eyebrow">Why it feels better</span>
-          <h2>A sales-ready front end with the same clarity as the kiosk itself.</h2>
+          <h2>A seamless checkout experience that keeps long queues moving</h2>
           <p>
-            The reference site uses confidence-building presentation: strong
-            hierarchy, elegant spacing, visual proof, and repeated value
-            messaging. This homepage brings that same energy to your product.
+            Tecdia Tray Track shows how employees can scan a tray, confirm their
+            meal, and complete payment in seconds while cafeteria teams manage
+            menus, transactions, and daily activity from one dashboard.
           </p>
         </div>
         <div className="marketing-grid">
@@ -146,7 +142,7 @@ export default function RootPage() {
         <div className="marketing-band__content">
           <div>
             <span className="marketing-eyebrow">How it flows</span>
-            <h2>One guided sequence from tray pickup to payment.</h2>
+            <h2>One guided sequence from tray pickup to payment</h2>
           </div>
           <div className="marketing-steps">
             {steps.map((step, index) => (
@@ -161,17 +157,47 @@ export default function RootPage() {
 
       <section className="marketing-section marketing-section--gallery">
         <div className="marketing-gallery-copy">
-          <span className="marketing-eyebrow">Designed to reassure</span>
-          <h2>Soft premium visuals, not a rough internal tool.</h2>
+          <span className="marketing-eyebrow">Analytics dashboard</span>
+          <h2>Turn every cafeteria checkout into useful operational insight</h2>
           <p>
-            The homepage now presents Tecdia Tray Track like a polished product:
-            editorial cards, layered imagery, refined colors, and clear calls to
-            action for both customers and operators.
+            Tecdia Tray Track gives teams a clear view of daily transactions,
+            popular dishes, employee activity, and menu performance so cafeteria
+            decisions are backed by real usage data.
           </p>
         </div>
         <div className="marketing-gallery">
-          <div className="marketing-gallery__tall">
-            <Image src="/bg1.jpg" alt="Dining setup" fill className="object-cover" />
+          <div className="marketing-gallery__tall marketing-analytics-preview" aria-label="Analytics dashboard preview">
+            <div className="marketing-analytics-preview__top">
+              <div>
+                <span>Analytics</span>
+                <strong>Cafeteria performance</strong>
+              </div>
+            </div>
+            <div className="marketing-analytics-preview__stats">
+              <article>
+                <span>Revenue</span>
+                <strong>PHP 84.2k</strong>
+              </article>
+              <article>
+                <span>Orders</span>
+                <strong>1,248</strong>
+              </article>
+            </div>
+            <div className="marketing-analytics-preview__chart">
+              {[46, 62, 54, 78, 68, 88, 72].map((height, index) => (
+                <span key={index} style={{ height: `${height}%` }} />
+              ))}
+            </div>
+            <div className="marketing-analytics-preview__list">
+              <div>
+                <span>Top dish</span>
+                <strong>Chicken meal</strong>
+              </div>
+              <div>
+                <span>Peak hour</span>
+                <strong>12:30 PM</strong>
+              </div>
+            </div>
           </div>
           <div className="marketing-gallery__stack">
             <div className="marketing-gallery__small">
@@ -186,15 +212,33 @@ export default function RootPage() {
 
       <section className="marketing-section marketing-cta-band">
         <div>
-          <span className="marketing-eyebrow">Ready to present</span>
-          <h2>Use this as your polished front door, while the kiosk runs separately.</h2>
+          <span className="marketing-eyebrow">Explore</span>
+          <h2>Explore the kiosk and admin tools built for faster cafeteria service</h2>
         </div>
         <div className="marketing-cta">
-          <Link href="/customer" className="btn btn-primary btn-lg">
-            Open customer kiosk
+          <Link
+            href="https://github.com/NavdhaSharma02/Tecdia_Tray_Track/blob/main/README.md"
+            className="btn btn-primary btn-lg"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Operation manual
           </Link>
-          <Link href="/admin/login" className="btn btn-outline btn-lg">
-            Open admin portal
+          <Link
+            href="https://github.com/NavdhaSharma02/Tecdia_Tray_Track/blob/main/docs/IMPLEMENTATION.md"
+            className="btn btn-primary btn-lg"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Developer docs
+          </Link>
+          <Link
+            href="https://github.com/NavdhaSharma02/Tecdia_Tray_Track"
+            className="btn btn-primary btn-lg"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub
           </Link>
         </div>
       </section>

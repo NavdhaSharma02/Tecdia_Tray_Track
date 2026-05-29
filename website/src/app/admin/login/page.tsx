@@ -83,13 +83,10 @@ export default function AdminLoginPage() {
           textAlign: "center",
         }}
       >
-        <div style={{ margin: "0 auto 20px", display: "inline-flex" }}>
+        <div style={{ margin: "0 auto 20px", display: "flex", justifyContent: "center", width: "100%" }}>
           <TecdiaLogo size="md" />
         </div>
 
-        <span className="app-shell-eyebrow" style={{ marginBottom: "16px" }}>
-          Admin access
-        </span>
         <h1 style={{ fontSize: "36px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "6px", lineHeight: 1 }}>
           Admin Access
         </h1>
