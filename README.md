@@ -7,6 +7,7 @@ Admin manages today's menu and reference photos for on-device dish recognition.
 
 **[docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)** — Deployment guide: setup, env, daily workflow, go-live checklist (start here).
 
+## Documentation
 
 | Category | File | Description |
 |----------|------|-------------|
