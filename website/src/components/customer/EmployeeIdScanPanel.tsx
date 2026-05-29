@@ -191,14 +191,30 @@ export default function EmployeeIdScanPanel({
                   <div
                     style={{
                       position: "absolute",
-                      left: "16px",
-                      right: "16px",
-                      height: "2px",
-                      background: "linear-gradient(90deg, transparent, var(--accent), transparent)",
-                      boxShadow: "0 0 8px var(--accent-glow)",
-                      animation: "scan-line 1.5s ease-in-out infinite",
+                      left: compact ? "20px" : "28px",
+                      right: compact ? "20px" : "28px",
+                      bottom: compact ? "18px" : "26px",
+                      height: compact ? "8px" : "10px",
+                      overflow: "hidden",
+                      borderRadius: "var(--radius-full)",
+                      background: "rgba(255, 251, 247, 0.72)",
+                      border: "1px solid rgba(145, 179, 89, 0.45)",
+                      boxShadow: "0 10px 28px rgba(29, 22, 19, 0.16)",
                     }}
-                  />
+                  >
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: "inherit",
+                        background:
+                          "linear-gradient(90deg, var(--accent), var(--success), var(--accent-light))",
+                        boxShadow: "0 0 16px var(--accent-glow)",
+                        transformOrigin: "left",
+                        animation: "scan-progress-fill 1.8s ease-in-out infinite",
+                      }}
+                    />
+                  </div>
                 )}
               </div>
               <div

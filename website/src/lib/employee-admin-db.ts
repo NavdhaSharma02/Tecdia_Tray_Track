@@ -43,6 +43,7 @@ export async function listEmployeesForAdmin(): Promise<Employee[]> {
       ) AS primary_payment_method
     FROM customers c
     LEFT JOIN transactions t ON t.customer_id = c.id
+    WHERE c.is_active = TRUE
     GROUP BY c.id, c.employee_code, c.full_name, c.email, c.department, c.created_at
     ORDER BY c.created_at DESC;
     `
@@ -91,4 +92,20 @@ export async function updateEmployeeProfileByCode(input: {
     ]
   );
   return Boolean(result.rowCount);
+}
+
+export async function removeEmployeeByCode(employeeCode: string): Promise<boolean> {
+  const pool = getDbPool();
+  const result = await pool.query(
+    `
+    UPDATE customers
+    SET is_active = FALSE,
+        updated_at = NOW()
+    WHERE employee_code = $1
+      AND is_active = TRUE
+    RETURNING id;
+    `,
+    [employeeCode.trim().toUpperCase()]
+  );
+  return (result.rowCount ?? 0) > 0;
 }

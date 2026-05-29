@@ -195,21 +195,24 @@ export default function EmailAuthScreen() {
               transition: "border-color 0.3s, box-shadow 0.3s",
             }}
           >
-            <video
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                background: "var(--bg-primary)",
-              }}
-              autoPlay
-              muted
-              loop
-              playsInline
-            >
-              <source src="/Tecdia_instruction.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+            <div className="id-scanner-visual id-scanner-visual--compact" aria-hidden="true">
+              <div className="id-scanner-card">
+                <div className="id-scanner-card__chip" />
+                <div className="id-scanner-card__photo" />
+                <div className="id-scanner-card__lines">
+                  <span />
+                  <span />
+                  <span />
+                </div>
+                <div className="id-scanner-barcode">
+                  {[12, 7, 18, 9, 14, 6, 20, 8, 16, 10, 5, 18].map((width, index) => (
+                    <span key={index} style={{ width: `${width}px` }} />
+                  ))}
+                </div>
+              </div>
+              <div className="id-scanner-laser" />
+              <div className="id-scanner-glow" />
+            </div>
 
             <div
               style={{
@@ -218,18 +221,21 @@ export default function EmailAuthScreen() {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                justifyContent: "center",
+                justifyContent: "flex-end",
                 pointerEvents: "none",
                 zIndex: 10,
+                padding: "0 18px 12px",
               }}
             >
               <div
                 style={{
-                  padding: "12px 20px",
-                  background: "rgba(29, 22, 19, 0.76)",
+                  padding: isScanning ? "10px 14px 12px" : "10px 18px",
+                  background: "rgba(255, 251, 247, 0.78)",
                   backdropFilter: "blur(10px)",
-                  borderRadius: "var(--radius-full)",
-                  border: "1px solid rgba(255,255,255,0.18)",
+                  borderRadius: isScanning ? "18px" : "var(--radius-full)",
+                  border: "1px solid rgba(109, 76, 64, 0.14)",
+                  minWidth: isScanning ? "min(320px, 72vw)" : "auto",
+                  boxShadow: "0 18px 42px rgba(67, 41, 33, 0.12)",
                 }}
               >
                 <p
@@ -237,13 +243,38 @@ export default function EmailAuthScreen() {
                     margin: 0,
                     fontSize: "13px",
                     fontWeight: 800,
-                    color: "rgba(255,255,255,0.92)",
+                    color: "#231712",
                     textTransform: "uppercase",
                     letterSpacing: "0.03em",
                   }}
                 >
-                  Ready to scan
+                  {isScanning ? "Reading employee ID..." : "Ready to scan"}
                 </p>
+                {isScanning && (
+                  <div
+                    style={{
+                      height: "8px",
+                      marginTop: "10px",
+                      overflow: "hidden",
+                      borderRadius: "var(--radius-full)",
+                      background: "rgba(109, 76, 64, 0.1)",
+                      border: "1px solid rgba(109, 76, 64, 0.12)",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: "inherit",
+                        background:
+                          "linear-gradient(90deg, var(--accent), var(--success), var(--accent-light))",
+                        boxShadow: "0 0 18px var(--accent-glow)",
+                        transformOrigin: "left",
+                        animation: "scan-progress-fill 1.8s ease-in-out infinite",
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>

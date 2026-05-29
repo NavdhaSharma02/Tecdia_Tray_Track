@@ -85,6 +85,7 @@ export async function findCustomerByEmail(
       created_at
     FROM customers
     WHERE email = $1
+      AND is_active = TRUE
     LIMIT 1;
   `;
   const { rows } = await pool.query<CustomerRow>(query, [email]);
@@ -111,6 +112,7 @@ export async function findCustomerByEmployeeCode(
     SELECT id, employee_code, email, full_name, department, created_at
     FROM customers
     WHERE employee_code = $1
+      AND is_active = TRUE
     LIMIT 1;
   `;
   const { rows } = await pool.query<{
@@ -139,6 +141,7 @@ export async function findCustomerById(id: string): Promise<AuthCustomer | null>
     SELECT id, employee_code, email, full_name, department, created_at
     FROM customers
     WHERE id = $1
+      AND is_active = TRUE
     LIMIT 1;
   `;
   const { rows } = await pool.query<{

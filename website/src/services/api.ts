@@ -567,6 +567,22 @@ export async function updateEmployeeProfile(
   }
 }
 
+export async function removeEmployee(
+  employeeCode: string
+): Promise<ApiResponse<null>> {
+  try {
+    const res = await fetch(
+      `${API_BASE}/admin/employees/${encodeURIComponent(employeeCode)}`,
+      { method: "DELETE" }
+    );
+    const data = (await res.json()) as ApiResponse<null>;
+    if (!res.ok) return { ok: false, error: data.error || "Could not remove employee." };
+    return { ok: true, data: null };
+  } catch {
+    return { ok: false, error: "Unable to remove employee." };
+  }
+}
+
 export async function getAdminUsers(): Promise<ApiResponse<AdminUser[]>> {
   try {
     const res = await fetch(`${API_BASE}/admin/users`, { cache: "no-store" });

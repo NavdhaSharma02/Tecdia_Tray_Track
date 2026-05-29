@@ -236,6 +236,53 @@ body:has(.customer-stage) {
   100% { width: 100%; }
 }
 
+@keyframes scan-progress-fill {
+  0% {
+    transform: scaleX(0.08);
+    opacity: 0.65;
+  }
+  55% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0.72;
+  }
+}
+
+@keyframes id-laser-sweep {
+  0%,
+  100% {
+    transform: translateX(-42%);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translateX(42%);
+    opacity: 1;
+  }
+}
+
+@keyframes id-card-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+@keyframes barcode-pulse {
+  0%,
+  100% {
+    opacity: 0.62;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 @keyframes customer-bg-zoom {
   0% {
     transform: scale(1);
@@ -1144,6 +1191,171 @@ select.input option {
   display: grid;
   gap: 14px;
   align-content: start;
+}
+
+.id-scanner-visual {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(231, 169, 100, 0.16), transparent 30%),
+    radial-gradient(circle at 18% 72%, rgba(198, 110, 91, 0.1), transparent 28%),
+    linear-gradient(135deg, rgba(255, 251, 247, 0.72), rgba(239, 225, 213, 0.66));
+}
+
+.id-scanner-visual::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(109, 76, 64, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(109, 76, 64, 0.08) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(circle at center, black, transparent 72%);
+}
+
+.id-scanner-card {
+  position: relative;
+  width: min(520px, 68%);
+  aspect-ratio: 1.62;
+  box-sizing: border-box;
+  padding: 28px;
+  border-radius: 28px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(255, 246, 238, 0.86));
+  border: 1px solid rgba(109, 76, 64, 0.18);
+  box-shadow:
+    0 34px 90px rgba(67, 41, 33, 0.18),
+    0 0 42px rgba(231, 169, 100, 0.16);
+  animation: id-card-float 4.2s ease-in-out infinite;
+}
+
+.id-scanner-visual--compact .id-scanner-card {
+  width: min(380px, 58%);
+  padding: 18px;
+  border-radius: 22px;
+}
+
+.id-scanner-visual--compact .id-scanner-card__chip {
+  width: 42px;
+  height: 30px;
+  border-radius: 8px;
+}
+
+.id-scanner-visual--compact .id-scanner-card__photo {
+  top: 64px;
+  left: 18px;
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+}
+
+.id-scanner-visual--compact .id-scanner-card__lines {
+  top: 64px;
+  left: 92px;
+  right: 20px;
+  gap: 9px;
+}
+
+.id-scanner-visual--compact .id-scanner-card__lines span {
+  height: 10px;
+}
+
+.id-scanner-visual--compact .id-scanner-barcode {
+  left: 92px;
+  right: 20px;
+  bottom: 22px;
+  gap: 5px;
+  height: 42px;
+}
+
+.id-scanner-card__chip {
+  width: 58px;
+  height: 42px;
+  border-radius: 10px;
+  background:
+    linear-gradient(90deg, rgba(180, 132, 68, 0.9), rgba(231, 169, 100, 0.92));
+  box-shadow: inset 0 0 0 2px rgba(92, 62, 37, 0.14);
+}
+
+.id-scanner-card__photo {
+  position: absolute;
+  top: 92px;
+  left: 28px;
+  width: 88px;
+  height: 88px;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(35, 23, 18, 0.78) 0 18%, transparent 19%),
+    radial-gradient(circle at 50% 92%, rgba(35, 23, 18, 0.62) 0 36%, transparent 37%),
+    rgba(77, 100, 105, 0.16);
+}
+
+.id-scanner-card__lines {
+  position: absolute;
+  top: 92px;
+  left: 140px;
+  right: 30px;
+  display: grid;
+  gap: 14px;
+}
+
+.id-scanner-card__lines span {
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(35, 23, 18, 0.18);
+}
+
+.id-scanner-card__lines span:nth-child(2) {
+  width: 76%;
+}
+
+.id-scanner-card__lines span:nth-child(3) {
+  width: 54%;
+}
+
+.id-scanner-barcode {
+  position: absolute;
+  left: 140px;
+  right: 30px;
+  bottom: 34px;
+  display: flex;
+  align-items: stretch;
+  gap: 7px;
+  height: 62px;
+  animation: barcode-pulse 1.8s ease-in-out infinite;
+}
+
+.id-scanner-barcode span {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: #1f1511;
+}
+
+.id-scanner-laser {
+  position: absolute;
+  top: 16%;
+  bottom: 16%;
+  left: 50%;
+  width: 4px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, transparent, #c66e5b 12%, #fff7ef 50%, #e7a964 88%, transparent);
+  box-shadow:
+    0 0 18px rgba(198, 110, 91, 0.92),
+    0 0 46px rgba(231, 169, 100, 0.48);
+  animation: id-laser-sweep 2.2s ease-in-out infinite;
+}
+
+.id-scanner-glow {
+  position: absolute;
+  width: min(580px, 70%);
+  height: 44%;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(198, 110, 91, 0.18), transparent 68%);
+  filter: blur(18px);
 }
 
 .app-header {

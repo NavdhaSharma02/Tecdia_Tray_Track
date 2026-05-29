@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
-import { updateEmployeeProfileByCode } from "@/lib/employee-admin-db";
+import {
+  removeEmployeeByCode,
+  updateEmployeeProfileByCode,
+} from "@/lib/employee-admin-db";
 
 interface RouteParams {
   params: Promise<{ employeeCode: string }>;
@@ -52,6 +55,34 @@ export async function PATCH(request: Request, { params }: RouteParams) {
     console.error("Employee update failed:", error);
     return NextResponse.json(
       { ok: false, error: "Could not update employee profile." },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(_request: Request, { params }: RouteParams) {
+  try {
+    const { employeeCode } = await params;
+    if (!employeeCode) {
+      return NextResponse.json(
+        { ok: false, error: "Employee ID is required." },
+        { status: 400 }
+      );
+    }
+
+    const removed = await removeEmployeeByCode(employeeCode);
+    if (!removed) {
+      return NextResponse.json(
+        { ok: false, error: "Employee not found." },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ ok: true, data: null });
+  } catch (error) {
+    console.error("Employee remove failed:", error);
+    return NextResponse.json(
+      { ok: false, error: "Could not remove employee." },
       { status: 500 }
     );
   }

@@ -39,6 +39,7 @@ export default function EmployeeManagementTable() {
   const [editDepartment, setEditDepartment] = useState("");
   const [editError, setEditError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false);
 
   useEffect(() => {
     Promise.all([api.getAllEmployees(), api.getAllTransactions()]).then(([employeesRes, transactionsRes]) => {
@@ -122,6 +123,26 @@ export default function EmployeeManagementTable() {
           : emp
       )
     );
+    setEditEmployee(null);
+  };
+
+  const removeEditEmployee = async () => {
+    if (!editEmployee) return;
+    const confirmed = window.confirm(
+      `Remove ${editEmployee.name} from employee management? Their past transactions will stay in the reports.`
+    );
+    if (!confirmed) return;
+
+    setIsRemoving(true);
+    setEditError(null);
+    const result = await api.removeEmployee(editEmployee.id);
+    setIsRemoving(false);
+    if (!result.ok) {
+      setEditError(result.error || "Could not remove employee.");
+      return;
+    }
+
+    setEmployees((prev) => prev.filter((emp) => emp.id !== editEmployee.id));
     setEditEmployee(null);
   };
 
@@ -323,6 +344,16 @@ export default function EmployeeManagementTable() {
             </p>
           )}
           <div className="flex gap-3">
+            <Button
+              type="button"
+              variant="danger"
+              size="md"
+              className="flex-1"
+              onClick={() => void removeEditEmployee()}
+              isLoading={isRemoving}
+            >
+              Remove
+            </Button>
             <Button
               type="button"
               variant="outline"
