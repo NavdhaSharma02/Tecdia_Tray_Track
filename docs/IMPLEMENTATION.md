@@ -76,16 +76,9 @@ ML_INFERENCE_MODE=clip
 ML_MODEL_ID=Xenova/clip-vit-base-patch32
 ML_MODEL_CACHE_DIR=./data/ml-cache
 MENU_IMAGES_DIR=./data/menu-images
-ML_SCAN_MIN_SIMILARITY=0.58
-ML_SCAN_UNKNOWN_GAP=0.12
 ```
 
-| Variable | Purpose |
-|----------|---------|
-| `ML_INFERENCE_MODE=clip` | Production scanning (required) |
-| `ML_INFERENCE_MODE=simulate` | Dev only — random items, no camera ML |
-| `ML_SCAN_MIN_SIMILARITY` | Lower = more matches (try 0.52 if misses) |
-| `ML_SCAN_UNKNOWN_GAP` | Raise if wrong dish wins (try 0.15) |
+Full env var reference with defaults and descriptions: **[CONFIGURATION.md](./CONFIGURATION.md)**
 
 ---
 
@@ -141,48 +134,10 @@ All API calls stay on `localhost` — suitable for low-network sites.
 
 | Symptom | Fix |
 |---------|-----|
-| “No dishes recognized” | Upload reference photos; improve lighting; lower `ML_SCAN_MIN_SIMILARITY` |
+| “No dishes recognized” | Upload reference photos; improve lighting; ensure **Vision: Ready** in admin menu |
 | “Could not reach…” | Start `npm run start`; check Postgres |
 | Wrong item on bill | Cashier PIN on bill step to adjust; re-upload reference photo |
 | Camera error | Allow camera in browser; replug USB webcam |
-
----
-
-## How vision works (code map)
-
-```
-Admin upload  →  POST /api/admin/today-menu/:id/image
-                      → embedMenuReferenceImage()
-                      → menu_item_day_embeddings + data/menu-images/{id}.jpg
-
-Kiosk scan    →  POST /api/scan  (multipart field: image)
-                      → inferTrayFromImage()
-                      → grid crops + cosine match vs today's embeddings
-                      → ScannedItem[]  →  bill  →  POST /api/customer/checkout
-```
-
-Key files:
-
-- `src/app/api/scan/route.ts`
-- `src/app/api/admin/today-menu/[menuItemId]/image/route.ts`
-- `src/lib/tray-inference.ts`
-- `src/lib/clip-embedder.ts`
-- `src/lib/embeddings-db.ts`
-- `src/components/admin/MenuItemForm.tsx` (reference photo)
-- `src/services/api.ts` → `scanTray()`, `uploadMenuItemReferenceImage()`
-
----
-
-## API (vision-related)
-
-| Method | Path | Body |
-|--------|------|------|
-| POST | `/api/scan` | `image` (JPEG) |
-| POST | `/api/admin/today-menu/:menuItemId/image` | `image` |
-| GET | `/api/admin/today-menu/:menuItemId/image` | — |
-| DELETE | `/api/admin/today-menu/:menuItemId/image` | — |
-| GET | `/api/ml/status` | — |
-| GET | `/api/menu/today` | Available dishes (no embeddings) |
 
 ---
 
@@ -204,7 +159,7 @@ Key files:
 
 ## Optional: Python YOLO training
 
-Use `New_Trained_File/` only if you later want tighter food **region** detection. Production kiosk today uses Node CLIP only. To add YOLO later, run a small Python service on `127.0.0.1:5001` and call it from `inferTrayFromImage()` before CLIP — still no cloud.
+Python training (YOLO + CLIP embedding bank) is a separate development workflow. See [PYTHON_DEV_GUIDE.md](./PYTHON_DEV_GUIDE.md) for environment setup, data preparation, and training instructions. Python training is **not required** to run the kiosk.
 
 ---
 

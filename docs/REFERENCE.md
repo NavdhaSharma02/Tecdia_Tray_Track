@@ -1,27 +1,5 @@
 # Tecdia Tray Track — Reference
 
-Cafeteria kiosk: employee login → USB camera tray scan → bill → payment.
-Admin manages today's menu and reference photos for on-device dish recognition.
-
-**Deployment guide:** [IMPLEMENTATION.md](./IMPLEMENTATION.md)
-
----
-
-## Table of Contents
-
-1. [System Architecture](#1-system-architecture)
-2. [User Flows](#2-user-flows)
-3. [Vision / ML Pipeline](#3-vision--ml-pipeline) — full spec at [VISION_ML_PIPELINE.md](./VISION_ML_PIPELINE.md)
-4. [Database Schema](#4-database-schema)
-5. [Auth & State Management](#5-auth--state-management)
-6. [Architecture Details](#6-architecture-details)
-7. [Deployment](#7-deployment)
-8. [Tech Stack & Dependencies](#8-tech-stack--dependencies)
-9. [API Reference](#9-api-reference) — full spec at [API_REFERENCE.md](./API_REFERENCE.md)
-10. [Directory Layout](#10-directory-layout)
-
----
-
 ## 1. System Architecture
 
 ### 1.1 High-Level Overview
@@ -338,19 +316,13 @@ Flow transitions enforced by the reducer (`customerFlowReducer`), not by compone
 
 ### 6.2 Configuration
 
+Full reference with defaults, source files, and template: **[CONFIGURATION.md](./CONFIGURATION.md)**
+
 ```
-.env.example → .env.local → process.env → getDbPool(), constants.ts, etc.
+.env.example → .env.local → process.env → modules
 ```
 
-All env vars read at process startup. Groups:
-
-| Group | Variables | Read By |
-|-------|-----------|---------|
-| Database | `POSTGRES_*` | `db.ts` |
-| Auth | `AUTH_SESSION_SECRET`, `ADMIN_PIN`, `CASHIER_PIN` | `session.ts`, `admin-auth.ts` |
-| ML Mode | `ML_INFERENCE_MODE` | `constants.ts` (threshold env vars deprecated — see [VISION_ML_PIPELINE.md](./VISION_ML_PIPELINE.md) §6) |
-| ML Model | `ML_MODEL_*`, `MENU_IMAGES_DIR` | `clip-embedder.ts`, `image-store.ts` |
-| YOLO | `ML_YOLO_*` | `yolo-detector.ts`, `yolo-service-manager.ts` |
+Groups: Database (`POSTGRES_*`), Auth (`AUTH_SESSION_SECRET`, `ADMIN_PIN`, `CASHIER_PIN`), ML Inference (`ML_INFERENCE_MODE`, `ML_MODEL_*`, `MENU_IMAGES_DIR`, `ML_VISION_BANK_DIR`), YOLO Node.js (`ML_YOLO_*`), YOLO Python (`ML_YOLO_*`), Frontend (`NEXT_PUBLIC_API_URL`).
 
 ### 6.3 Service Layer
 
@@ -373,7 +345,7 @@ All env vars read at process startup. Groups:
 | File upload | JPEG only; no user-controlled filenames |
 | ML model | Local ONNX weights; no external API calls |
 
-**Known gaps:** Admin API routes lack consistent server-side auth middleware; no rate limiting on login; no CSRF protection; custom hashing (not bcrypt/argon2).
+Full list of security gaps and other known limitations: **[KNOWN_LIMITATIONS.md](./KNOWN_LIMITATIONS.md) §1 (Security)**.
 
 ---
 
@@ -489,18 +461,9 @@ psql migrations → npm run start
 
 ### 8.3 Python Dependencies
 
-**YOLO server** (`website/scripts/yolo-detect-server.py`): `ultralytics`, `flask`, `waitress`, `opencv-python-headless`, `numpy`
+Full Python script reference including the YOLO Flask server, training scripts, embedding builder, and end-to-end test: **[PYTHON_ML_SCRIPTS.md](./PYTHON_ML_SCRIPTS.md)**
 
-Install: `pip install ultralytics flask opencv-python-headless waitress`
-
-**Optional training scripts** (`dish classification/scripts/`):
-
-| Script | Libraries | Purpose |
-|--------|-----------|---------|
-| `train_detector.py` | `ultralytics` | Train YOLOv8 |
-| `build_embeddings.py` | `open-clip-torch`, `torch`, `PIL`, `numpy` | Build CLIP embedding bank |
-| `predict_dish.py` | `ultralytics`, `open-clip-torch`, `sklearn`, `cv2` | End-to-end test |
-| `test_detetctor.py` | `ultralytics` | Quick YOLO test |
+**Production server:** `website/scripts/yolo-detect-server.py` — requires `ultralytics`, `flask`, `waitress`, `opencv-python-headless`, `numpy`
 
 ### 8.4 Key Library Details
 
@@ -585,41 +548,14 @@ Full endpoint reference with request/response shapes, cookie details, and shared
 
 ## 10. Directory Layout
 
-```
-website/                          ← Next.js app
-├── src/
-│   ├── app/                      ← App Router
-│   │   ├── page.tsx              ← Marketing homepage
-│   │   ├── layout.tsx            ← Root layout
-│   │   ├── customer/             ← Kiosk SPA
-│   │   ├── admin/                ← 7 admin sub-pages
-│   │   └── api/                  ← 38 API route files
-│   ├── components/
-│   │   ├── admin/                ← 9 components
-│   │   ├── camera/               ← ScanOverlay
-│   │   ├── customer/             ← 10 components
-│   │   ├── layout/               ← 7 components
-│   │   ├── marketing/            ← MarketingTrayShowcase
-│   │   └── ui/                   ← 9 atoms (Button, Input, Card, etc.)
-│   ├── hooks/                    ← useCustomerFlow, useCamera, useEmployeeIdScanner
-│   ├── lib/                      ← 32 modules (business + ML logic)
-│   ├── services/                 ← api.ts (frontend API client)
-│   └── types/                    ← index.ts (shared TypeScript types)
-├── scripts/                      ← Node.js + Python utilities
-├── db/
-│   ├── schema.sql
-│   ├── migrations/               ← 9 incremental SQL migrations
-│   └── seed_today_menu_example.sql
-├── data/                         ← runtime (gitignored)
-│   ├── ml-cache/                 ← CLIP model weights
-│   └── menu-images/              ← Reference photos
+Full project tree with all directories, key files, and annotations: **[DIRECTORY_STRUCTURE.md](./DIRECTORY_STRUCTURE.md)**
 
-Dish Localization/                ← YOLO model (best.pt + notebook)
-dish classification/              ← Python training scripts (optional)
-docs/
-├── IMPLEMENTATION.md             ← Deployment guide
-├── REFERENCE.md                  ← This document
-├── API_REFERENCE.md              ← Full endpoint specs
-├── DATABASE_SCHEMA.md            ← Column-level schema, indexes, FKs
-└── VISION_ML_PIPELINE.md         ← ML pipeline, thresholds, failure modes
 ```
+docs/                             ← Documentation (this folder)
+```
+
+---
+
+## 11. Known Limitations
+
+All known project limitations organized by category (security, offline, database, ML pipeline, API, deployment): **[KNOWN_LIMITATIONS.md](./KNOWN_LIMITATIONS.md)**

@@ -62,19 +62,9 @@ POST /api/scan → detectTrayRegions() → HTTP POST to Python Flask :5001/detec
 
 **Source:** `src/lib/yolo-service-manager.ts`
 
-The YOLO detection runs as a separate Python Flask process (`scripts/yolo-detect-server.py`).
+The YOLO detection runs as a separate Python Flask process. Full server reference including endpoints, env vars, and model loading: **[PYTHON_ML_SCRIPTS.md](./PYTHON_ML_SCRIPTS.md) §2**.
 
-**Configuration:**
-
-| Env Var | Default | Purpose |
-|---------|---------|---------|
-| `ML_YOLO_SERVICE_URL` | — | HTTP URL (e.g. `http://127.0.0.1:5001/detect`) |
-| `ML_YOLO_AUTO_START` | `true` | Auto-spawn Python subprocess when unreachable |
-| `ML_YOLO_STARTUP_TIMEOUT_MS` | 300000 | Max wait for Python to become healthy |
-| `ML_YOLO_TIMEOUT_MS` | 30000 | Per-request timeout |
-| `ML_YOLO_PYTHON` | `python` | Python executable for auto-start |
-| `ML_YOLO_HEALTH_URL` | `<origin>/health` | Health check endpoint |
-| `ML_YOLO_AUTO_START` | `true` | Enable/disable auto-spawn |
+**Configuration:** see [CONFIGURATION.md](./CONFIGURATION.md) §4 (Node.js sidecar vars) and §5 (Python server vars).
 
 **Auto-start sequence:**
 1. First scan request arrives
@@ -241,23 +231,22 @@ Migration 009 introduced the accumulating `menu_item_embedding_bank` table. On t
 
 ## 6. Environment Variables
 
-| Variable | Default | Section |
-|----------|---------|---------|
-| `ML_INFERENCE_MODE` | `clip` | [3.2](#32-inference-mode) |
-| `ML_MODEL_ID` | `Xenova/clip-vit-base-patch32` | [3.1](#31-model) |
-| `ML_MODEL_CACHE_DIR` | `data/ml-cache/` | [3.1](#31-model) |
-| `ML_VISION_BANK_DIR` | `../Computer Vision` | [4.5](#45-computer-vision-folder-sync) |
-| `ML_SCAN_MIN_SIMILARITY` | — | Deprecated (no threshold in current algorithm) |
-| `ML_SCAN_UNKNOWN_GAP` | — | Deprecated (no threshold in current algorithm) |
-| `ML_YOLO_*` | Various | [2.3](#23-service-manager) |
-| `MENU_IMAGES_DIR` | `data/menu-images/` | [4.4](#44-photo-upload-flow) |
+Full reference with defaults, descriptions, and source files: **[CONFIGURATION.md](./CONFIGURATION.md)**
+
+Variables relevant to this pipeline:
+- `ML_INFERENCE_MODE` — controls CLIP vs simulate ([§3.2](#32-inference-mode))
+- `ML_MODEL_ID`, `ML_MODEL_CACHE_DIR` — CLIP model config ([§3.1](#31-model))
+- `ML_VISION_BANK_DIR` — Computer Vision folder path ([§4.5](#45-computer-vision-folder-sync))
+- `ML_YOLO_*` — YOLO service config ([§2.3](#23-service-manager))
+- `MENU_IMAGES_DIR` — reference photo storage ([§4.4](#44-photo-upload-flow))
+- `ML_SCAN_MIN_SIMILARITY`, `ML_SCAN_UNKNOWN_GAP` — deprecated (not used by current algorithm)
 
 ---
 
 ## 7. References
 
 - **Pipeline entry point:** `src/lib/tray-inference.ts`
-- **YOLO detector:** `src/lib/yolo-detector.ts` + Flask `scripts/yolo-detect-server.py`
+- **YOLO detector:** `src/lib/yolo-detector.ts` + Flask `scripts/yolo-detect-server.py` (see [PYTHON_ML_SCRIPTS.md](./PYTHON_ML_SCRIPTS.md) §2)
 - **CLIP embedder:** `src/lib/clip-embedder.ts`
 - **YOLO rice scan:** `src/lib/yolo-rice-scan.ts`
 - **YOLO Sebaw scan:** `src/lib/yolo-sebaw-scan.ts`
