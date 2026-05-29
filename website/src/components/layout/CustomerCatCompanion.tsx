@@ -200,6 +200,7 @@ export default function CustomerCatCompanion() {
   const poseRef = useRef<Pose>("walk");
   const hasWelcomedRef = useRef(false);
   const lastAnnouncedStepRef = useRef<FlowStepName | null>(null);
+  const enabledRef = useRef(true);
 
   const currentStep = (step as FlowStepName) || "IDLE";
   const sectionMessage = useMemo(() => STEP_MESSAGES[currentStep], [currentStep]);
@@ -259,6 +260,11 @@ export default function CustomerCatCompanion() {
         return;
       }
 
+      if (!enabledRef.current) {
+        stopSpeaking();
+        return;
+      }
+
       primeVoice();
       if (interruptSpeech) {
         stopSpeaking();
@@ -291,6 +297,14 @@ export default function CustomerCatCompanion() {
   const showBubble = useCallback(
     (message: string, duration = 2600, options: BubbleOptions = {}) => {
       const { interruptSpeech = false, speak = true } = options;
+
+      if (!enabledRef.current) {
+        setBubbleVisible(false);
+        clearBubbleTimeout();
+        stopSpeaking();
+        return;
+      }
+
       setBubble(message);
       setBubbleVisible(true);
       if (speak) {
@@ -301,7 +315,7 @@ export default function CustomerCatCompanion() {
         setBubbleVisible(false);
       }, duration);
     },
-    [clearBubbleTimeout, speakMessage]
+    [clearBubbleTimeout, speakMessage, stopSpeaking]
   );
 
   const setExpressionSafe = useCallback((next: Expression) => {
@@ -348,6 +362,10 @@ export default function CustomerCatCompanion() {
   }, []);
 
   useEffect(() => {
+    enabledRef.current = enabled;
+  }, [enabled]);
+
+  useEffect(() => {
     primeVoice();
 
     if (typeof window === "undefined" || !("speechSynthesis" in window)) {
@@ -362,7 +380,7 @@ export default function CustomerCatCompanion() {
   }, [primeVoice]);
 
   useEffect(() => {
-    if (!enabled || hasWelcomedRef.current) {
+    if (!preferenceReady || !enabled || hasWelcomedRef.current) {
       return;
     }
 
@@ -370,15 +388,23 @@ export default function CustomerCatCompanion() {
     runDeferred(() => {
       showBubble("Hi there! I am Halu.", 3200, { interruptSpeech: true });
     });
-  }, [enabled, runDeferred, showBubble]);
+  }, [enabled, preferenceReady, runDeferred, showBubble]);
 
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY);
     const nextEnabled = stored !== "false";
-    setEnabled(nextEnabled);
-    setBubbleVisible(nextEnabled);
-    setPreferenceReady(true);
-  }, []);
+    enabledRef.current = nextEnabled;
+    if (!nextEnabled) {
+      clearBubbleTimeout();
+      clearDeferredAction();
+      stopSpeaking();
+    }
+    runDeferred(() => {
+      setEnabled(nextEnabled);
+      setBubbleVisible(nextEnabled);
+      setPreferenceReady(true);
+    });
+  }, [clearBubbleTimeout, clearDeferredAction, runDeferred, stopSpeaking]);
 
   useEffect(() => {
     if (!preferenceReady) return;
@@ -386,7 +412,16 @@ export default function CustomerCatCompanion() {
   }, [enabled, preferenceReady]);
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled) {
+      clearBubbleTimeout();
+      clearDeferredAction();
+      stopSpeaking();
+      return;
+    }
+  }, [clearBubbleTimeout, clearDeferredAction, enabled, stopSpeaking]);
+
+  useEffect(() => {
+    if (!preferenceReady || !enabled) return;
     if (lastAnnouncedStepRef.current === currentStep) return;
     lastAnnouncedStepRef.current = currentStep;
 
@@ -398,7 +433,7 @@ export default function CustomerCatCompanion() {
         schedulePose("wave", 1800, "sit");
       }
     });
-  }, [currentStep, enabled, runDeferred, schedulePose, sectionMessage, showBubble]);
+  }, [currentStep, enabled, preferenceReady, runDeferred, schedulePose, sectionMessage, showBubble]);
 
   useEffect(() => {
     if (!enabled) return;
@@ -580,7 +615,7 @@ export default function CustomerCatCompanion() {
     return () => {
       cancelAnimationFrame(rafRef.current);
     };
-  }, [currentStep, enabled, schedulePose, setExpressionSafe, setFacingSafe, setPoseSafe]);
+  }, [currentStep, enabled, schedulePose, setExpressionSafe, setFacingSafe, setPoseSafe, showBubble]);
 
   useEffect(() => {
     return () => {
@@ -610,6 +645,7 @@ export default function CustomerCatCompanion() {
   const toggleMascot = () => {
     setEnabled((current) => {
       const next = !current;
+      enabledRef.current = next;
 
       clearBubbleTimeout();
       clearDeferredAction();
