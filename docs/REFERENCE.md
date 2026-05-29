@@ -333,64 +333,19 @@ For each CLIP crop:
 
 ## 4. Database Schema
 
-### 4.1 Entity Relationship Diagram
+Full schema reference with column-level detail, indexes, foreign keys, migration history, and query patterns: **[DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md)**
 
-```mermaid
-erDiagram
-    customers ||--o{ tray_scans : ""
-    customers ||--o{ transactions : ""
-    customers ||--o{ feedbacks : ""
+**Quick facts:**
 
-    service_days ||--o{ tray_scans : ""
-    service_days ||--o{ service_day_menu_items : ""
-    service_days ||--o{ menu_item_day_embeddings : ""
-
-    menu_items ||--o{ service_day_menu_items : ""
-    menu_items ||--o{ tray_scan_items : ""
-    menu_items ||--o{ transaction_items : ""
-    menu_items ||--o{ menu_item_day_embeddings : ""
-    menu_items ||--o{ menu_item_embedding_bank : ""
-
-    tray_scans ||--o{ tray_scan_items : ""
-    tray_scans ||--o| transactions : ""
-
-    transactions ||--o{ transaction_items : ""
-    transactions ||--o{ feedbacks : ""
-```
-
-### 4.2 Table Summaries
-
-| Table | Purpose | Key Columns |
-|-------|---------|-------------|
-| `customers` | Employee accounts | `employee_code` (UQ), `email` (UQ), `password_hash`, `salt` |
-| `admin_users` | Legacy admin table | `email`, `pin_hash` |
-| `staff_users` | Admin/cashier access | `user_code` (UQ), `role` (admin/cashier), `status` |
-| `menu_items` | Master dish catalog | `code` (UQ), `name`, `category`, `base_price`, `reference_embedding` |
-| `service_days` | Service date groupings | `service_date` (UQ) |
-| `service_day_menu_items` | Today's menu | `override_price`, `available`; FK → service_days + menu_items |
-| `tray_scans` | Scan sessions | `status`, `scan_source`; FK → customer + service_day |
-| `tray_scan_items` | Detections per scan | `quantity`, `unit_price`, `confidence` |
-| `transactions` | Payment records | `subtotal`, `total_amount`, `payment_method`, `status` |
-| `transaction_items` | Line items | `item_name_snapshot`, `quantity`, `unit_price`, `line_total` |
-| `feedbacks` | Customer issues | `issue_text`; FK → customer + transaction |
-| `menu_item_day_embeddings` | Today's CLIP vectors | `embedding` (JSONB); UQ(menu_item_id, service_day_id) |
-| `menu_item_embedding_bank` | All prototypes | `embedding` (JSONB), `reference_name`, `source` |
-| `embedding_bank_sync_state` | Sync tracking | `source` (PK), `fingerprint`, `prototype_count` |
-
-### 4.3 Schema Migrations
-
-| File | Change |
-|------|--------|
-| `schema.sql` | All core tables + indexes |
-| `002_menu_calories_nullable.sql` | Make `menu_items.calories` nullable |
-| `003_feedbacks_table.sql` | Create `feedbacks` |
-| `004_customers_profile_fields.sql` | Add `employee_code`, `department` |
-| `005_transactions_analytics_indexes.sql` | Analytics indexes |
-| `006_staff_users.sql` | Create `staff_users` |
-| `007_menu_item_day_embeddings.sql` | Per-day embedding table |
-| `008_menu_item_reference_embedding.sql` | `reference_embedding` column |
-| `009_menu_item_embedding_bank.sql` | Embedding bank + sync state |
-| `010_embedding_bank_reference_name.sql` | `reference_name`, nullable `menu_item_id` |
+| Detail | Value |
+|--------|-------|
+| Engine | PostgreSQL 15+ |
+| Database | `tecdia_tray_track` |
+| Extension | `pgcrypto` (`gen_random_uuid()`) |
+| Tables | 14 |
+| Indexes | 16 |
+| Foreign keys | 15 |
+| Migrations | 9 incremental (002–010) |
 
 ---
 
