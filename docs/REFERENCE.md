@@ -11,13 +11,13 @@ Admin manages today's menu and reference photos for on-device dish recognition.
 
 1. [System Architecture](#1-system-architecture)
 2. [User Flows](#2-user-flows)
-3. [Vision / ML Pipeline](#3-vision--ml-pipeline)
+3. [Vision / ML Pipeline](#3-vision--ml-pipeline) — full spec at [VISION_ML_PIPELINE.md](./VISION_ML_PIPELINE.md)
 4. [Database Schema](#4-database-schema)
 5. [Auth & State Management](#5-auth--state-management)
 6. [Architecture Details](#6-architecture-details)
 7. [Deployment](#7-deployment)
 8. [Tech Stack & Dependencies](#8-tech-stack--dependencies)
-9. [API Reference](#9-api-reference)
+9. [API Reference](#9-api-reference) — full spec at [API_REFERENCE.md](./API_REFERENCE.md)
 10. [Directory Layout](#10-directory-layout)
 
 ---
@@ -264,70 +264,15 @@ Admin auth: 6-digit PIN → HTTP-only `admin_session` cookie (8-hour expiry). Fr
 
 ## 3. Vision / ML Pipeline
 
-### 3.1 Tray Scan Pipeline
+Full pipeline reference with YOLO classes, CLIP matching, failure modes, performance, embedding storage, and env vars: **[VISION_ML_PIPELINE.md](./VISION_ML_PIPELINE.md)**
 
-```mermaid
-flowchart TB
-    Camera["USB Camera → JPEG"]
-    Upload["POST /api/scan (multipart)"]
-    Grid["tray-image-crops.ts
-6 overlapping regions"]
-    YOLO["yolo-detector.ts → Python :5001 POST /detect
-Classes: drink, food, meatless soup, soup"]
-    Embed["clip-embedder.ts — CLIP ViT-B/32
-encodeImage() → 512-dim vector"]
-    Match["tray-inference.ts — cosine similarity
-vs today's menu embeddings"]
-    Threshold["minSimilarity (0.58) + unknownGap (0.12)"]
-    Bill["ScannedItem[] → bill review"]
-
-    Camera --> Upload --> Grid & YOLO
-    Grid & YOLO --> Embed --> Match --> Threshold --> Bill
-```
-
-**Two-stage detection:**
-- **Grid crop** (always): 6 fixed overlapping regions → CLIP
-- **YOLO** (when Python sidecar available): detect food/drink regions → CLIP classify each → merge results
-
-### 3.2 YOLO Detection Classes
-
-```
-0: drink           → CLIP classified
-1: food            → CLIP classified
-2: meatless soup   → CLIP classified; free if Sebaw
-3: rice_big        → auto-charged (15.00 default), no CLIP
-4: rice_small      → auto-charged (10.00 default), no CLIP
-5: soup            → CLIP classified
-```
-
-### 3.3 Similarity Matching Logic
-
-```
-For each CLIP crop:
-  1. Compute embedding vector
-  2. Cosine similarity vs all today-menu embeddings
-  3. Best match → score
-  4. If best match NOT in today's menu:
-     - Find best menu match
-     - If menu match score > minSimilarity (0.58)
-       AND score gap < unknownGap (0.12) → use menu match
-     - Else → "UNKNOWN"
-  5. Deduplicate: multiple detections of same dish → single ScannedItem
-```
-
-### 3.4 Embedding Storage Strategy
-
-| Table | Scope | Purpose |
-|-------|-------|---------|
-| `menu_item_day_embeddings` | Per service day | Active matching set |
-| `menu_item_embedding_bank` | All prototypes | Permanent across days |
-| `menu_items.reference_embedding` | Per menu item | Legacy single-embedding column |
-
-**Photo upload flow:**
-1. Admin uploads JPEG → `image-store.ts` saves to `data/menu-images/{id}.jpg`
-2. `clip-embedder.ts` computes CLIP vector
-3. Stored in `menu_item_day_embeddings` (today) + `menu_item_embedding_bank` (permanent)
-4. Can batch-rebuild from disk via `POST /api/admin/ml/rebuild-references`
+**Quick summary:**
+- YOLO (Python sidecar) localizes tray regions → 6 classes (drink, food, meatless soup, rice_big, rice_small, soup)
+- Rice and Sebaw bypass CLIP → direct bill items
+- Other regions → CLIP ViT-B/32 encoding → best cosine similarity match (no minimum threshold)
+- Embeddings stored in accumulating `menu_item_embedding_bank` (all time) + `menu_item_day_embeddings` (today)
+- Auto-sync from Computer Vision folder `.npy` files on each scan
+- 7 distinct failure modes with user-facing messages
 
 ---
 
@@ -403,23 +348,13 @@ All env vars read at process startup. Groups:
 |-------|-----------|---------|
 | Database | `POSTGRES_*` | `db.ts` |
 | Auth | `AUTH_SESSION_SECRET`, `ADMIN_PIN`, `CASHIER_PIN` | `session.ts`, `admin-auth.ts` |
-| ML Mode | `ML_INFERENCE_MODE`, `ML_SCAN_MIN_SIMILARITY`, `ML_SCAN_UNKNOWN_GAP` | `constants.ts` |
+| ML Mode | `ML_INFERENCE_MODE` | `constants.ts` (threshold env vars deprecated — see [VISION_ML_PIPELINE.md](./VISION_ML_PIPELINE.md) §6) |
 | ML Model | `ML_MODEL_*`, `MENU_IMAGES_DIR` | `clip-embedder.ts`, `image-store.ts` |
 | YOLO | `ML_YOLO_*` | `yolo-detector.ts`, `yolo-service-manager.ts` |
 
 ### 6.3 Service Layer
 
-**YOLO Service Manager** (`yolo-service-manager.ts`):
-```
-On first scan request:
-  ├── Check ML_YOLO_SERVICE_URL health
-  ├── If unreachable AND ML_YOLO_AUTO_START=true:
-  │     ├── Spawn Python subprocess (python scripts/yolo-detect-server.py)
-  │     ├── Poll /health up to timeout
-  │     └── Cache subprocess
-  ├── If unreachable AND no auto-start → skip YOLO (grid-only fallback)
-  └── Proceed with detection
-```
+**YOLO Service Manager** (`yolo-service-manager.ts`): auto-starts Python Flask sidecar on first scan. Full auto-start sequence and failure modes in [VISION_ML_PIPELINE.md](./VISION_ML_PIPELINE.md) §2.3–2.4.
 
 **Image Store** (`image-store.ts`):
 - `saveImageFile(buffer, id)` → `data/menu-images/{id}.jpg`
@@ -485,8 +420,8 @@ psql migrations → npm run start
 |--------|--------|
 | Single-user | One concurrent kiosk session at a time |
 | Offline-capable | No internet once `.env.local` + `data/ml-cache` are set up |
-| First scan | ~30-60s (CLIP warm-up); sub-second thereafter |
-| Subsequent scans | ~2-5s (grid crops + CLIP + similarity) |
+| First scan | ~30-60s (CLIP warm-up); sub-second thereafter (see [VISION_ML_PIPELINE.md](./VISION_ML_PIPELINE.md) §5) |
+| Subsequent scans | ~2-5s (YOLO + CLIP + matching) |
 | RAM | ~500 MB Node.js, ~1 GB PostgreSQL, ~500 MB CLIP |
 
 ### 7.5 Hardware Requirements
@@ -578,9 +513,8 @@ Install: `pip install ultralytics flask opencv-python-headless waitress`
 
 **`ultralytics` (YOLO):**
 - Model: `Dish Localization/best.pt` (YOLOv8)
-- 6 classes: drink, food, meatless soup, rice_big, rice_small, soup
+- 6 classes (see [VISION_ML_PIPELINE.md](./VISION_ML_PIPELINE.md) §2.2)
 - Runs as separate Python process on :5001
-- Confidence threshold: 0.4
 
 **`pg` (node-postgres):**
 - Connection pool in `db.ts` — max 10, idle timeout 30s, connection timeout 5s
@@ -600,127 +534,52 @@ Install: `pip install ultralytics flask opencv-python-headless waitress`
 
 ## 9. API Reference
 
-All endpoints at `http://localhost:3000`. Unless noted, all bodies are JSON. Standard response shape:
+Full endpoint reference with request/response shapes, cookie details, and shared types: **[API_REFERENCE.md](./API_REFERENCE.md)**
 
-```typescript
-interface ApiResponse<T> {
-  ok: boolean;
-  data?: T;
-  error?: string;
-}
-```
-
-### 9.1 Endpoints
+**Quick summary — 40 endpoints:**
 
 | # | Method | Route | Purpose |
 |---|--------|-------|---------|
-| 1 | GET | `/api/health` | Server health (status, uptime) |
-| 2 | GET | `/api/ml/status` | ML health (clipEnabled, todayEmbeddingCount) |
-| 3 | POST | `/api/scan` | Tray image → ScannedItem[] (multipart: `image`) |
-| 4 | GET | `/api/menu/today` | Today's menu items (public) |
+| 1 | GET | `/api/health` | Server health |
+| 2 | GET | `/api/ml/status` | ML health |
+| 3 | POST | `/api/scan` | Tray image → ScannedItem[] (multipart) |
+| 4 | GET | `/api/menu/today` | Today's menu (public) |
 | 5 | POST | `/api/auth/login` | Customer email+password login |
 | 6 | POST | `/api/auth/login-by-employee-code` | Login by employee code only |
 | 7 | POST | `/api/auth/signup` | Register new customer |
 | 8 | POST | `/api/auth/logout` | Clear customer session |
 | 9 | GET | `/api/auth/me` | Current customer from session |
-| 10 | POST | `/api/auth/reset-password` | Admin-reset password (needs admin PIN) |
+| 10 | POST | `/api/auth/reset-password` | Admin-reset password |
 | 11 | POST | `/api/auth/verify-super-pin` | Validate admin PIN |
 | 12 | GET | `/api/customer/profile` | Employee profile + balance |
-| 13 | GET | `/api/customer/transactions` | Customer transaction history |
+| 13 | GET | `/api/customer/transactions` | Transaction history |
 | 14 | POST | `/api/customer/checkout` | Complete purchase |
 | 15 | POST | `/api/customer/feedback` | Submit issue report |
 | 16 | GET | `/api/customer/employees/[employeeCode]` | Employee lookup |
-| 17 | POST | `/api/admin/login` | Admin PIN login → `admin_session` cookie |
+| 17 | POST | `/api/admin/login` | Admin PIN login |
 | 18 | POST | `/api/admin/logout` | Clear admin session |
 | 19 | GET | `/api/admin/stats` | Dashboard statistics |
 | 20 | GET | `/api/admin/users` | List staff users |
-| 21 | POST | `/api/admin/users` | Create staff user (needs adminPin) |
+| 21 | POST | `/api/admin/users` | Create staff user |
 | 22 | PATCH | `/api/admin/users/[userCode]` | Update staff user |
 | 23 | DELETE | `/api/admin/users/[userCode]` | Delete staff user |
-| 24 | GET | `/api/admin/today-menu` | Today's menu (admin, with embedding status) |
+| 24 | GET | `/api/admin/today-menu` | Today's menu (admin, enriched) |
 | 25 | POST | `/api/admin/today-menu` | Add menu item |
 | 26 | PATCH | `/api/admin/today-menu/[menuItemId]` | Update menu item |
 | 27 | DELETE | `/api/admin/today-menu/[menuItemId]` | Remove menu item |
 | 28 | PUT | `/api/admin/today-menu/sebaw` | Toggle Sebaw availability |
 | 29 | PUT | `/api/admin/today-menu/rice` | Set rice prices |
 | 30 | GET | `/api/admin/today-menu/[menuItemId]/image` | Serve reference image |
-| 31 | POST | `/api/admin/today-menu/[menuItemId]/image` | Upload reference photo + embed |
+| 31 | POST | `/api/admin/today-menu/[menuItemId]/image` | Upload photo + embed |
 | 32 | DELETE | `/api/admin/today-menu/[menuItemId]/image` | Remove photo + embedding |
 | 33 | GET | `/api/admin/transactions` | All transactions |
 | 34 | GET | `/api/admin/feedbacks` | All feedback submissions |
 | 35 | GET | `/api/admin/employees` | All employees |
 | 36 | PATCH | `/api/admin/employees/[employeeCode]` | Update employee |
-| 37 | POST | `/api/admin/ml/rebuild-references` | Rebuild CLIP embeddings from disk |
+| 37 | POST | `/api/admin/ml/rebuild-references` | Rebuild CLIP embeddings |
 | 38 | POST | `/api/admin/ml/import-vision` | Import vision bank prototypes |
-| 39 | GET | `/api` | API info (name, version) |
+| 39 | GET | `/api` | API info |
 | 40 | POST | `/api` | Echo body |
-
-### 9.2 Example Requests
-
-**POST /api/scan:**
-```
-POST /api/scan
-Content-Type: multipart/form-data
-  image: <JPEG file>
-```
-Response `200`:
-```json
-{
-  "ok": true,
-  "data": [
-    { "id": "uuid", "name": "chicken adobo", "category": "Main Course",
-      "price": 55.00, "quantity": 1, "confidence": 0.87, "calories": 350 }
-  ],
-  "meta": { "mode": "grid", "message": "3/5 crops matched" }
-}
-```
-
-**POST /api/admin/login:**
-```json
-{ "pin": "123456" }
-```
-Response: `{ "ok": true, "data": { "role": "admin" } }`, sets `admin_session` cookie.
-
-**POST /api/admin/today-menu:**
-```json
-{ "name": "chicken teriyaki", "category": "Main Course", "price": 60.00 }
-```
-Validation: lowercase only, no Sebaw/rice items via this endpoint.
-
-**POST /api/admin/today-menu/:id/image:**
-```
-Content-Type: multipart/form-data
-  image: <JPEG file>
-```
-Response: `{ "ok": true, "data": { "saved": true, "embedded": true, "embeddingCount": 3 } }`
-
-### 9.3 Cookie Reference
-
-| Cookie | Type | Expiry | Set By |
-|--------|------|--------|--------|
-| `CUSTOMER_SESSION_COOKIE` | HTTP-only | Session | Login/signup |
-| `admin_session` | HTTP-only | 8 hours | `POST /api/admin/login` |
-
-### 9.4 Shared Types
-
-```typescript
-// src/types/index.ts
-type FlowStep = "IDLE" | "EMAIL_AUTH" | "PROFILE" | "SCANNING" | "BILL" | "PAYMENT" | "DONE";
-type PaymentMethod = "immediate" | "account";
-type AdminRole = "admin" | "cashier";
-type BillingMode = "scan" | "manual";
-
-interface MenuItem { id: string; name: string; category: string; price: number; image: string | null; available: boolean; calories: number | null; hasEmbedding?: boolean; embeddingCount?: number; hasReferencePhoto?: boolean; }
-interface ScannedItem { id: string; name: string; category: string; price: number; quantity: number; confidence: number; calories: number | null; }
-interface Transaction { id: string; employeeId: string; date: string; items: TransactionItem[]; total: number; paymentMethod: PaymentMethod; status: "completed" | "pending" | "failed"; }
-interface TransactionItem { name: string; qty: number; price: number; }
-interface AuthCustomer { id: string; employeeCode: string; email: string; fullName: string; department: string; createdAt: string; accountBalance?: number; }
-interface AdminStats { mealsToday: number; revenueToday: number; activeUsers: number; popularItem: string; avgMealCost: number; monthlyRevenue: number; yearlyRevenue: number; }
-interface Employee { id: string; name: string; department: string; email: string; avatar: string | null; accountBalance: number; joinDate: string; status?: "active" | "on_leave" | "inactive"; }
-interface AdminUser { id: string; name: string; email: string; role: AdminRole; status: "active" | "invited" | "suspended"; shift: string; scope: string; }
-interface FeedbackEntry { id: string; customerId: string; customerEmail: string; customerName: string; transactionId: string | null; issueText: string; createdAt: string; }
-interface Receipt { transactionId: string; employeeId: string; items: ScannedItem[]; total: number; paymentMethod: PaymentMethod; date: string; status: string; }
-```
 
 ---
 
@@ -759,5 +618,8 @@ Dish Localization/                ← YOLO model (best.pt + notebook)
 dish classification/              ← Python training scripts (optional)
 docs/
 ├── IMPLEMENTATION.md             ← Deployment guide
-└── REFERENCE.md                  ← This document
+├── REFERENCE.md                  ← This document
+├── API_REFERENCE.md              ← Full endpoint specs
+├── DATABASE_SCHEMA.md            ← Column-level schema, indexes, FKs
+└── VISION_ML_PIPELINE.md         ← ML pipeline, thresholds, failure modes
 ```
