@@ -3,15 +3,14 @@
 Cafeteria kiosk: employee login → USB camera tray scan → bill → payment.
 Admin manages today's menu and reference photos for on-device dish recognition.
 
-## Getting Started
-
-**[docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md)** — Deployment guide: setup, env, daily workflow, go-live checklist (start here).
-
 ## Documentation
 
 | Category | File | Description |
 |----------|------|-------------|
+| **Start Here** (operator) | [docs/OPERATOR_MANUAL.md](docs/OPERATOR_MANUAL.md) | Hardware setup, staff operations, troubleshooting |
+| **Start Here** (deployer) | [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md) | Deployment guide: setup, env, daily workflow |
 | Architecture | [docs/REFERENCE.md](docs/REFERENCE.md) | System overview, data flow, architectural decisions |
+| | [docs/CODE_MAP.md](docs/CODE_MAP.md) | Feature-flow navigation — locate files by what they do |
 | | [docs/DIRECTORY_STRUCTURE.md](docs/DIRECTORY_STRUCTURE.md) | Full project tree with annotations |
 | | [docs/CONFIGURATION.md](docs/CONFIGURATION.md) | All environment variables, defaults, source files |
 | | [docs/KNOWN_LIMITATIONS.md](docs/KNOWN_LIMITATIONS.md) | Security, offline, ML, API, and deployment gaps |

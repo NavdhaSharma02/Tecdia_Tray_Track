@@ -61,6 +61,8 @@ YOLOv8 (6 classes)"]
 
 ### 1.3 Module Architecture (src/lib/)
 
+For end-to-end feature flow maps (scan, admin, auth, UI) organized by what the code does, see **[CODE_MAP.md](./CODE_MAP.md)**.
+
 ```mermaid
 flowchart TB
     subgraph DB_Layer["Database Layer"]

@@ -80,6 +80,8 @@ project root/
     ├── PYTHON_DEV_GUIDE.md           ← Python dev setup, training workflow
     ├── CONFIGURATION.md              ← All env vars, defaults, source files
     ├── KNOWN_LIMITATIONS.md          ← Security, offline, ML, API limitations
+    ├── OPERATOR_MANUAL.md            ← Operator-facing setup, operations, troubleshooting
+    ├── CODE_MAP.md                   ← Feature-flow navigation (where each file lives)
     └── DIRECTORY_STRUCTURE.md        ← This document
 ```
 
