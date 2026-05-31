@@ -217,7 +217,7 @@ export default function RootPage() {
         </div>
         <div className="marketing-cta">
           <Link
-            href="https://github.com/NavdhaSharma02/Tecdia_Tray_Track/blob/main/README.md"
+            href="https://online.fliphtml5.com/Tecdia/kmyn/"
             className="btn btn-primary btn-lg"
             target="_blank"
             rel="noreferrer"
