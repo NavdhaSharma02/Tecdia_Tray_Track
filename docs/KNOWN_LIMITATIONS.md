@@ -72,12 +72,6 @@
 
 ---
 
-## 7. Future Considerations
+## 7. Future Improvements
 
-Items not currently implemented but noted for future development:
-
-- Multi-language UI
-- Touchscreen-optimized number pad for PIN entry (currently uses desktop keyboard)
-- Email/receipt printing
-- Integration with existing cafeteria payment systems
-- Historical analytics dashboard
+Categorized list of potential features, UX enhancements, and technical debt items: **[FUTURE_IMPROVEMENTS.md](./FUTURE_IMPROVEMENTS.md)**

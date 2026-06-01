@@ -82,6 +82,7 @@ project root/
     ├── KNOWN_LIMITATIONS.md          ← Security, offline, ML, API limitations
     ├── OPERATOR_MANUAL.md            ← Operator-facing setup, operations, troubleshooting
     ├── CODE_MAP.md                   ← Feature-flow navigation (where each file lives)
+    ├── FUTURE_IMPROVEMENTS.md        ← Planned features, UX enhancements, technical debt
     └── DIRECTORY_STRUCTURE.md        ← This document
 ```
 

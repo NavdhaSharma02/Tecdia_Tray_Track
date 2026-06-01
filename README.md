@@ -14,6 +14,7 @@ Admin manages today's menu and reference photos for on-device dish recognition.
 | | [docs/DIRECTORY_STRUCTURE.md](docs/DIRECTORY_STRUCTURE.md) | Full project tree with annotations |
 | | [docs/CONFIGURATION.md](docs/CONFIGURATION.md) | All environment variables, defaults, source files |
 | | [docs/KNOWN_LIMITATIONS.md](docs/KNOWN_LIMITATIONS.md) | Security, offline, ML, API, and deployment gaps |
+| | [docs/FUTURE_IMPROVEMENTS.md](docs/FUTURE_IMPROVEMENTS.md) | Planned features, UX enhancements, technical debt |
 | Database | [docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md) | Tables, columns, indexes, foreign keys, migrations |
 | API | [docs/API_REFERENCE.md](docs/API_REFERENCE.md) | All 40 endpoints with request/response shapes |
 | ML / Vision | [docs/VISION_ML_PIPELINE.md](docs/VISION_ML_PIPELINE.md) | YOLO detection + CLIP matching pipeline, failure modes |
