@@ -44,15 +44,18 @@ export default function MenuItemForm({
   const [referenceError, setReferenceError] = useState<string | undefined>();
 
   const isSoupItem = category === SOUP_CATEGORY;
-  const existingImage = item?.image;
+  const existingImageUrls =
+    item?.referenceImageUrls?.length
+      ? item.referenceImageUrls
+      : item?.image
+        ? [item.image]
+        : [];
   const previewUrls = useMemo(
     () =>
       referenceFiles.length
         ? referenceFiles.map((file) => URL.createObjectURL(file))
-        : existingImage
-          ? [existingImage]
-          : [],
-    [existingImage, referenceFiles]
+        : existingImageUrls,
+    [existingImageUrls, referenceFiles]
   );
 
   useEffect(() => {
@@ -89,7 +92,9 @@ export default function MenuItemForm({
     }
     setNameError(undefined);
 
-    const hasExistingReference = Boolean(item?.hasReferencePhoto || item?.image);
+    const hasExistingReference = Boolean(
+      item?.hasReferencePhoto || item?.image || (item?.referenceImageUrls?.length ?? 0) > 0
+    );
     if (!isSoupItem && !hasExistingReference && referenceFiles.length < 4) {
       setReferenceError("Upload at least 4 reference photos.");
       return;
@@ -278,9 +283,9 @@ function ReferencePhotoSection({
             maxWidth: "460px",
           }}
         >
-          {previewUrls.slice(0, 4).map((previewUrl, index) => (
+          {previewUrls.map((previewUrl, index) => (
             <div
-              key={previewUrl}
+              key={`${previewUrl}-${index}`}
               style={{
                 borderRadius: "12px",
                 overflow: "hidden",

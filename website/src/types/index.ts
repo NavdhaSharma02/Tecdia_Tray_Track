@@ -64,6 +64,8 @@ export interface MenuItem {
   embeddingCount?: number;
   /** True when a reference image file or URL is stored (may lack embedding yet). */
   hasReferencePhoto?: boolean;
+  /** All accumulated reference photo URLs for admin gallery. */
+  referenceImageUrls?: string[];
 }
 
 /** Item detected during tray scan */

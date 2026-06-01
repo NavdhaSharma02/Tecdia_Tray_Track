@@ -1,24 +1,33 @@
+import { randomUUID } from "crypto";
 import { NextResponse } from "next/server";
 import {
   appendMenuItemEmbedding,
   clearMenuItemCatalogReference,
   countMenuItemEmbeddings,
   deleteMenuItemDayEmbedding,
+  deleteMenuItemEmbeddingBySourceKey,
   deleteMenuItemEmbeddingsBySource,
+  listMenuItemEmbeddingBankRows,
   upsertMenuItemCatalogReference,
   upsertMenuItemDayEmbedding,
 } from "@/lib/embeddings-db";
-import { createHash } from "crypto";
-import { embedMenuReferenceImage } from "@/lib/tray-inference";
 import {
+  deleteMenuItemImageFile,
+  legacyMenuItemImagePath,
+  listMenuItemImageUuidsFromBankRows,
   menuItemImageApiPath,
+  menuItemImagePath,
+  readLegacyMenuItemImage,
   readMenuItemImage,
   saveMenuItemImage,
+  uploadSourceKeyForImageUuid,
 } from "@/lib/image-store";
+import { embedMenuReferenceImage } from "@/lib/tray-inference";
 import {
   getOrCreateTodayServiceDayId,
   listTodayMenuForAdmin,
 } from "@/lib/today-menu-db";
+import { unlink } from "fs/promises";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
@@ -35,11 +44,30 @@ function averageEmbeddings(embeddings: number[][]): number[] {
   });
 }
 
-/** GET — serve stored reference image for a menu item. */
-export async function GET(_request: Request, { params }: RouteParams) {
+async function resolveImageBuffer(
+  menuItemId: string,
+  imageUuid: string | null
+): Promise<Buffer | null> {
+  if (imageUuid) {
+    return readMenuItemImage(imageUuid);
+  }
+
+  const bankRows = await listMenuItemEmbeddingBankRows(menuItemId);
+  const uuids = listMenuItemImageUuidsFromBankRows(bankRows);
+  const latestUuid = uuids[uuids.length - 1];
+  if (latestUuid) {
+    return readMenuItemImage(latestUuid);
+  }
+
+  return readLegacyMenuItemImage(menuItemId);
+}
+
+/** GET — serve reference image (?uuid= for a specific file; latest when omitted). */
+export async function GET(request: Request, { params }: RouteParams) {
   try {
     const { menuItemId } = await params;
-    const buffer = await readMenuItemImage(menuItemId);
+    const imageUuid = new URL(request.url).searchParams.get("uuid");
+    const buffer = await resolveImageBuffer(menuItemId, imageUuid);
     if (!buffer) {
       return NextResponse.json({ ok: false, error: "No image." }, { status: 404 });
     }
@@ -59,8 +87,8 @@ export async function GET(_request: Request, { params }: RouteParams) {
 }
 
 /**
- * POST — upload today's reference photo, compute CLIP embedding, store in Postgres.
- * multipart/form-data field: image
+ * POST — upload today's reference photo(s), compute CLIP embedding, store in Postgres.
+ * multipart/form-data fields: image / images
  */
 export async function POST(request: Request, { params }: RouteParams) {
   try {
@@ -99,8 +127,13 @@ export async function POST(request: Request, { params }: RouteParams) {
       );
     }
 
-    const imagePath = await saveMenuItemImage(menuItemId, buffers[0]);
-    const imageUrl = menuItemImageApiPath(menuItemId);
+    const imageUuids = buffers.map(() => randomUUID());
+    const imagePaths = await Promise.all(
+      buffers.map((buffer, index) => saveMenuItemImage(imageUuids[index]!, buffer))
+    );
+    const latestUuid = imageUuids[imageUuids.length - 1]!;
+    const imageUrl = menuItemImageApiPath(menuItemId, latestUuid);
+    const imagePath = imagePaths[imagePaths.length - 1]!;
 
     await upsertMenuItemCatalogReference({
       menuItemId,
@@ -116,13 +149,12 @@ export async function POST(request: Request, { params }: RouteParams) {
       const embeddings = await Promise.all(buffers.map(embedMenuReferenceImage));
 
       for (let i = 0; i < buffers.length; i++) {
-        const uploadKey = `upload:${createHash("sha256").update(buffers[i]).digest("hex").slice(0, 20)}:${i}`;
         await appendMenuItemEmbedding({
           menuItemId,
           referenceName: menuItem.name,
-          embedding: embeddings[i],
+          embedding: embeddings[i]!,
           source: "admin_upload",
-          sourceKey: uploadKey,
+          sourceKey: uploadSourceKeyForImageUuid(imageUuids[i]!),
         });
       }
 
@@ -161,6 +193,7 @@ export async function POST(request: Request, { params }: RouteParams) {
         embeddingCount,
         hasReferencePhoto: true,
         imageUrl,
+        imageUrls: imageUuids.map((uuid) => menuItemImageApiPath(menuItemId, uuid)),
         dimensions: embedding?.length ?? 0,
         referencePhotoCount: buffers.length,
         warning: embeddingWarning,
@@ -178,10 +211,47 @@ export async function POST(request: Request, { params }: RouteParams) {
   }
 }
 
-/** DELETE — remove reference photo and admin-upload prototypes (keeps training bank). */
-export async function DELETE(_request: Request, { params }: RouteParams) {
+/** DELETE — remove one reference photo (?uuid=) or all when uuid is omitted. */
+export async function DELETE(request: Request, { params }: RouteParams) {
   try {
     const { menuItemId } = await params;
+    const imageUuid = new URL(request.url).searchParams.get("uuid");
+
+    if (imageUuid) {
+      await deleteMenuItemImageFile(imageUuid);
+      await deleteMenuItemEmbeddingBySourceKey(
+        menuItemId,
+        "admin_upload",
+        uploadSourceKeyForImageUuid(imageUuid)
+      );
+
+      const bankRows = await listMenuItemEmbeddingBankRows(menuItemId);
+      const remaining = listMenuItemImageUuidsFromBankRows(bankRows);
+      const latestUuid = remaining[remaining.length - 1];
+
+      if (latestUuid) {
+        await upsertMenuItemCatalogReference({
+          menuItemId,
+          imageUrl: menuItemImageApiPath(menuItemId, latestUuid),
+          imagePath: menuItemImagePath(latestUuid),
+        });
+      } else {
+        const serviceDayId = await getOrCreateTodayServiceDayId();
+        await deleteMenuItemDayEmbedding(menuItemId, serviceDayId);
+        await clearMenuItemCatalogReference(menuItemId);
+        try {
+          await unlink(legacyMenuItemImagePath(menuItemId));
+        } catch {
+          /* legacy file may already be missing */
+        }
+      }
+
+      return NextResponse.json({ ok: true, data: null });
+    }
+
+    const bankRows = await listMenuItemEmbeddingBankRows(menuItemId);
+    const uuids = listMenuItemImageUuidsFromBankRows(bankRows);
+
     const serviceDayId = await getOrCreateTodayServiceDayId();
     await deleteMenuItemDayEmbedding(menuItemId, serviceDayId);
     await deleteMenuItemEmbeddingsBySource(menuItemId, [
@@ -191,10 +261,10 @@ export async function DELETE(_request: Request, { params }: RouteParams) {
     ]);
     await clearMenuItemCatalogReference(menuItemId);
 
-    const { unlink } = await import("fs/promises");
-    const { menuItemImagePath } = await import("@/lib/image-store");
+    await Promise.all(uuids.map((uuid) => deleteMenuItemImageFile(uuid)));
+
     try {
-      await unlink(menuItemImagePath(menuItemId));
+      await unlink(legacyMenuItemImagePath(menuItemId));
     } catch {
       /* file may already be missing */
     }

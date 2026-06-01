@@ -1,7 +1,13 @@
 import { createHash } from "crypto";
 import { normalizeDishName, buildDishNameIndex } from "@/lib/dish-name-match";
 import { getDbPool } from "@/lib/db";
-import { menuItemImageApiPath, menuItemImageExists } from "@/lib/image-store";
+import {
+  legacyMenuItemImagePath,
+  listMenuItemImageUuidsFromBankRows,
+  menuItemImageApiPath,
+  type MenuItemImageBankRow,
+} from "@/lib/image-store";
+import { access } from "fs/promises";
 import { getOrCreateTodayServiceDayId } from "@/lib/today-menu-db";
 import type { MenuItem } from "@/types";
 
@@ -186,6 +192,84 @@ export async function deleteMenuItemEmbeddingsBySource(
     `,
     [menuItemId, sources]
   );
+}
+
+export async function deleteMenuItemEmbeddingBySourceKey(
+  menuItemId: string,
+  source: EmbeddingSource,
+  sourceKey: string
+): Promise<void> {
+  const pool = getDbPool();
+  await pool.query(
+    `
+    DELETE FROM menu_item_embedding_bank
+    WHERE menu_item_id = $1::uuid AND source = $2 AND source_key = $3;
+    `,
+    [menuItemId, source, sourceKey]
+  );
+}
+
+export async function listMenuItemEmbeddingBankRows(
+  menuItemId: string
+): Promise<MenuItemImageBankRow[]> {
+  const pool = getDbPool();
+  const { rows } = await pool.query<{
+    source: string;
+    source_key: string;
+    created_at: Date;
+  }>(
+    `
+    SELECT source, source_key, created_at
+    FROM menu_item_embedding_bank
+    WHERE menu_item_id = $1::uuid
+    ORDER BY created_at ASC;
+    `,
+    [menuItemId]
+  );
+  return rows;
+}
+
+async function listUploadBankRowsForMenuItems(
+  menuItemIds: string[]
+): Promise<Map<string, MenuItemImageBankRow[]>> {
+  const byItem = new Map<string, MenuItemImageBankRow[]>();
+  if (menuItemIds.length === 0) return byItem;
+
+  const pool = getDbPool();
+  try {
+    const { rows } = await pool.query<{
+      menu_item_id: string;
+      source: string;
+      source_key: string;
+      created_at: Date;
+    }>(
+      `
+      SELECT menu_item_id::text, source, source_key, created_at
+      FROM menu_item_embedding_bank
+      WHERE menu_item_id = ANY($1::uuid[])
+        AND source IN ('admin_upload', 'rebuild_disk')
+      ORDER BY created_at ASC;
+      `,
+      [menuItemIds]
+    );
+
+    for (const id of menuItemIds) {
+      byItem.set(id, []);
+    }
+    for (const row of rows) {
+      const list = byItem.get(row.menu_item_id) ?? [];
+      list.push({
+        source: row.source,
+        source_key: row.source_key,
+        created_at: row.created_at,
+      });
+      byItem.set(row.menu_item_id, list);
+    }
+  } catch {
+    /* table may not exist before migration 009 */
+  }
+
+  return byItem;
 }
 
 async function countBankRowsForMenuItems(
@@ -587,6 +671,7 @@ export async function enrichMenuItemsWithEmbeddingFlags(
   const bankCounts = await countBankRowsForMenuItems(
     items.map((item) => ({ id: item.id, name: item.name }))
   );
+  const uploadBankRowsByItem = await listUploadBankRowsForMenuItems(ids);
 
   const { rows } = await pool.query<{
     id: string;
@@ -609,16 +694,33 @@ export async function enrichMenuItemsWithEmbeddingFlags(
     items.map(async (item) => {
       const row = byId.get(item.id);
       const bankCount = bankCounts.get(item.id) ?? 0;
-      const hasFile = await menuItemImageExists(item.id);
+      const bankRows = uploadBankRowsByItem.get(item.id) ?? [];
+      const imageUuids = listMenuItemImageUuidsFromBankRows(bankRows);
+      let hasLegacyFile = false;
+      try {
+        await access(legacyMenuItemImagePath(item.id));
+        hasLegacyFile = true;
+      } catch {
+        /* no legacy file */
+      }
+
+      const referenceImageUrls =
+        imageUuids.length > 0
+          ? imageUuids.map((uuid) => menuItemImageApiPath(item.id, uuid))
+          : hasLegacyFile
+            ? [menuItemImageApiPath(item.id)]
+            : [];
+
       const imageUrl =
         row?.image_url ||
         item.image ||
-        (hasFile ? menuItemImageApiPath(item.id) : null);
+        referenceImageUrls[referenceImageUrls.length - 1] ||
+        null;
 
-      if (hasFile && !row?.image_url) {
+      if (referenceImageUrls.length > 0 && !row?.image_url) {
         await upsertMenuItemCatalogReference({
           menuItemId: item.id,
-          imageUrl: menuItemImageApiPath(item.id),
+          imageUrl: referenceImageUrls[referenceImageUrls.length - 1]!,
         });
       }
 
@@ -627,7 +729,11 @@ export async function enrichMenuItemsWithEmbeddingFlags(
         hasEmbedding: bankCount > 0 || (row?.has_legacy_embedding ?? false),
         embeddingCount: bankCount > 0 ? bankCount : undefined,
         image: imageUrl,
-        hasReferencePhoto: Boolean(imageUrl || hasFile),
+        referenceImageUrls:
+          referenceImageUrls.length > 0 ? referenceImageUrls : undefined,
+        hasReferencePhoto: Boolean(
+          imageUrl || referenceImageUrls.length > 0 || hasLegacyFile
+        ),
       };
     })
   );

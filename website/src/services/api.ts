@@ -323,11 +323,13 @@ export async function rebuildMenuReferenceEmbeddings(): Promise<
 }
 
 export async function deleteMenuItemReferenceImage(
-  menuItemId: string
+  menuItemId: string,
+  imageUuid?: string
 ): Promise<ApiResponse<null>> {
   try {
+    const query = imageUuid ? `?uuid=${encodeURIComponent(imageUuid)}` : "";
     const res = await fetch(
-      `${API_BASE}/admin/today-menu/${encodeURIComponent(menuItemId)}/image`,
+      `${API_BASE}/admin/today-menu/${encodeURIComponent(menuItemId)}/image${query}`,
       { method: "DELETE" }
     );
     const data = (await res.json()) as ApiResponse<null>;
