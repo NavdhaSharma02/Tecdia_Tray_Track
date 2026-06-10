@@ -217,7 +217,7 @@ export default function RootPage() {
         </div>
         <div className="marketing-cta">
           <Link
-            href="https://online.fliphtml5.com/Tecdia/kmyn/"
+            href="https://online.fliphtml5.com/Tecdia/jhob/"
             className="btn btn-primary btn-lg"
             target="_blank"
             rel="noreferrer"
