@@ -5,6 +5,7 @@ AI-Powered On-Device Vision for Automated Cafeteria Billing
 **Built by — Team AOZORA 青空**
 Mentor: Samruddhi
 Members: Jeffry, Navdha, Kavisha, Nomaan
+Interactive manual: https://online.fliphtml5.com/Tecdia/kmyn/
 
 ---
 

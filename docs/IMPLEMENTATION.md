@@ -2,6 +2,8 @@
 
 Single reference for deploying the kiosk on **one Windows tablet** (USB camera, PostgreSQL on the same machine, **no internet during service**).
 
+Video guide: https://www.youtube.com/watch?v=GwrWlD5F4go
+
 ## What you are shipping
 
 | Piece | Location |
