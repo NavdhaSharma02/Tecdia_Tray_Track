@@ -20,7 +20,7 @@ Admin manages today's menu and reference photos for on-device dish recognition.
 | ML / Vision | [docs/VISION_ML_PIPELINE.md](docs/VISION_ML_PIPELINE.md) | YOLO detection + CLIP matching pipeline, failure modes |
 | | [docs/PYTHON_ML_SCRIPTS.md](docs/PYTHON_ML_SCRIPTS.md) | Python scripts reference (server + training) |
 | | [docs/PYTHON_DEV_GUIDE.md](docs/PYTHON_DEV_GUIDE.md) | Python environment setup and training workflow |
-| | [docs/PRICING_MODEL.md](docs/PRICING_MODEL.md) | Pricing model for the software |
+| Pricing | [docs/PRICING_MODEL.md](docs/PRICING_MODEL.md) | Pricing model for the software |
 
 ## Quick Commands
 
